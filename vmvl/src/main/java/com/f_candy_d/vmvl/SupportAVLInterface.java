@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.vm_vl_base;
+package com.f_candy_d.vmvl;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;

@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.vm_vl_base;
+package com.f_candy_d.vmvl;
 
 /**
  * Created by daichi on 9/10/17.

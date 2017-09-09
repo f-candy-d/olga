@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.vm_vl_base;
+package com.f_candy_d.vmvl;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

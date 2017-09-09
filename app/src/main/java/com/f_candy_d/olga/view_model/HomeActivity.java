@@ -6,8 +6,8 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.f_candy_d.olga.view_logic.HomeViewLogic;
-import com.f_candy_d.olga.vm_vl_base.ActivityViewLogicInterface;
-import com.f_candy_d.olga.vm_vl_base.ViewModelActivity;
+import com.f_candy_d.vmvl.ActivityViewLogicInterface;
+import com.f_candy_d.vmvl.ViewModelActivity;
 
 public class HomeActivity extends ViewModelActivity implements HomeViewModelInterface {
 

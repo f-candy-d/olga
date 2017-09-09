@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.vm_vl_base;
+package com.f_candy_d.vmvl;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -10,8 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.f_candy_d.olga.R;
 
 /**
  * Created by daichi on 9/10/17.

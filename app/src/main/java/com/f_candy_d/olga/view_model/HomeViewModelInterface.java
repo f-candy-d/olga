@@ -2,7 +2,7 @@ package com.f_candy_d.olga.view_model;
 
 import android.view.View;
 
-import com.f_candy_d.olga.vm_vl_base.ViewModelInterface;
+import com.f_candy_d.vmvl.ViewModelInterface;
 
 /**
  * Created by daichi on 9/10/17.

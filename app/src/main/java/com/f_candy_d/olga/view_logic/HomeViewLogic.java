@@ -3,7 +3,6 @@ package com.f_candy_d.olga.view_logic;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +11,7 @@ import android.view.View;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.view_model.HomeViewLogicInterface;
 import com.f_candy_d.olga.view_model.HomeViewModelInterface;
-import com.f_candy_d.olga.vm_vl_base.ActivityViewLogic;
+import com.f_candy_d.vmvl.ActivityViewLogic;
 
 /**
  * Created by daichi on 9/10/17.
