@@ -1,11 +1,17 @@
 package com.f_candy_d.olga.vm_vl_base;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+
+import com.f_candy_d.olga.R;
 
 /**
  * Created by daichi on 9/10/17.
@@ -13,9 +19,13 @@ import android.view.View;
 
 abstract public class ViewModelActivity extends AppCompatActivity implements SupportAVLInterface {
 
-    private ActivityViewLogic mViewLogic;
+    private ActivityViewLogicInterface mViewLogic;
 
-    abstract protected ActivityViewLogic onCreateViewLogic();
+    abstract protected ActivityViewLogicInterface onCreateViewLogic();
+
+    /**
+     * Delegate Activity's methods to ViewLogic class
+     */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +78,16 @@ abstract public class ViewModelActivity extends AppCompatActivity implements Sup
         mViewLogic.onSaveInstanceState(outState);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return mViewLogic.onCreateOptionMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mViewLogic.onOptionsItemSelected(item);
+    }
+
     /**
      * region; SupportAVLInterface implementation
      */
@@ -85,5 +105,15 @@ abstract public class ViewModelActivity extends AppCompatActivity implements Sup
     @Override
     public ActionBar onGetSupportActionBarMethodDispatch() {
         return getSupportActionBar();
+    }
+
+    @Override
+    public void onSetContentViewMethodDispatch(@LayoutRes int layoutResId) {
+        setContentView(layoutResId);
+    }
+
+    @Override
+    public View onFindViewByIdMethodDispatch(@IdRes int id) {
+        return findViewById(id);
     }
 }

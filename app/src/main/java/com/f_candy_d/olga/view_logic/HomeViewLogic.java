@@ -1,19 +1,34 @@
-package com.f_candy_d.olga;
+package com.f_candy_d.olga.view_logic;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-public class HomeActivity extends AppCompatActivity {
+import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.view_model.HomeViewLogicInterface;
+import com.f_candy_d.olga.view_model.HomeViewModelInterface;
+import com.f_candy_d.olga.vm_vl_base.ActivityViewLogic;
+
+/**
+ * Created by daichi on 9/10/17.
+ */
+
+public class HomeViewLogic extends ActivityViewLogic implements HomeViewLogicInterface {
+
+    private HomeViewModelInterface mViewModel;
+
+    public HomeViewLogic(HomeViewModelInterface viewModelInterface) {
+        super(viewModelInterface);
+        mViewModel = viewModelInterface;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -22,14 +37,13 @@ public class HomeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                mViewModel.onShowSnackBarWithMessage(view);
             }
         });
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
