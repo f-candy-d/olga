@@ -43,7 +43,10 @@ public class HomeActivity extends ViewActivity
 //        if (Build.VERSION.SDK_INT >= 21) {
 //            getWindow().setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
 //        }
+        initUI();
+    }
 
+    private void initUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -136,7 +139,7 @@ public class HomeActivity extends ViewActivity
     @Override
     public void onSelectionChosen(WhatAddDialogFragment.Selection selection, WhatAddDialogFragment dialogFragment) {
         Log.d("mylog", "selected -> " + selection.toString());
-//        dialogFragment.dismiss();
+        dialogFragment.dismiss();
     }
 
 }
