@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.presentation.view_model;
+package com.f_candy_d.olga.presentation.activity;
 
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -20,6 +20,7 @@ import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskGroupAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
 import com.f_candy_d.olga.presentation.dialog.WhatAddDialogFragment;
+import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
