@@ -1,5 +1,6 @@
 package com.f_candy_d.olga.presentation.activity;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -138,8 +139,16 @@ public class HomeActivity extends ViewActivity
 
     @Override
     public void onSelectionChosen(WhatAddDialogFragment.Selection selection, WhatAddDialogFragment dialogFragment) {
-        Log.d("mylog", "selected -> " + selection.toString());
-        dialogFragment.dismiss();
+        switch (selection) {
+            case ADD_EVENT:
+                Intent intent = new Intent(this, EventFormActivity.class);
+                startActivityForResult(111, intent, new OnResultListener() {
+                    @Override
+                    public void onResult(int resultCode, @Nullable Bundle data) {
+                        Log.d("mylog", "returned -> ");
+                    }
+                });
+        }
     }
 
 }
