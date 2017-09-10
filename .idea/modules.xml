@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Olga.iml" filepath="$PROJECT_DIR$/Olga.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/d_utils/d_utils.iml" filepath="$PROJECT_DIR$/d_utils/d_utils.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vmvl/vmvl.iml" filepath="$PROJECT_DIR$/vmvl/vmvl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vvm/vvm.iml" filepath="$PROJECT_DIR$/vvm/vvm.iml" />
     </modules>
   </component>
 </project>

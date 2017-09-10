@@ -1,1 +1,1 @@
-include ':app', ':vmvl', ':d_utils'
+include ':app', ':d_utils', ':vvm'
