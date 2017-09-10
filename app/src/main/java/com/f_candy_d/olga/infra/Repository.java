@@ -11,8 +11,14 @@ import com.f_candy_d.olga.infra.sqlite.SqliteRepository;
 
 final public class Repository {
 
-    static SqlRepository getSql() {
-        SqliteDatabaseOpenHelper helper = new SqliteDatabaseOpenHelperImpl(MyApp.getAppContext());
-        return new SqliteRepository(helper);
+    private static SqlRepository mSqlRepository = null;
+
+    public static SqlRepository getSql() {
+        if (mSqlRepository == null) {
+            SqliteDatabaseOpenHelper helper = new SqliteDatabaseOpenHelperImpl(MyApp.getAppContext());
+            mSqlRepository = new SqliteRepository(helper);
+        }
+
+        return mSqlRepository;
     }
 }

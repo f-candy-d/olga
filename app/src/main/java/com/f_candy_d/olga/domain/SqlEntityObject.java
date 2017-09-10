@@ -9,7 +9,7 @@ import com.f_candy_d.olga.infra.SqlEntity;
  * Created by daichi on 9/7/17.
  */
 
-abstract public class SqlEntityObject<E extends Enum<E>> {
+abstract class SqlEntityObject<E extends Enum<E>> {
 
     @NonNull private final String mTableName;
     public long id;
