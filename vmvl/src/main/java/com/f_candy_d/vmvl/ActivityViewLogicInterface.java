@@ -14,7 +14,7 @@ public interface ActivityViewLogicInterface {
     /**
      * This will be only called in ViewModelActivity#onCreate() method
      */
-    void setSupportAVLInterface(SupportAVLInterface supportAVLInterface);
+    void setPartnerActivity(ViewModelActivity partnerActivity);
 
     /**
      * The following methods will be delegated from Activity

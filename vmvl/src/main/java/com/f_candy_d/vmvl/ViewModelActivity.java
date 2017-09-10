@@ -8,14 +8,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 /**
  * Created by daichi on 9/10/17.
  */
 
-abstract public class ViewModelActivity extends AppCompatActivity implements SupportAVLInterface {
+abstract public class ViewModelActivity extends AppCompatActivity {
 
     private ActivityViewLogicInterface mViewLogic;
 
@@ -30,7 +32,7 @@ abstract public class ViewModelActivity extends AppCompatActivity implements Sup
         super.onCreate(savedInstanceState);
 
         mViewLogic = onCreateViewLogic();
-        mViewLogic.setSupportAVLInterface(this);
+        mViewLogic.setPartnerActivity(this);
         mViewLogic.onCreate(savedInstanceState);
     }
 
@@ -84,34 +86,5 @@ abstract public class ViewModelActivity extends AppCompatActivity implements Sup
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return mViewLogic.onOptionsItemSelected(item);
-    }
-
-    /**
-     * region; SupportAVLInterface implementation
-     */
-
-    @Override
-    public void onSetContentViewMethodDispatch(View view) {
-        setContentView(view);
-    }
-
-    @Override
-    public void onSetSupportActionBarMethodDispatch(Toolbar toolbar) {
-        setSupportActionBar(toolbar);
-    }
-
-    @Override
-    public ActionBar onGetSupportActionBarMethodDispatch() {
-        return getSupportActionBar();
-    }
-
-    @Override
-    public void onSetContentViewMethodDispatch(@LayoutRes int layoutResId) {
-        setContentView(layoutResId);
-    }
-
-    @Override
-    public View onFindViewByIdMethodDispatch(@IdRes int id) {
-        return findViewById(id);
     }
 }

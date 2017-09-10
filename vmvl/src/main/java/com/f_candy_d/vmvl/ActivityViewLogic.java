@@ -1,5 +1,6 @@
 package com.f_candy_d.vmvl;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 /**
  * Created by daichi on 9/10/17.
@@ -15,49 +17,59 @@ import android.view.View;
 
 abstract public class ActivityViewLogic implements ActivityViewLogicInterface {
 
-    private SupportAVLInterface mSupportAVLInterface;
+    private ViewModelActivity mPartnerActivity;
 
     /**
      * Dummy constructor to forc
      */
     public ActivityViewLogic(ViewModelInterface viewModelInterface) {}
 
+    protected Context getContext() {
+        return mPartnerActivity;
+    }
+
+    protected Context getApplicationContext() {
+        return mPartnerActivity.getApplicationContext();
+    }
+
     /**
      * Delegate methods
      */
 
     protected void setContentView(View view) {
-        mSupportAVLInterface.onSetContentViewMethodDispatch(view);
+        mPartnerActivity.setContentView(view);
     }
 
     protected void setContentView(@LayoutRes int layoutResId) {
-        mSupportAVLInterface.onSetContentViewMethodDispatch(layoutResId);
+        mPartnerActivity.setContentView(layoutResId);
     }
 
     protected void setSupportActionBar(Toolbar toolbar) {
-        mSupportAVLInterface.onSetSupportActionBarMethodDispatch(toolbar);
+        mPartnerActivity.setSupportActionBar(toolbar);
     }
 
     protected ActionBar getSupportActionBar() {
-        return mSupportAVLInterface.onGetSupportActionBarMethodDispatch();
+        return mPartnerActivity.getSupportActionBar();
     }
 
     protected View findViewById(@IdRes int id) {
-        return mSupportAVLInterface.onFindViewByIdMethodDispatch(id);
+        return mPartnerActivity.findViewById(id);
     }
 
     protected MenuInflater getMenuInflater() {
-        return mSupportAVLInterface.getMenuInflater();
+        return mPartnerActivity.getMenuInflater();
     }
 
+    protected Window getWindow() {
+        return mPartnerActivity.getWindow();
+    }
 
     /**
      * region; ActivityViewLogicInterface implementation
      */
 
-    @Override
-    public void setSupportAVLInterface(SupportAVLInterface supportAVLInterface) {
-        mSupportAVLInterface = supportAVLInterface;
+    public void setPartnerActivity(ViewModelActivity partnerActivity) {
+        mPartnerActivity = partnerActivity;
     }
 
     /**

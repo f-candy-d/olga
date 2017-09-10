@@ -1,8 +1,10 @@
 package com.f_candy_d.olga.presentation.view_logic;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,11 @@ public class HomeViewLogic extends ActivityViewLogic implements HomeViewLogicInt
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
