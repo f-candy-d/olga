@@ -10,6 +10,8 @@ import android.content.Context;
  * Do not forget to insert the below code into the AndroidManifests.xml.
  *
  * android:name=".MyApp"
+ *
+ * DO NOT CONSTRUCT THIS CLASS DIRECTLY!
  */
 
 public class MyApp extends Application {
