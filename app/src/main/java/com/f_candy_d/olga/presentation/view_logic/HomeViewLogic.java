@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.view_logic;
+package com.f_candy_d.olga.presentation.view_logic;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.view_model.HomeViewLogicInterface;
-import com.f_candy_d.olga.view_model.HomeViewModelInterface;
+import com.f_candy_d.olga.presentation.view_model.HomeViewLogicInterface;
+import com.f_candy_d.olga.presentation.view_model.HomeViewModelInterface;
 import com.f_candy_d.vmvl.ActivityViewLogic;
 
 /**

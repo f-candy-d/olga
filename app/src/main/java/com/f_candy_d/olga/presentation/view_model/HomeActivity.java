@@ -1,11 +1,11 @@
-package com.f_candy_d.olga.view_model;
+package com.f_candy_d.olga.presentation.view_model;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.f_candy_d.olga.view_logic.HomeViewLogic;
+import com.f_candy_d.olga.presentation.view_logic.HomeViewLogic;
 import com.f_candy_d.vmvl.ActivityViewLogicInterface;
 import com.f_candy_d.vmvl.ViewModelActivity;
 

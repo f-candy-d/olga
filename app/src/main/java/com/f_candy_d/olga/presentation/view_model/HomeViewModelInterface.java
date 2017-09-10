@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.view_model;
+package com.f_candy_d.olga.presentation.view_model;
 
 import android.view.View;
 
