@@ -12,7 +12,7 @@ import com.f_candy_d.olga.infra.SqlEntity;
 abstract class SqlEntityObject<E extends Enum<E>> {
 
     @NonNull private final String mTableName;
-    public long id;
+    long id;
 
     SqlEntityObject(@NonNull String tableName) {
         mTableName = tableName;
@@ -21,6 +21,14 @@ abstract class SqlEntityObject<E extends Enum<E>> {
     @NonNull
     String getTableName() {
         return mTableName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
