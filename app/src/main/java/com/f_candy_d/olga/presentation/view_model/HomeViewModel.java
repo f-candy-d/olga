@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.f_candy_d.dutils.Group;
 import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.domain.TaskStreamUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
@@ -27,15 +26,35 @@ public class HomeViewModel extends ActivityViewModel {
 
     }
 
-    public ArrayList<Group<Task>> getUpcoingTasksAsGroup() {
+    public ArrayList<Task> getAllTasks() {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.MONTH, Calendar.APRIL);
         final long s = c.getTimeInMillis();
         c.set(Calendar.MONTH, Calendar.NOVEMBER);
         final long e = c.getTimeInMillis();
-        ArrayList<Task> allTasks = TaskStreamUseCase.getTasksInTerm(s, e);
-        ArrayList<Group<Task>> taskGroups = new ArrayList<>();
-        taskGroups.add(new Group<>("All Tasks", allTasks));
-        return taskGroups;
+        return TaskStreamUseCase.getTasksStartInTerm(s, e);
+    }
+
+    public ArrayList<Task> getTasksInProcess() {
+        return TaskStreamUseCase.getTasksInProcess();
+    }
+
+    public ArrayList<Task> getTasksUpcoming() {
+        Calendar limit = Calendar.getInstance();
+        limit.add(Calendar.DAY_OF_MONTH, 1);
+        return TaskStreamUseCase.getTasksUpcoming(limit);
+    }
+
+    public ArrayList<Task> getTasksInFeature() {
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.DAY_OF_MONTH, 1);
+        final long left = date.getTimeInMillis();
+        date.add(Calendar.DAY_OF_MONTH, 6);
+        final long right = date.getTimeInMillis();
+        return TaskStreamUseCase.getTasksStartInTerm(left, right);
+    }
+
+    public ArrayList<Task> getTasksNeedToBeRescheduled() {
+        return TaskStreamUseCase.getTasksNeedToBeRescheduled();
     }
 }

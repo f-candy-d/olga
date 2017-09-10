@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.f_candy_d.dutils.Group;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
@@ -24,6 +23,8 @@ import com.f_candy_d.olga.presentation.dialog.WhatAddDialogFragment;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
+
+import java.util.ArrayList;
 
 public class HomeActivity extends ViewActivity
         implements WhatAddDialogFragment.OnSelectionChosenListener {
@@ -40,10 +41,6 @@ public class HomeActivity extends ViewActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            getWindow().setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-//        }
         initUI();
     }
 
@@ -62,22 +59,33 @@ public class HomeActivity extends ViewActivity
         });
 
         OuterListAdapter outerListAdapter = new OuterListAdapter(this);
+        SimpleTaskGroupAdapter adapter;
+        ArrayList<Task> tasks;
 
-        for (Group<Task> group : mViewModel.getUpcoingTasksAsGroup()) {
-            SimpleTaskGroupAdapter adapter = new SimpleTaskGroupAdapter(group.getMembers());
-            adapter.setHeaderTitle(group.getName());
-            outerListAdapter.addAdapter(adapter);
-        }
+        tasks = mViewModel.getAllTasks();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("All");
+        outerListAdapter.addAdapter(adapter);
 
-//        mDividerItemDecoration = new f_candy_d.com.boogie.utils.DividerItemDecoration(
-//                null, getResources().getDrawable(R.drawable.simple_divider, null));
-//        mDividerItemDecoration.setCallback(new f_candy_d.com.boogie.utils.DividerItemDecoration.Callback() {
-//            @Override
-//            public boolean drawDividerAboveItem(int adapterPosition) {
-//                return (mSimpleTaskGroupAdapter.getFirstItemPosition() < adapterPosition &&
-//                        adapterPosition < mSimpleTaskGroupAdapter.getItemCount());
-//            }
-//        });
+        tasks = mViewModel.getTasksNeedToBeRescheduled();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("Needs To Be Rescheduled");
+        outerListAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksInProcess();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("Now");
+        outerListAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksUpcoming();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("Upcoming In 24 Hours");
+        outerListAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksInFeature();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("In Feature");
+        outerListAdapter.addAdapter(adapter);
 
         final float density = getResources().getDisplayMetrics().density;
         final int itemSideSpace = (int) (16 * density);
@@ -109,7 +117,6 @@ public class HomeActivity extends ViewActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(outerListAdapter);
         recyclerView.addItemDecoration(spacerItemDecoration);
-//        recyclerView.addItemDecoration(mDividerItemDecoration);
     }
 
     @Override

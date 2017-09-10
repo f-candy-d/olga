@@ -7,10 +7,12 @@ import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.infra.Repository;
 import com.f_candy_d.olga.infra.SqlEntity;
 import com.f_candy_d.olga.infra.sql_utils.SqlBetweenExpr;
+import com.f_candy_d.olga.infra.sql_utils.SqlCondExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlLogicExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlQuery;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by daichi on 9/10/17.
@@ -28,23 +30,52 @@ final public class TaskStreamUseCase extends SqlStreamUseCase {
     }
 
     @NonNull
-    public static ArrayList<Task> getTasksInTerm(long dateTermStart, long dateTermEnd) {
-        SqlBetweenExpr between1 =
-                new SqlBetweenExpr(TaskTable._DATE_TERM_START)
+    public static ArrayList<Task> getTasksStartInTerm(long dateTermStart, long dateTermEnd) {
+        SqlBetweenExpr between = new SqlBetweenExpr(TaskTable._DATE_TERM_START)
                         .setRange(dateTermStart, dateTermEnd)
-                        .setRangeBoundaries(false, true);
+                        .setRangeBoundaries(true, false);
 
-        SqlBetweenExpr between2 =
-                new SqlBetweenExpr(TaskTable._DATE_TERM_END)
-                        .setRange(dateTermStart, dateTermEnd)
-                        .setRangeBoundaries(false, true);
+        SqlQuery query = new SqlQuery();
+        query.setSelection(between);
+        query.putTables(TaskTable.TABLE_NAME);
 
-        SqlLogicExpr where = new SqlLogicExpr(between1).or(between2);
+        return selectTasksForQuery(query);
+    }
+
+    @NonNull
+    public static ArrayList<Task> getTasksInProcess() {
+        final long now = Calendar.getInstance().getTimeInMillis();
+        SqlCondExpr left = new SqlCondExpr(TaskTable._DATE_TERM_START).lessThanOrEqualTo(now);
+        SqlCondExpr right = new SqlCondExpr(TaskTable._DATE_TERM_END).graterThanOrEqualTo(now);
+        SqlLogicExpr where = new SqlLogicExpr(left).and(right);
 
         SqlQuery query = new SqlQuery();
         query.setSelection(where);
         query.putTables(TaskTable.TABLE_NAME);
 
+        return selectTasksForQuery(query);
+    }
+
+    @NonNull
+    public static ArrayList<Task> getTasksUpcoming(Calendar limitDate) {
+        final long now = Calendar.getInstance().getTimeInMillis();
+        return getTasksStartInTerm(now, limitDate.getTimeInMillis());
+    }
+
+    @NonNull
+    public static ArrayList<Task> getTasksNeedToBeRescheduled() {
+        final long now = Calendar.getInstance().getTimeInMillis();
+        SqlCondExpr where = new SqlCondExpr(TaskTable._DATE_TERM_END).lessThan(now);
+
+        SqlQuery query = new SqlQuery();
+        query.putTables(TaskTable.TABLE_NAME);
+        query.setSelection(where);
+
+        return selectTasksForQuery(query);
+    }
+
+    @NonNull
+    private static ArrayList<Task> selectTasksForQuery(SqlQuery query) {
         SqlEntity[] results = Repository.getSql().select(query);
         ArrayList<Task> tasks = new ArrayList<>(results.length);
 
