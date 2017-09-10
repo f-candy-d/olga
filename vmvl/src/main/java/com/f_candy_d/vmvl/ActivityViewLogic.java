@@ -1,6 +1,7 @@
 package com.f_candy_d.vmvl;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -62,6 +63,10 @@ abstract public class ActivityViewLogic implements ActivityViewLogicInterface {
 
     protected Window getWindow() {
         return mPartnerActivity.getWindow();
+    }
+
+    protected Resources getResources() {
+        return mPartnerActivity.getResources();
     }
 
     /**
