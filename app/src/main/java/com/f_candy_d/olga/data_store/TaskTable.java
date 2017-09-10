@@ -4,7 +4,6 @@ import android.provider.BaseColumns;
 
 import com.f_candy_d.olga.infra.sqlite.SqliteColumnDataType;
 import com.f_candy_d.olga.infra.sqlite.SqliteTableUtils;
-import com.f_candy_d.olga.structure.TaskType;
 
 import java.util.Calendar;
 
@@ -12,7 +11,7 @@ import java.util.Calendar;
  * Created by daichi on 17/09/03.
  */
 
-public class TaskTableRule implements BaseColumns {
+public class TaskTable implements BaseColumns {
 
     public static final String TABLE_NAME = "task";
 
@@ -39,6 +38,15 @@ public class TaskTableRule implements BaseColumns {
                 .put(_DO_THROUGHOUT_TERM, SqliteColumnDataType.INTEGER, false)
                 .put(_TYPE, SqliteColumnDataType.INTEGER, false);
     }
+
+    /**
+     * Constant values for the column 'type'.
+     * These values are must be the consecutive number.
+     */
+
+    public static final int TYPE_EVENT = 0;
+    public static final int TYPE_REMINDER = 1;
+    public static final int TYPE_TODO = 2;
 
     /**
      * Default values of columns
@@ -68,8 +76,8 @@ public class TaskTableRule implements BaseColumns {
         return false;
     }
 
-    public static TaskType defaultType() {
-        return TaskType.NONE;
+    public static int defaultType() {
+        return -1;
     }
 
     public enum ValidationErrorCode {
@@ -94,8 +102,8 @@ public class TaskTableRule implements BaseColumns {
         return (dateTermStart > dateTermEnd) ? ValidationErrorCode.DATE_ERROR : null;
     }
 
-    public static ValidationErrorCode isTypeValid(TaskType type) {
-        return (type == null || type == TaskType.NONE)
+    public static ValidationErrorCode isTypeValid(int type) {
+        return (type < TYPE_EVENT || TYPE_TODO < type)
                 ? ValidationErrorCode.TYPE_ERROR
                 : null;
     }

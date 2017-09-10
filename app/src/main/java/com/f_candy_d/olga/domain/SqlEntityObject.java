@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.structure;
+package com.f_candy_d.olga.domain;
 
 
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import com.f_candy_d.olga.infra.SqlEntity;
 
 abstract public class SqlEntityObject<E extends Enum<E>> {
 
-    @NonNull private String mTableName;
+    @NonNull private final String mTableName;
     public long id;
 
     SqlEntityObject(@NonNull String tableName) {
@@ -19,12 +19,11 @@ abstract public class SqlEntityObject<E extends Enum<E>> {
     }
 
     @NonNull
-    public String getTableName() {
+    String getTableName() {
         return mTableName;
     }
 
     /**
-     *
      * @return Error codes
      */
     @NonNull
@@ -35,7 +34,7 @@ abstract public class SqlEntityObject<E extends Enum<E>> {
     }
 
     @NonNull
-    abstract public SqlEntity toSqlEntity(boolean includeRowId);
+    abstract SqlEntity toSqlEntity(boolean includeRowId);
 
-    abstract public void constructFromSqlEntity(SqlEntity entity);
+    abstract void constructFromSqlEntity(SqlEntity entity);
 }

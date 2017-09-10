@@ -19,7 +19,7 @@ final public class DbContract {
     public static SqliteTableUtils.TableSource[] getTableSources() {
         return new SqliteTableUtils.TableSource[] {
                 TasksRelationTable.getTableSource(),
-                TaskTableRule.getTableSource()
+                TaskTable.getTableSource()
         };
 
     }
