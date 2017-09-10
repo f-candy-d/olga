@@ -57,7 +57,7 @@ public class TaskTable implements BaseColumns {
     }
 
     public static String defaultTitle() {
-        return "(No Title)";
+        return null;
     }
 
     public static long defaultDateTermStart() {
