@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -134,7 +135,7 @@ public class HomeActivity extends ViewActivity {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
                 title.append(task.title);
-                String text = "by " + AppDataDecoration.formatDatetime(task.dateTermEnd.asCalendar(), HomeActivity.this);
+                String text = "due by " + AppDataDecoration.formatDatetime(task.dateTermEnd.asCalendar(), false);
                 dateLabel.append(text);
             }
         });
@@ -150,15 +151,17 @@ public class HomeActivity extends ViewActivity {
          */
         tasks = mViewModel.getTasksUpcoming();
         adapter = new SimpleTaskAdapter(tasks);
+        adapter.setNoItemMessage(R.string.no_tasks_message_upcoming);
         adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
                 title.append(task.title);
-                dateLabel.append(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), HomeActivity.this));
+                String text = AppDataDecoration.formatTime(task.dateTermStart.asCalendar(), false);
+                dateLabel.append(text);
             }
         });
         header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Upcoming In 24 Hours");
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Upcoming");
         mergeAdapter = new MergeAdapter();
         mergeAdapter.addView(header);
         mergeAdapter.addAdapter(adapter);
@@ -173,11 +176,11 @@ public class HomeActivity extends ViewActivity {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
                 title.append(task.title);
-                dateLabel.append(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), HomeActivity.this));
+                dateLabel.append(AppDataDecoration.formatDatetimeShortly(task.dateTermStart.asCalendar(), false));
             }
         });
         header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Feature");
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Next 6 Days");
         mergeAdapter = new MergeAdapter();
         mergeAdapter.addView(header);
         mergeAdapter.addAdapter(adapter);

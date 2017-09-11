@@ -57,12 +57,6 @@ final public class TaskStreamUseCase extends SqlStreamUseCase {
     }
 
     @NonNull
-    public static ArrayList<Task> getTasksUpcoming(Calendar limitDate) {
-        final long now = Calendar.getInstance().getTimeInMillis();
-        return getTasksStartInTerm(now, limitDate.getTimeInMillis());
-    }
-
-    @NonNull
     public static ArrayList<Task> getTasksNeedToBeRescheduled() {
         final long now = Calendar.getInstance().getTimeInMillis();
         SqlCondExpr where = new SqlCondExpr(TaskTable._DATE_TERM_END).lessThan(now);

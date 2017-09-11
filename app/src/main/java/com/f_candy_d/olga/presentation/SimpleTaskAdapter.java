@@ -126,6 +126,7 @@ public class SimpleTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         EmptyViewHolder(View view) {
             super(view);
+            message = view.findViewById(R.id.empty_item_message);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.f_candy_d.olga;
 
-import android.content.Context;
 import android.text.format.DateFormat;
 
 import com.f_candy_d.dutils.CalendarUtil;
@@ -13,18 +12,28 @@ import java.util.Calendar;
 
 public class AppDataDecoration {
 
-    public static String formatDatetime(Calendar date, Context context) {
-        return formatDate(date, context) + "; " + formatTime(date, context);
+    public static String formatDatetime(Calendar date, boolean use24HourFormat) {
+        return formatDate(date) + " at " + formatTime(date, use24HourFormat);
     }
 
-    public static String formatDate(Calendar date, Context context) {
-        java.text.DateFormat format = DateFormat.getMediumDateFormat(context);
-        return format.format(date.getTime());
+    public static String formatDate(Calendar date) {
+        return DateFormat.format("MMM. dd, yyyy", date).toString();
     }
 
-    public static String formatTime(Calendar time, Context context) {
-        java.text.DateFormat format = DateFormat.getTimeFormat(context);
-        return format.format(time.getTime());
+    public static String formatTime(Calendar time, boolean use24HourFormat) {
+        if (use24HourFormat) {
+            return DateFormat.format("hh:mm", time).toString();
+        } else {
+            return DateFormat.format("hh:mm a", time).toString();
+        }
+    }
+
+    public static String formatDateShortly(Calendar date) {
+        return DateFormat.format("MMM. dd", date).toString();
+    }
+
+    public static String formatDatetimeShortly(Calendar date, boolean use24HourFormat) {
+        return formatDateShortly(date) + " at " + formatTime(date, use24HourFormat);
     }
 
     public static String formatCalendarDiff(Calendar c1, Calendar c2) {

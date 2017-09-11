@@ -123,7 +123,7 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
 
         void bind(Task task) {
             title.setText(task.title);
-            date_label.setText(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), MyApp.getAppContext()));
+            date_label.setText(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), false));
         }
     }
 
