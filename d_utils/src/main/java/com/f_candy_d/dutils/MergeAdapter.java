@@ -16,47 +16,44 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     // Contains View or RecyclerView.Adapter
     // Indexes of this array means ContentIndex
-    private ArrayList<Object> mContents;
-    // Same order as mContents
-    private ArrayList<Boolean> mIsFullSpanFlags;
+    private ArrayList<RecyclerView.Adapter> mContents;
 
     public MergeAdapter() {
         mContents = new ArrayList<>();
-        mIsFullSpanFlags = new ArrayList<>();
     }
 
     public void addView(View view) {
-        addView(mContents.size(), view, false);
+        addView(mContents.size(), view);
     }
 
     public void addView(int index, View view) {
-        addView(index, view, false);
-    }
-
-    public void addView(View view, boolean isFullSpan) {
-        addView(mContents.size(), view, isFullSpan);
-    }
-
-    public void addView(int index, View view, boolean isFullSpan) {
-        mContents.add(index, view);
-        mIsFullSpanFlags.add(isFullSpan);
-    }
-
-    public void addAdapter(RecyclerView.Adapter adapter, boolean isFullSpan) {
-        addAdapter(mContents.size(), adapter, isFullSpan);
-    }
-
-    public void addAdapter(int index, RecyclerView.Adapter adapter, boolean isFullSpan) {
+        SingleViewAdapter adapter = new SingleViewAdapter(view);
         mContents.add(index, adapter);
-        mIsFullSpanFlags.add(isFullSpan);
+    }
+
+    public View getView(int index) {
+        RecyclerView.Adapter adapter = getAdapter(index);
+        if (adapter instanceof SingleViewAdapter) {
+            return ((SingleViewAdapter) adapter).getView();
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public void addAdapter(RecyclerView.Adapter adapter) {
-        addAdapter(mContents.size(), adapter, false);
+        addAdapter(mContents.size(), adapter);
     }
 
     public void addAdapter(int index, RecyclerView.Adapter adapter) {
-        addAdapter(index, adapter, false);
+        mContents.add(index, adapter);
+    }
+
+    public RecyclerView.Adapter getAdapter(int index) {
+        return mContents.get(index);
+    }
+
+    public <T extends RecyclerView.Adapter> T getAdapter(int index, Class<T> adapterClass) {
+        return adapterClass.cast(getAdapter(index));
     }
 
     @Override
@@ -73,20 +70,10 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Object content = mContents.get(getContentIndexOf(viewType));
-        if (content instanceof View) {
-            return new SingleViewHolder((View) content);
-
-        } else if (content instanceof RecyclerView.Adapter) {
-            int contentIndex = getContentIndexOf(viewType);
-            RecyclerView.Adapter adapter = (RecyclerView.Adapter) mContents.get(contentIndex);
-            int localViewType = adapter.getItemViewType(getLocalIndexOf(viewType, contentIndex));
-            return adapter.onCreateViewHolder(parent, localViewType);
-
-        } else {
-            // 'content' must be a object of View or RecyclerView.Adapter
-            throw new IllegalStateException();
-        }
+        int contentIndex = getContentIndexOf(viewType);
+        RecyclerView.Adapter adapter = mContents.get(contentIndex);
+        int localViewType = adapter.getItemViewType(getLocalIndexOf(viewType, contentIndex));
+        return adapter.onCreateViewHolder(parent, localViewType);
     }
 
     /**
@@ -97,21 +84,19 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @SuppressWarnings("unchecked cast")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int contentIndex = getContentIndexOf(position);
-        Object content = mContents.get(contentIndex);
-        if (content instanceof RecyclerView.Adapter) {
-            ((RecyclerView.Adapter) content).onBindViewHolder(holder, getLocalIndexOf(position, contentIndex));
-        }
+        int adpPos = holder.getAdapterPosition();
+        int contentIndex = getContentIndexOf(adpPos);
+        RecyclerView.Adapter content = mContents.get(contentIndex);
+        content.onBindViewHolder(holder, getLocalIndexOf(adpPos, contentIndex));
     }
 
     @SuppressWarnings("unchecked cast")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
-        int contentIndex = getContentIndexOf(position);
-        Object content = mContents.get(contentIndex);
-        if (content instanceof RecyclerView.Adapter) {
-            ((RecyclerView.Adapter) content).onBindViewHolder(holder, getLocalIndexOf(position, contentIndex), payloads);
-        }
+        int adpPos = holder.getAdapterPosition();
+        int contentIndex = getContentIndexOf(adpPos);
+        RecyclerView.Adapter content = mContents.get(contentIndex);
+        content.onBindViewHolder(holder, getLocalIndexOf(adpPos, contentIndex));
     }
 
     @Override
@@ -127,15 +112,8 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      */
     private int getItemCountInRange(int startContentIndex, int endContentIndex) {
         int itemCount = 0;
-        Object content;
         for (int i = startContentIndex; i < endContentIndex; ++i) {
-            content = mContents.get(i);
-
-            if (content instanceof View) {
-                ++itemCount;
-            } else if (content instanceof RecyclerView.Adapter){
-                itemCount += ((RecyclerView.Adapter) content).getItemCount();
-            }
+            itemCount += mContents.get(i).getItemCount();
         }
 
         return itemCount;
@@ -159,15 +137,5 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private int getGlobalIndexOf(int contentIndex, int localIndex) {
         return getItemCountInRange(0, mContents.size()) + localIndex;
-    }
-
-    /**
-     * TaskViewHolder for a single view
-     */
-    private static class SingleViewHolder extends RecyclerView.ViewHolder {
-
-        SingleViewHolder(View view) {
-            super(view);
-        }
     }
 }

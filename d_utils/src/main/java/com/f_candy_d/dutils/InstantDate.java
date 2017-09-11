@@ -127,4 +127,9 @@ public class InstantDate {
     public long getTimeInMillis() {
         return asCalendar().getTimeInMillis();
     }
+
+    @Override
+    public String toString() {
+        return CalendarUtil.formatDatetimeSimply(asCalendar(), false).toString();
+    }
 }

@@ -18,18 +18,18 @@ import java.util.ArrayList;
 public class OuterListAdapter extends RecyclerView.Adapter<OuterListAdapter.OuterListViewHolder> {
 
     private Context mContext;
-    private ArrayList<InnerListAdapter> mAdapters;
+    private ArrayList<RecyclerView.Adapter> mAdapters;
 
     public OuterListAdapter(Context context) {
         mContext = context;
         mAdapters = new ArrayList<>();
     }
 
-    public void addAdapter(InnerListAdapter adapter) {
+    public void addAdapter(RecyclerView.Adapter adapter) {
         mAdapters.add(adapter);
     }
 
-    public void addAdapterAndNotify(InnerListAdapter adapter) {
+    public void addAdapterAndNotify(RecyclerView.Adapter adapter) {
         addAdapter(adapter);
         notifyItemInserted(mAdapters.size() - 1);
     }
@@ -44,7 +44,7 @@ public class OuterListAdapter extends RecyclerView.Adapter<OuterListAdapter.Oute
 
     @Override
     public void onBindViewHolder(OuterListViewHolder holder, int position) {
-        InnerListAdapter innerAdapter = mAdapters.get(position);
+        RecyclerView.Adapter innerAdapter = mAdapters.get(position);
         holder.recyclerView.setAdapter(innerAdapter);
     }
 

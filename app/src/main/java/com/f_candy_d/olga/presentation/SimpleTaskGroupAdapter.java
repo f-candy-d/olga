@@ -59,7 +59,7 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
                 return new HeaderViewHolder(view);
 
             case VIEW_TYPE_ITEM:
-                view = inflater.inflate(R.layout.simple_task_group_adapter_item, parent, false);
+                view = inflater.inflate(R.layout.simple_task_adapter_item, parent, false);
                 return new TaskViewHolder(view);
 
             default:
@@ -123,7 +123,7 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
 
         void bind(Task task) {
             title.setText(task.title);
-            date_label.setText(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), false, MyApp.getAppContext()));
+            date_label.setText(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), MyApp.getAppContext()));
         }
     }
 

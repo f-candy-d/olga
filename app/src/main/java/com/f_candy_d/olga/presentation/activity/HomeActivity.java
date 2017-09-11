@@ -9,14 +9,21 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.f_candy_d.dutils.CalendarUtil;
+import com.f_candy_d.dutils.MergeAdapter;
+import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
+import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskGroupAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
@@ -24,11 +31,13 @@ import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class HomeActivity extends ViewActivity {
 
     private HomeViewModel mViewModel;
     private OuterListAdapter mAdapter;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -59,7 +68,7 @@ public class HomeActivity extends ViewActivity {
         });
 
         final float density = getResources().getDisplayMetrics().density;
-        final int itemSideSpace = (int) (16 * density);
+        final int itemSideSpace = (int) (12 * density);
         final int itemGroupTopSpace = (int) (8 * density);
         final int itemGroupBottomSpace = (int) (4 * density);
 
@@ -80,46 +89,101 @@ public class HomeActivity extends ViewActivity {
                     }
                 });
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addItemDecoration(spacerItemDecoration);
+
         mAdapter = new OuterListAdapter(this);
-        initAdapter();
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-//        LayoutInflater inflater = getLayoutInflater();
-//        View entryPointCard = inflater.inflate(R.layout.entry_point_card, recyclerView, false);
-//
-//        MergeAdapter mergeAdapter = new MergeAdapter();
-////        mergeAdapter.addView(entryPointCard);
-//        mergeAdapter.addAdapter(mAdapter);
-
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addItemDecoration(spacerItemDecoration);
+        initAdapter(mRecyclerView);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void initAdapter() {
+    private void initAdapter(RecyclerView recyclerView) {
         mAdapter.removeAll();
-        SimpleTaskGroupAdapter adapter;
+        MergeAdapter mergeAdapter;
+        SimpleTaskAdapter adapter;
         ArrayList<Task> tasks;
+        LayoutInflater inflater = getLayoutInflater();
+        View header;
 
+        /**
+         * Tasks needs to be rescheduled
+         */
         tasks = mViewModel.getTasksNeedToBeRescheduled();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("Needs To Be Rescheduled");
-        mAdapter.addAdapter(adapter);
+        adapter = new SimpleTaskAdapter(tasks);
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                Calendar now = Calendar.getInstance();
+                String diff = AppDataDecoration.formatCalendarDiff(now, task.dateTermEnd.asCalendar());
+                dateLabel.append(diff.concat(" ago"));
+            }
+        });
+        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Needs To Be Rescheduled");
+        mergeAdapter = new MergeAdapter();
+        mergeAdapter.addView(header);
+        mergeAdapter.addAdapter(adapter);
+        mAdapter.addAdapter(mergeAdapter);
 
+        /**
+         * Tasks in process
+         */
         tasks = mViewModel.getTasksInProcess();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("Now");
-        mAdapter.addAdapter(adapter);
+        adapter = new SimpleTaskAdapter(tasks);
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                String text = "by " + AppDataDecoration.formatDatetime(task.dateTermEnd.asCalendar(), HomeActivity.this);
+                dateLabel.append(text);
+            }
+        });
+        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Now");
+        mergeAdapter = new MergeAdapter();
+        mergeAdapter.addView(header);
+        mergeAdapter.addAdapter(adapter);
+        mAdapter.addAdapter(mergeAdapter);
 
+        /**
+         * Upcoming tasks
+         */
         tasks = mViewModel.getTasksUpcoming();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("Upcoming In 24 Hours");
-        mAdapter.addAdapter(adapter);
+        adapter = new SimpleTaskAdapter(tasks);
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                dateLabel.append(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), HomeActivity.this));
+            }
+        });
+        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Upcoming In 24 Hours");
+        mergeAdapter = new MergeAdapter();
+        mergeAdapter.addView(header);
+        mergeAdapter.addAdapter(adapter);
+        mAdapter.addAdapter(mergeAdapter);
 
+        /**
+         * Feature tasks
+         */
         tasks = mViewModel.getTasksInFeature();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("In Feature");
-        mAdapter.addAdapter(adapter);
+        adapter = new SimpleTaskAdapter(tasks);
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                dateLabel.append(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), HomeActivity.this));
+            }
+        });
+        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("In Feature");
+        mergeAdapter = new MergeAdapter();
+        mergeAdapter.addView(header);
+        mergeAdapter.addAdapter(adapter);
+        mAdapter.addAdapter(mergeAdapter);
     }
 
     @Override
@@ -150,7 +214,7 @@ public class HomeActivity extends ViewActivity {
     }
 
     private void refresh() {
-        initAdapter();
+        initAdapter(mRecyclerView);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -160,5 +224,4 @@ public class HomeActivity extends ViewActivity {
         dialog.setContentView(sheetView);
         dialog.show();
     }
-
 }
