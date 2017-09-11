@@ -11,6 +11,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:text="show more"
+        android:id="@+id/show_more_button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:textColor="@color/colorPrimary"/>
 
