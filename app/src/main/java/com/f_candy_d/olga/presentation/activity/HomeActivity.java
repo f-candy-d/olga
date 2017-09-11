@@ -30,6 +30,7 @@ public class HomeActivity extends ViewActivity
         implements WhatAddDialogFragment.OnSelectionChosenListener {
 
     private HomeViewModel mViewModel;
+    private OuterListAdapter mAdapter;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -58,52 +59,24 @@ public class HomeActivity extends ViewActivity
             }
         });
 
-        OuterListAdapter outerListAdapter = new OuterListAdapter(this);
-        SimpleTaskGroupAdapter adapter;
-        ArrayList<Task> tasks;
-
-        tasks = mViewModel.getAllTasks();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("All");
-        outerListAdapter.addAdapter(adapter);
-
-        tasks = mViewModel.getTasksNeedToBeRescheduled();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("Needs To Be Rescheduled");
-        outerListAdapter.addAdapter(adapter);
-
-        tasks = mViewModel.getTasksInProcess();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("Now");
-        outerListAdapter.addAdapter(adapter);
-
-        tasks = mViewModel.getTasksUpcoming();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("Upcoming In 24 Hours");
-        outerListAdapter.addAdapter(adapter);
-
-        tasks = mViewModel.getTasksInFeature();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("In Feature");
-        outerListAdapter.addAdapter(adapter);
-
         final float density = getResources().getDisplayMetrics().density;
         final int itemSideSpace = (int) (16 * density);
         final int itemGroupTopSpace = (int) (8 * density);
-        final int itemGroupBottomSpace = (int) (8 * density);
+        final int itemGroupBottomSpace = (int) (4 * density);
 
         SpacerItemDecoration spacerItemDecoration =
                 new SpacerItemDecoration(this, new SpacerItemDecoration.Callback() {
                     @Override
                     public void getInsertedSpaceAroundItem(int adapterPosition, Rect output) {
+
                         if (adapterPosition == 0) {
-                            output.top = itemGroupTopSpace * 10;
+                            output.top = itemGroupTopSpace * 8;
                         } else {
                             output.top = itemGroupTopSpace;
                         }
 
-                        if (adapterPosition == 10 - 1) {
-                            output.bottom = itemGroupBottomSpace * 4;
+                        if (adapterPosition == 5 - 1) {
+                            output.bottom = itemGroupBottomSpace * 6;
                         } else {
                             output.bottom = itemGroupBottomSpace;
                         }
@@ -113,10 +86,51 @@ public class HomeActivity extends ViewActivity
                     }
                 });
 
+        mAdapter = new OuterListAdapter(this);
+        initAdapter();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(outerListAdapter);
+
+//        LayoutInflater inflater = getLayoutInflater();
+//        View entryPointCard = inflater.inflate(R.layout.entry_point_card, recyclerView, false);
+//
+//        MergeAdapter mergeAdapter = new MergeAdapter();
+////        mergeAdapter.addView(entryPointCard);
+//        mergeAdapter.addAdapter(mAdapter);
+
+        recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(spacerItemDecoration);
+    }
+
+    private void initAdapter() {
+        mAdapter.removeAll();
+        SimpleTaskGroupAdapter adapter;
+        ArrayList<Task> tasks;
+
+        tasks = mViewModel.getAllTasks();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("All");
+        mAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksNeedToBeRescheduled();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("Needs To Be Rescheduled");
+        mAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksInProcess();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("Now");
+        mAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksUpcoming();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("Upcoming In 24 Hours");
+        mAdapter.addAdapter(adapter);
+
+        tasks = mViewModel.getTasksInFeature();
+        adapter = new SimpleTaskGroupAdapter(tasks);
+        adapter.setHeaderTitle("In Feature");
+        mAdapter.addAdapter(adapter);
     }
 
     @Override
@@ -138,6 +152,17 @@ public class HomeActivity extends ViewActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        refresh();
+    }
+
+    private void refresh() {
+        initAdapter();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**

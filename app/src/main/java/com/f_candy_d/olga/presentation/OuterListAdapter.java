@@ -53,6 +53,10 @@ public class OuterListAdapter extends RecyclerView.Adapter<OuterListAdapter.Oute
         return mAdapters.size();
     }
 
+    public void removeAll() {
+        mAdapters.clear();
+    }
+
     static final class OuterListViewHolder extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
