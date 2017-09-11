@@ -16,12 +16,12 @@ import java.util.Calendar;
 
 public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
 
-    String title;
-    InstantDate dateTermStart;
-    InstantDate dateTermEnd;
-    boolean isDone;
-    boolean doThroughoutTerm;
-    int type;
+    public String title;
+    public InstantDate dateTermStart;
+    public InstantDate dateTermEnd;
+    public boolean isDone;
+    public boolean doThroughoutTerm;
+    public int type;
 
     public Task() {
         super(TaskTable.TABLE_NAME);

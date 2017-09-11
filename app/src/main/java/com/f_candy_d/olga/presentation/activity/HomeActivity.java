@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,15 +19,13 @@ import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskGroupAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
-import com.f_candy_d.olga.presentation.dialog.WhatAddDialogFragment;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends ViewActivity
-        implements WhatAddDialogFragment.OnSelectionChosenListener {
+public class HomeActivity extends ViewActivity {
 
     private HomeViewModel mViewModel;
     private OuterListAdapter mAdapter;
@@ -53,9 +51,10 @@ public class HomeActivity extends ViewActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WhatAddDialogFragment dialog = new WhatAddDialogFragment();
-                dialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-                dialog.show(getSupportFragmentManager(), null);
+//                WhatAddDialogFragment dialog = new WhatAddDialogFragment();
+//                dialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+//                dialog.show(getSupportFragmentManager(), null);
+                showWhatAddBottomSheetDialog();
             }
         });
 
@@ -69,18 +68,13 @@ public class HomeActivity extends ViewActivity
                     @Override
                     public void getInsertedSpaceAroundItem(int adapterPosition, Rect output) {
 
-                        if (adapterPosition == 0) {
-                            output.top = itemGroupTopSpace * 8;
-                        } else {
-                            output.top = itemGroupTopSpace;
-                        }
-
-                        if (adapterPosition == 5 - 1) {
+                        if (adapterPosition == 4 - 1) {
                             output.bottom = itemGroupBottomSpace * 6;
                         } else {
                             output.bottom = itemGroupBottomSpace;
                         }
 
+                        output.top = itemGroupTopSpace;
                         output.left = itemSideSpace;
                         output.right = itemSideSpace;
                     }
@@ -106,11 +100,6 @@ public class HomeActivity extends ViewActivity
         mAdapter.removeAll();
         SimpleTaskGroupAdapter adapter;
         ArrayList<Task> tasks;
-
-        tasks = mViewModel.getAllTasks();
-        adapter = new SimpleTaskGroupAdapter(tasks);
-        adapter.setHeaderTitle("All");
-        mAdapter.addAdapter(adapter);
 
         tasks = mViewModel.getTasksNeedToBeRescheduled();
         adapter = new SimpleTaskGroupAdapter(tasks);
@@ -165,22 +154,11 @@ public class HomeActivity extends ViewActivity
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * region; WhatAddDialogFragment.OnSelectionChosenListener implementation
-     */
-
-    @Override
-    public void onSelectionChosen(WhatAddDialogFragment.Selection selection, WhatAddDialogFragment dialogFragment) {
-        switch (selection) {
-            case ADD_EVENT:
-                Intent intent = new Intent(this, EventFormActivity.class);
-                startActivityForResult(111, intent, new OnResultListener() {
-                    @Override
-                    public void onResult(int resultCode, @Nullable Bundle data) {
-                        Log.d("mylog", "returned -> ");
-                    }
-                });
-        }
+    private void showWhatAddBottomSheetDialog() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View sheetView = getLayoutInflater().inflate(R.layout.fragment_what_add_dialog, null);
+        dialog.setContentView(sheetView);
+        dialog.show();
     }
 
 }

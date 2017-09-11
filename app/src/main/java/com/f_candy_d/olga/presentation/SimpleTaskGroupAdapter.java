@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.f_candy_d.olga.AppDataDecoration;
+import com.f_candy_d.olga.MyApp;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
 
@@ -75,7 +77,8 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
 
             case VIEW_TYPE_ITEM: {
                 TaskViewHolder h = (TaskViewHolder) holder;
-                h.title.setText(mTasks.get(getPositionOffsetFromFirstItem(position)).toSummary());
+                Task task = mTasks.get(getPositionOffsetFromFirstItem(position));
+                h.bind(task);
             }
         }
     }
@@ -110,10 +113,17 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
     private static class TaskViewHolder extends RecyclerView.ViewHolder {
 
         TextView title;
+        TextView date_label;
 
-        public TaskViewHolder(View view) {
+        TaskViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.simple_task_adapter_task_item_title);
+            date_label = view.findViewById(R.id.date_label);
+        }
+
+        void bind(Task task) {
+            title.setText(task.title);
+            date_label.setText(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), false, MyApp.getAppContext()));
         }
     }
 
@@ -121,7 +131,7 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
 
         TextView title;
 
-        public HeaderViewHolder(View view) {
+        HeaderViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.simple_task_adapter_header_title);
         }
