@@ -55,11 +55,11 @@ public class SimpleTaskGroupAdapter extends InnerListAdapter<RecyclerView.ViewHo
 
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                view = inflater.inflate(R.layout.simple_task_group_adapter_header, parent, false);
+                view = inflater.inflate(R.layout.item_header_basic, parent, false);
                 return new HeaderViewHolder(view);
 
             case VIEW_TYPE_ITEM:
-                view = inflater.inflate(R.layout.simple_task_adapter_item, parent, false);
+                view = inflater.inflate(R.layout.item_simple_task_adapter, parent, false);
                 return new TaskViewHolder(view);
 
             default:

@@ -36,7 +36,7 @@ public class SimpleTaskAdapter extends RecyclerView.Adapter<SimpleTaskAdapter.Si
     @Override
     public SimpleTaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.simple_task_adapter_item, parent, false);
+                .inflate(R.layout.item_simple_task_adapter, parent, false);
 
         return new SimpleTaskViewHolder(view);
     }

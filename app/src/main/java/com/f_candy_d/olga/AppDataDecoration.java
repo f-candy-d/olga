@@ -14,7 +14,7 @@ import java.util.Calendar;
 public class AppDataDecoration {
 
     public static String formatDatetime(Calendar date, Context context) {
-        return formatDate(date, context) + ", " + formatTime(date, context);
+        return formatDate(date, context) + "; " + formatTime(date, context);
     }
 
     public static String formatDate(Calendar date, Context context) {

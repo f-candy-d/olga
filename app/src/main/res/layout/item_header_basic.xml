@@ -14,7 +14,8 @@
         android:text="Morning"
         android:textColor="@color/colorAccent"
         android:layout_marginLeft="24dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="14sp"/>
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="22dp"
+        android:textSize="17sp"/>
 
 </RelativeLayout>

@@ -9,22 +9,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.f_candy_d.dutils.CalendarUtil;
 import com.f_candy_d.dutils.MergeAdapter;
 import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
-import com.f_candy_d.olga.presentation.SimpleTaskGroupAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
@@ -60,9 +56,6 @@ public class HomeActivity extends ViewActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                WhatAddDialogFragment dialog = new WhatAddDialogFragment();
-//                dialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-//                dialog.show(getSupportFragmentManager(), null);
                 showWhatAddBottomSheetDialog();
             }
         });
@@ -83,7 +76,12 @@ public class HomeActivity extends ViewActivity {
                             output.bottom = itemGroupBottomSpace;
                         }
 
-                        output.top = itemGroupTopSpace;
+                        if (adapterPosition == 0) {
+                            output.top = itemGroupTopSpace * 8;
+                        } else {
+                            output.top = itemGroupTopSpace;
+                        }
+
                         output.left = itemSideSpace;
                         output.right = itemSideSpace;
                     }
@@ -120,8 +118,8 @@ public class HomeActivity extends ViewActivity {
                 dateLabel.append(diff.concat(" ago"));
             }
         });
-        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Needs To Be Rescheduled");
+        header = inflater.inflate(R.layout.item_header_with_done_all_button, recyclerView, false);
+        ((TextView) header.findViewById(R.id.header_title)).setText("Needs To Be Rescheduled");
         mergeAdapter = new MergeAdapter();
         mergeAdapter.addView(header);
         mergeAdapter.addAdapter(adapter);
@@ -140,7 +138,7 @@ public class HomeActivity extends ViewActivity {
                 dateLabel.append(text);
             }
         });
-        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
+        header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
         ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Now");
         mergeAdapter = new MergeAdapter();
         mergeAdapter.addView(header);
@@ -159,7 +157,7 @@ public class HomeActivity extends ViewActivity {
                 dateLabel.append(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), HomeActivity.this));
             }
         });
-        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
+        header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
         ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Upcoming In 24 Hours");
         mergeAdapter = new MergeAdapter();
         mergeAdapter.addView(header);
@@ -178,11 +176,14 @@ public class HomeActivity extends ViewActivity {
                 dateLabel.append(AppDataDecoration.formatDatetime(task.dateTermStart.asCalendar(), HomeActivity.this));
             }
         });
-        header = inflater.inflate(R.layout.simple_task_group_adapter_header, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("In Feature");
+        header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
+        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Feature");
         mergeAdapter = new MergeAdapter();
         mergeAdapter.addView(header);
         mergeAdapter.addAdapter(adapter);
+        // Footer
+        header = inflater.inflate(R.layout.item_show_more_button, recyclerView, false);
+        mergeAdapter.addView(header);
         mAdapter.addAdapter(mergeAdapter);
     }
 
