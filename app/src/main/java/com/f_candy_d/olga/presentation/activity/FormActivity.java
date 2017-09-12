@@ -134,7 +134,7 @@ public class FormActivity extends ViewActivity
     }
 
     @Override
-    public void onAbnormalFinish() {
+    public void onAbnormalFinish(String message) {
 
     }
 
@@ -144,6 +144,7 @@ public class FormActivity extends ViewActivity
 
     @Override
     public void onUserInputData(Bundle data, String fragmentTag) {
-        mViewModel.onDataInput(data, fragmentTag);
+        String[] errors = mViewModel.onDataInput(data, fragmentTag);
+        // TODO; Show error messages.
     }
 }

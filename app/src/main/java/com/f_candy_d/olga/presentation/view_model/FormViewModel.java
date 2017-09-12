@@ -22,7 +22,7 @@ abstract public class FormViewModel extends ActivityViewModel {
      */
     public interface RequestReplyListener {
         void onNormalFinish(long contentId);
-        void onAbnormalFinish();
+        void onAbnormalFinish(String message);
     }
 
     private RequestReplyListener mRequestReplyListener;
@@ -61,7 +61,7 @@ abstract public class FormViewModel extends ActivityViewModel {
             if (idResult != DbContract.NULL_ID) {
                 mRequestReplyListener.onNormalFinish(idResult);
             } else {
-                mRequestReplyListener.onAbnormalFinish();
+                mRequestReplyListener.onAbnormalFinish("ERROR! #Sorry, failed to save data...");
             }
             return null;
 
