@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +56,7 @@ public class HomeActivity extends ViewActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showWhatAddBottomSheetDialog();
+                showAddTaskBottomSheetDialog();
             }
         });
 
@@ -222,9 +221,19 @@ public class HomeActivity extends ViewActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private void showWhatAddBottomSheetDialog() {
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
-        View sheetView = getLayoutInflater().inflate(R.layout.fragment_what_add_dialog, null);
+    private void showAddTaskBottomSheetDialog() {
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View sheetView = getLayoutInflater().inflate(R.layout.what_add_dialog, null);
+
+        sheetView.findViewById(R.id.add_event).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, FormActivity.class);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
         dialog.setContentView(sheetView);
         dialog.show();
     }
