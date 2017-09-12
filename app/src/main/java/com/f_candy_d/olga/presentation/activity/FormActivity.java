@@ -1,22 +1,24 @@
 package com.f_candy_d.olga.presentation.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.TableLayout;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.data_store.DbContract;
-import com.f_candy_d.olga.presentation.fragment.DateFormFragment;
 import com.f_candy_d.olga.presentation.fragment.FormFragment;
 import com.f_candy_d.olga.presentation.view_model.FormViewModel;
 import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
@@ -32,6 +34,7 @@ public class FormActivity extends ViewActivity
     public static final String EXTRA_MODEL = "model";
 
     private FormViewModel mViewModel;
+    private int mPrevPagerPosition;
 
     public static Bundle makeExtras(FormViewModelFactory.Model model) {
         return makeExtras(DbContract.NULL_ID, model);
@@ -90,6 +93,19 @@ public class FormActivity extends ViewActivity
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        final TextSwitcher titleSwitcher = (TextSwitcher) findViewById(R.id.title_switcher);
+        titleSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView title = new TextView(FormActivity.this);
+                title.setGravity(Gravity.CENTER_VERTICAL);
+                title.setTextAppearance(FormActivity.this, R.style.TitleTextAppearance);
+                TextSwitcher.LayoutParams layoutParams = new TextSwitcher.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                title.setLayoutParams(layoutParams);
+                return title;
+            }
+        });
 
         final FormFragment[] formFragments = mViewModel.getFormFragments().toArray(new FormFragment[]{});
 
@@ -108,9 +124,59 @@ public class FormActivity extends ViewActivity
         viewPager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(viewPager);
 
+        if (0 < formFragments.length) {
+            // initial position
+            mPrevPagerPosition = 0;
+            int currentPosition = mPrevPagerPosition;
+            titleSwitcher.setText(formFragments[currentPosition].getTitle());
+            viewPager.setCurrentItem(currentPosition);
+        }
+
         for (int i = 0; i < formFragments.length; ++i) {
             tabs.getTabAt(i).setIcon(formFragments[i].getIcon());
         }
+
+        /**
+         * See {@link https://github.com/pjambo/ToolbarTitleAnimation/blob/master/app/src/main/java/com/jambo/example/toolbartitleanimation/PagerActivity.java}
+         *
+         * Set IN an OUT animation for the {@link ToolBar} title
+         * ({@link TextSwitcher} in this case) when pager is swiped to the left
+         */
+        final Animation IN_SWIPE_BACKWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_top);
+        final Animation OUT_SWIPE_BACKWARD = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
+
+        /**
+         * Set IN an OUT animation for the {@link ToolBar} title
+         * ({@link TextSwitcher} in this case) when pager is swiped to the right
+         */
+        final Animation IN_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
+        final Animation OUT_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_out_top);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position >= mPrevPagerPosition) {
+                    titleSwitcher.setInAnimation(IN_SWIPE_FORWARD);
+                    titleSwitcher.setOutAnimation(OUT_SWIPE_FORWARD);
+                } else {
+                    titleSwitcher.setInAnimation(IN_SWIPE_BACKWARD);
+                    titleSwitcher.setOutAnimation(OUT_SWIPE_BACKWARD);
+                }
+
+                titleSwitcher.setText(formFragments[position].getTitle());
+                mPrevPagerPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
