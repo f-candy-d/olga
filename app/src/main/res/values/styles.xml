@@ -28,4 +28,16 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="SubAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/color_set_1_primary</item>
+        <item name="colorPrimaryDark">@color/color_set_1_dark</item>
+        <item name="colorAccent">@color/color_set_1_accent</item>
+        <item name="android:statusBarColor">@color/color_set_1_dark</item>
+    </style>
+
+    <style name="SubAppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

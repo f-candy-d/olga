@@ -22,6 +22,7 @@ import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
+import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
@@ -228,7 +229,9 @@ public class HomeActivity extends ViewActivity {
         sheetView.findViewById(R.id.add_event).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle extras = FormActivity.makeExtras(FormViewModelFactory.Model.EVENT_FORM);
                 Intent intent = new Intent(HomeActivity.this, FormActivity.class);
+                intent.putExtras(extras);
                 startActivity(intent);
                 dialog.dismiss();
             }

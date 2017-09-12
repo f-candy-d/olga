@@ -1,5 +1,6 @@
 package com.f_candy_d.olga.presentation.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -14,16 +15,52 @@ import android.view.View;
 import android.widget.TableLayout;
 
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.presentation.fragment.DateFormFragment;
+import com.f_candy_d.olga.presentation.fragment.FormFragment;
 import com.f_candy_d.olga.presentation.view_model.FormViewModel;
+import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
-public class FormActivity extends ViewActivity {
+public class FormActivity extends ViewActivity
+        implements
+        FormViewModel.RequestReplyListener,
+        FormFragment.OnDataInputListener {
+
+    public static final String EXTRA_CONTENT_ID = "contentId";
+    public static final String EXTRA_MODEL = "model";
+
+    private FormViewModel mViewModel;
+
+    public static Bundle makeExtras(FormViewModelFactory.Model model) {
+        return makeExtras(DbContract.NULL_ID, model);
+    }
+
+    public static Bundle makeExtras(long contentId, FormViewModelFactory.Model model) {
+        if (model == null) {
+            throw new NullPointerException("Specify a ViewModel type!");
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putLong(EXTRA_CONTENT_ID, contentId);
+        bundle.putParcelable(EXTRA_MODEL, model);
+
+        return bundle;
+    }
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
-        return new FormViewModel(this);
+        Bundle bundle = getIntent().getExtras();
+        long contentId = bundle.getLong(EXTRA_CONTENT_ID, DbContract.NULL_ID);
+        FormViewModelFactory.Model model = bundle.getParcelable(EXTRA_MODEL);
+        mViewModel = FormViewModelFactory.create(model, this, this, contentId);
+
+        if (mViewModel == null) {
+            throw new NullPointerException("Specify a ViewModel type!");
+        }
+
+        return mViewModel;
     }
 
     @Override
@@ -38,51 +75,75 @@ public class FormActivity extends ViewActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.fab);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                String[] errors = mViewModel.onRequestFinish();
+                if (errors.length != 0) {
+                    Snackbar.make(view, "There are some errors!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
             }
         });
 
-        TabLayout tabBar = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
-        final String[] pageTitle = new String[] {
-                "Date",
-                "Repeat",
-                "Note"
-        };
+        final FormFragment[] formFragments = mViewModel.getFormFragments().toArray(new FormFragment[]{});
 
         FragmentPagerAdapter pagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return new DateFormFragment();
+                return formFragments[position];
             }
 
             @Override
             public int getCount() {
-                return 7;
+                return formFragments.length;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return formFragments[position].getTitle();
             }
         };
 
         viewPager.setAdapter(pagerAdapter);
-        tabBar.setupWithViewPager(viewPager);
+        tabs.setupWithViewPager(viewPager);
 
-        tabBar.getTabAt(0).setIcon(R.drawable.ic_check);
-        tabBar.getTabAt(1).setIcon(R.drawable.ic_event);
-        tabBar.getTabAt(2).setIcon(R.drawable.ic_flight);
-        tabBar.getTabAt(3).setIcon(R.drawable.ic_check);
-        tabBar.getTabAt(4).setIcon(R.drawable.ic_event);
-        tabBar.getTabAt(5).setIcon(R.drawable.ic_flight);
-        tabBar.getTabAt(6).setIcon(R.drawable.ic_flight);
+        for (int i = 0; i < formFragments.length; ++i) {
+            tabs.getTabAt(i).setIcon(formFragments[i].getIcon());
+        }
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    /**
+     * region; implements FormViewModel.RequestReplyListener implementation
+     */
+
+    @Override
+    public void onNormalFinish(long contentId) {
+
+    }
+
+    @Override
+    public void onAbnormalFinish() {
+
+    }
+
+    /**
+     * region; FormFragment.OnDataInputListener implementation
+     */
+
+    @Override
+    public void onUserInputData(Bundle data, String fragmentTag) {
+        mViewModel.onDataInput(data, fragmentTag);
     }
 }

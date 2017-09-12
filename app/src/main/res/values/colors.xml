@@ -5,4 +5,12 @@
     <color name="colorAccent">#FFC400</color>
     <color name="google_material_icon_gray">#757575</color>
     <color name="event_theme_color">#388E3C</color>
+
+    <!--<color name="color_set_1_primary">#8acfa3</color>-->
+    <!--<color name="color_set_1_dark">#66c196</color>-->
+    <!--<color name="color_set_1_accent">#8593d0</color>-->
+    <color name="color_set_1_primary">#8593d0</color>
+    <color name="color_set_1_dark">#7382ca</color>
+    <color name="color_set_1_accent">#66c196</color>
+
 </resources>

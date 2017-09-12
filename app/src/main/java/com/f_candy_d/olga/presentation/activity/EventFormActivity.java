@@ -15,14 +15,14 @@ import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.presentation.dialog.DatePickerDialogFragment;
 import com.f_candy_d.olga.presentation.dialog.TimePickerDialogFragment;
-import com.f_candy_d.olga.presentation.view_model.EventFormViewModel;
+import com.f_candy_d.olga.presentation.view_model.OLDEventFormViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
 public class EventFormActivity extends ViewActivity
         implements DatePickerDialogFragment.NoticeDateSetListener,
         TimePickerDialogFragment.NoticeTimeSetListener,
-        EventFormViewModel.RequestReplyListener {
+        OLDEventFormViewModel.RequestReplyListener {
 
     private static final int START_DATE_PICKER = 0;
     private static final int END_DATE_PICKER = 1;
@@ -40,16 +40,16 @@ public class EventFormActivity extends ViewActivity
     private Button mEndTimeButton;
 
     // Misc
-    private EventFormViewModel mViewModel;
+    private OLDEventFormViewModel mViewModel;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             long id = extras.getLong(EXTRA_TASK_ID, DbContract.NULL_ID);
-            mViewModel = new EventFormViewModel(this, this, id);
+            mViewModel = new OLDEventFormViewModel(this, this, id);
         } else {
-            mViewModel = new EventFormViewModel(this, this, DbContract.NULL_ID);
+            mViewModel = new OLDEventFormViewModel(this, this, DbContract.NULL_ID);
         }
 
         return mViewModel;
@@ -142,7 +142,7 @@ public class EventFormActivity extends ViewActivity
     }
 
     /**
-     * EventFormViewModel.RequestReplyListener implementation
+     * OLDEventFormViewModel.RequestReplyListener implementation
      */
 
     @Override

@@ -4,7 +4,7 @@
              android:layout_height="wrap_content"
             android:orientation="vertical"
             android:fillViewport="true"
-            android:background="@color/colorPrimary"
+            android:background="@color/color_set_1_primary"
              tools:context="com.f_candy_d.olga.presentation.fragment.DateFormFragment">
 
     <LinearLayout
