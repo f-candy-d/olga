@@ -1,6 +1,7 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -152,6 +153,8 @@ public class FormActivity extends ViewActivity
         final Animation IN_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
         final Animation OUT_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_out_top);
 
+        final AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -160,6 +163,8 @@ public class FormActivity extends ViewActivity
 
             @Override
             public void onPageSelected(int position) {
+                appBarLayout.setExpanded(true, true);
+
                 if (position >= mPrevPagerPosition) {
                     titleSwitcher.setInAnimation(IN_SWIPE_FORWARD);
                     titleSwitcher.setOutAnimation(OUT_SWIPE_FORWARD);

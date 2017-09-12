@@ -8,7 +8,7 @@
     tools:context="com.f_candy_d.olga.presentation.activity.FormActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="112dp"
         android:fitsSystemWindows="true"
