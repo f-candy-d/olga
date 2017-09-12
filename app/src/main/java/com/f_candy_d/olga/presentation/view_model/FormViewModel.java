@@ -54,6 +54,7 @@ abstract public class FormViewModel extends ActivityViewModel {
      * 2b. If there are any errors...
      *     -> Return error messages.
      */
+    @Nullable
     public String[] onRequestFinish() {
         String[] errors = isContentValid();
         if (errors == null || errors.length == 0) {

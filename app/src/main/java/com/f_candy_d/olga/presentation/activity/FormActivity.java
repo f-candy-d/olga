@@ -80,7 +80,7 @@ public class FormActivity extends ViewActivity
             @Override
             public void onClick(View view) {
                 String[] errors = mViewModel.onRequestFinish();
-                if (errors.length != 0) {
+                if (errors != null && errors.length != 0) {
                     Snackbar.make(view, "There are some errors!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
@@ -102,11 +102,6 @@ public class FormActivity extends ViewActivity
             @Override
             public int getCount() {
                 return formFragments.length;
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return formFragments[position].getTitle();
             }
         };
 
