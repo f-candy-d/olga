@@ -47,7 +47,7 @@ public class FormActivity extends ViewActivity {
             }
         });
 
-        TabLayout tabBar = (TabLayout) findViewById(R.id.tab_bar);
+        TabLayout tabBar = (TabLayout) findViewById(R.id.tabs);
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         final String[] pageTitle = new String[] {
