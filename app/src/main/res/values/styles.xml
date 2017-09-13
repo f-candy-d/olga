@@ -46,4 +46,9 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="EditTextErrorMessageAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/color_cream_orange_2</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

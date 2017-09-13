@@ -29,7 +29,7 @@ public class EventFormViewModel extends TaskFormViewModel {
     @Override
     public ArrayList<FormFragment> getFormFragments() {
         ArrayList<FormFragment> fragments = new ArrayList<>();
-        fragments.add(SummaryFormFragment.newInstance());
+        fragments.add(SummaryFormFragment.newInstance(mBuffer.getTitle(), null));
         fragments.add(DateFormFragment.newInstance());
         return fragments;
     }

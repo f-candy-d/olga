@@ -9,8 +9,41 @@
     <!--<color name="color_set_1_primary">#8acfa3</color>-->
     <!--<color name="color_set_1_dark">#66c196</color>-->
     <!--<color name="color_set_1_accent">#8593d0</color>-->
-    <color name="color_set_1_primary">#8593d0</color>
-    <color name="color_set_1_dark">#7382ca</color>
-    <color name="color_set_1_accent">#66c196</color>
+    <color name="color_set_1_primary">#008979</color>
+    <color name="color_set_1_dark">#008474</color>
+    <color name="color_set_1_accent">#f4b214</color>
+
+    <color name="color_cream_green_light">#7dc796</color>
+    <color name="color_cream_green">#5abb88</color>
+    <color name="color_cream_blue">#7484bf</color>
+    <color name="color_cream_blue_light">#7989c7</color>
+    <color name="color_orange_dark">#bf360c</color>
+    <color name="color_cream_orange">#f56d40</color>
+    <color name="color_cream_orange_light">#ff7143</color>
+    <color name="color_teal_dark">#008474</color>
+    <color name="color_teal">#008979</color>
+    <color name="color_yellow">#f4b214</color>
+    <color name="color_blue_dark">#2952aa</color>
+    <color name="color_blue">#3367d5</color>
+    <color name="color_gray_dark">#889fa4</color>
+    <color name="color_gray">#8ea5ab</color>
+    <color name="color_blue_gray">#607c88</color>
+    <color name="color_cream_orange_2">#fd6f49</color>
+    <color name="color_white_orange_dark">#f5d5ae</color>
+    <color name="color_white_orange">#ffdeb5</color>
+    <color name="color_teal_2">#329f9c</color>
+    <color name="color_green_yellow">#becc31</color>
+    <color name="color_teal_more_dark">#004e50</color>
+    <color name="color_teal_light">#26a699</color>
+    <color name="color_teal_little_dark">#006164</color>
+    <color name="color_cream_teal">#7dcecf</color>
+    <color name="color_purple_dark">#4e0570</color>
+    <color name="color_cream_red">#ec5453</color>
+    <color name="color_cream_red_light">#fc714a</color>
+    <color name="color_cream_yellow_dark">#f5d481</color>
+    <color name="color_cream_yellow">#ffdd86</color>
+    <color name="color_green_dark">#0d9855</color>
+    <color name="color_green">#0e9e58</color>
+    <color name="color_yellow_light">#fad52f</color>
 
 </resources>
