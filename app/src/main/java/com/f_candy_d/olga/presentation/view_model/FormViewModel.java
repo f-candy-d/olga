@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v4.util.Pair;
 
 import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.presentation.fragment.FormFragment;
@@ -39,10 +41,10 @@ abstract public class FormViewModel extends ActivityViewModel {
     abstract public ArrayList<FormFragment> getFormFragments();
 
     /**
-     * @return Error messages if any data is invalid, null otherwise.
+     * @return Array of pairs of error-code & error-message if any data is invalid, null otherwise.
      */
     @Nullable
-    abstract public String[] onDataInput(Bundle data, String fragmentTag);
+    abstract public Pair<Integer, String>[] onDataInput(Bundle data, String fragmentTag);
 
     /**
      * 1. Apply data validation to a content.

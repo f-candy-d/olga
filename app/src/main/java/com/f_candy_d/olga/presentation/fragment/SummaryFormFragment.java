@@ -96,4 +96,9 @@ public class SummaryFormFragment extends FormFragment {
     public int getIcon() {
         return R.drawable.ic_title;
     }
+
+    @Override
+    public void onShowError(int errorCode) {
+
+    }
 }

@@ -46,6 +46,8 @@ abstract public class FormFragment extends Fragment {
 
     abstract public String getTitle();
 
+    abstract public void onShowError(int errorCode);
+
     @DrawableRes
     abstract public int getIcon();
 

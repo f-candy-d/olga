@@ -1,5 +1,6 @@
 package com.f_candy_d.olga.presentation.dialog;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
@@ -113,14 +115,26 @@ public class DatePickerDialogFragment extends DialogFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (NoticeDateSetListener) context;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(context.toString()
-                    + " must implement NoticeDialogListener");
+
+        // Verify that the host fragment implements the callback interface
+        Fragment hostFragment = getTargetFragment();
+        if (hostFragment != null) {
+            try {
+                mListener = (NoticeDateSetListener) hostFragment;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(hostFragment.toString() + " must implement NoticeDateSetListener");
+            }
+
+        } else {
+            // Verify that the host activity implements the callback interface
+            try {
+                // Instantiate the NoticeDialogListener so we can send events to the host
+                mListener = (NoticeDateSetListener) context;
+            } catch (ClassCastException e) {
+                // The activity doesn't implement the interface, throw exception
+                throw new ClassCastException(context.toString()
+                        + " must implement NoticeDateSetListener");
+            }
         }
     }
 }

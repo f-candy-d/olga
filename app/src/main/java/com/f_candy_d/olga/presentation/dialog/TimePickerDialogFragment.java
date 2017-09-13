@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -113,14 +114,27 @@ public class TimePickerDialogFragment extends DialogFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (NoticeTimeSetListener) context;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(context.toString()
-                    + " must implement NoticeTimeSetListener");
+
+        // Verify that the host fragment implements the callback interface
+        Fragment hostFragment = getTargetFragment();
+        if (hostFragment != null) {
+            try {
+                mListener = (NoticeTimeSetListener) hostFragment;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(hostFragment.toString()
+                        + " must implement NoticeTimeSetListener");
+            }
+
+        } else {
+            // Verify that the host activity implements the callback interface
+            try {
+                // Instantiate the NoticeDialogListener so we can send events to the host
+                mListener = (NoticeTimeSetListener) context;
+            } catch (ClassCastException e) {
+                // The activity doesn't implement the interface, throw exception
+                throw new ClassCastException(context.toString()
+                        + " must implement NoticeTimeSetListener");
+            }
         }
     }
 }

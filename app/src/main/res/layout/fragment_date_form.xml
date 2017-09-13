@@ -25,10 +25,11 @@
             android:textColor="@color/color_set_1_accent"/>
 
         <RelativeLayout
-            android:id="@+id/start_date_bg"
+            android:id="@+id/start_date_label_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
+            android:layout_marginTop="2dp"
             android:layout_below="@+id/mess_label_start_date"
             android:layout_centerHorizontal="true"
             android:background="?attr/selectableItemBackground"
@@ -77,25 +78,26 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:background="#B0BEC5"
-            android:layout_below="@+id/start_date_bg"
-            android:layout_marginTop="48dp"
+            android:layout_below="@+id/start_date_label_bg"
+            android:layout_marginTop="32dp"
             android:layout_marginLeft="64dp"
             android:layout_marginStart="64dp"
-            android:elevation="1dp"/>
+            android:elevation="2dp"/>
 
         <TextView
             android:id="@+id/mess_label_end_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="End Date"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="32dp"
             android:layout_below="@+id/divider"
             android:textColor="@color/color_set_1_accent"/>
 
         <RelativeLayout
-            android:id="@+id/end_date_bg"
+            android:id="@+id/end_date_label_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:padding="16dp"
             android:layout_below="@+id/mess_label_end_date"
             android:layout_centerHorizontal="true"
