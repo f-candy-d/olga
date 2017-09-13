@@ -25,13 +25,14 @@
             android:textColor="@color/color_set_1_accent"/>
 
         <RelativeLayout
-            android:layout_marginTop="8dp"
             android:id="@+id/start_date_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:padding="16dp"
             android:layout_below="@+id/mess_label_start_date"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/date_label_start_m_d"
@@ -60,10 +61,13 @@
                 android:layout_height="wrap_content"
                 android:text="10 : 45 a.m."
                 android:textSize="20sp"
+                android:padding="8dp"
                 android:textColor="@android:color/white"
                 android:layout_below="@+id/date_label_start_m_d"
-                android:layout_marginTop="16dp"
-                android:layout_centerHorizontal="true"/>
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"/>
 
 
         </RelativeLayout>
@@ -76,7 +80,8 @@
             android:layout_below="@+id/start_date_bg"
             android:layout_marginTop="48dp"
             android:layout_marginLeft="64dp"
-            android:layout_marginStart="64dp"/>
+            android:layout_marginStart="64dp"
+            android:elevation="1dp"/>
 
         <TextView
             android:id="@+id/mess_label_end_date"
@@ -91,10 +96,11 @@
             android:id="@+id/end_date_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:padding="8dp"
+            android:padding="16dp"
             android:layout_below="@+id/mess_label_end_date"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/date_label_end_m_d"
@@ -123,10 +129,13 @@
                 android:layout_height="wrap_content"
                 android:text="03 : 20 p.m."
                 android:textSize="20sp"
+                android:padding="8dp"
                 android:textColor="@android:color/white"
                 android:layout_below="@+id/date_label_end_m_d"
-                android:layout_marginTop="16dp"
-                android:layout_centerHorizontal="true"/>
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"/>
 
 
         </RelativeLayout>
