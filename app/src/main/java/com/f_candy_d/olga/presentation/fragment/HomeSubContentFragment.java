@@ -117,6 +117,8 @@ public class HomeSubContentFragment extends VIewModelFragment {
             return;
         }
 
+        switchAdapter(new SimpleTaskAdapter(mViewModel.getAllTasks()));
+
         switch (position) {
             case TAB_POSITION_EXPIRED:
                 switchAdapter(mAdapter);
@@ -149,29 +151,31 @@ public class HomeSubContentFragment extends VIewModelFragment {
     }
 
     private void switchAdapter(final RecyclerView.Adapter adapter) {
-        mRecyclerView.animate().alpha(0f).setDuration(150)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
+        mRecyclerView.swapAdapter(adapter, true);
 
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        mRecyclerView.setAdapter(adapter);
-                        mRecyclerView.animate().alpha(1f).setDuration(150).start();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                })
-                .start();
+//        mRecyclerView.animate().alpha(0f).setDuration(150)
+//                .setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animator) {
+//                        mRecyclerView.swapAdapter(adapter, false);
+//                        mRecyclerView.animate().alpha(1f).setDuration(150).start();
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animator) {
+//
+//                    }
+//                })
+//                .start();
     }
 }
