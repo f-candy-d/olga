@@ -3,11 +3,15 @@ package com.f_candy_d.olga.presentation.fragment;
 
 import android.animation.Animator;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,9 @@ import com.f_candy_d.vvm.VIewModelFragment;
  */
 public class HomeSubContentFragment extends VIewModelFragment {
 
+    // Use as a second parameter of #View.canScrollVertically(int)
+    private static final int CHECK_SCROLLING_UP_FLAG = -1;
+
     private static final int TAB_POSITION_EXPIRED = 0;
     private static final int TAB_POSITION_UPCOMING = 1;
     private static final int TAB_POSITION_FEATURE = 2;
@@ -36,12 +43,14 @@ public class HomeSubContentFragment extends VIewModelFragment {
     private TextView mTabTitleExpired;
     private TextView mTabTitleUpcoming;
     private TextView mTabTitleFeature;
+    private View mTabs;
 
     // adapters
     private SimpleTaskAdapter mAdapter;
 
     private int mSelectedTabColor;
     private int mUnselectedTabColor;
+    private int mTabsElevation;
     private int mPrevTabPosition;
     private HomeSubContentViewModel mViewModel;
     private RecyclerView mRecyclerView;
@@ -63,6 +72,8 @@ public class HomeSubContentFragment extends VIewModelFragment {
         View view = inflater.inflate(R.layout.fragment_home_sub_content, container, false);
 
         // Tabs
+        mTabs = view.findViewById(R.id.tabs_layout);
+
         view.findViewById(R.id.tab_expired).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,17 +105,34 @@ public class HomeSubContentFragment extends VIewModelFragment {
         mTabTitleUpcoming = view.findViewById(R.id.tab_title_upcoming);
         mTabTitleFeature = view.findViewById(R.id.tab_title_feature);
 
-        // Color
+        // Resources
         mSelectedTabColor = ContextCompat.getColor(getActivity(), R.color.colorPrimary);
         mUnselectedTabColor = ContextCompat.getColor(getActivity(), R.color.google_material_icon_gray);
+        mTabsElevation = getResources().getDimensionPixelSize(R.dimen.toolbar_elevation);
 
         // Recycler view
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                // Set elevation to tabs only when the user starts scrolling
+                super.onScrolled(recyclerView, dx, dy);
+                boolean canScrollVertically = recyclerView.canScrollVertically(CHECK_SCROLLING_UP_FLAG);
+                boolean hasTabsElevationZero = (ViewCompat.getElevation(mTabs) == 0f);
+
+                if (hasTabsElevationZero && canScrollVertically) {
+                    ViewCompat.setElevation(mTabs, mTabsElevation);
+                } else if (!hasTabsElevationZero && !canScrollVertically){
+                    ViewCompat.setElevation(mTabs, 0);
+                }
+            }
+        });
 
         // Set up initial state
         mPrevTabPosition = TAB_POSITION_EXPIRED;
         applyTabColor(mTabIconExpired, mTabTitleExpired, mSelectedTabColor);
+        ViewCompat.setElevation(mTabs, 0);
         mAdapter = new SimpleTaskAdapter(mViewModel.getAllTasks());
         mAdapter.setNoItemMessage(R.string.no_tasks_message);
         mRecyclerView.setAdapter(mAdapter);
@@ -152,30 +180,5 @@ public class HomeSubContentFragment extends VIewModelFragment {
 
     private void switchAdapter(final RecyclerView.Adapter adapter) {
         mRecyclerView.swapAdapter(adapter, true);
-
-//        mRecyclerView.animate().alpha(0f).setDuration(150)
-//                .setListener(new Animator.AnimatorListener() {
-//                    @Override
-//                    public void onAnimationStart(Animator animator) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animator animator) {
-//                        mRecyclerView.swapAdapter(adapter, false);
-//                        mRecyclerView.animate().alpha(1f).setDuration(150).start();
-//                    }
-//
-//                    @Override
-//                    public void onAnimationCancel(Animator animator) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animator animator) {
-//
-//                    }
-//                })
-//                .start();
     }
 }

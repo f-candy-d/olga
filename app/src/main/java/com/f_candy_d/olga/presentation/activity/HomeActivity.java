@@ -2,7 +2,9 @@ package com.f_candy_d.olga.presentation.activity;
 
 import android.animation.Animator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.f_candy_d.dutils.MergeAdapter;
@@ -41,6 +45,7 @@ public class HomeActivity extends ViewActivity {
     private OuterListAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private BottomSheetBehavior mSheetBehavior;
+    private int mDefaultStatusBarColor;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -52,6 +57,11 @@ public class HomeActivity extends ViewActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mDefaultStatusBarColor = getWindow().getStatusBarColor();
+        }
+
         initUI();
     }
 
@@ -76,6 +86,12 @@ public class HomeActivity extends ViewActivity {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED && fab.getVisibility() == View.VISIBLE) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(Color.BLUE);
+                    }
+
                     fab.animate()
                             .setListener(new Animator.AnimatorListener() {
                                 @Override
@@ -98,6 +114,12 @@ public class HomeActivity extends ViewActivity {
                             .scaleX(0).scaleY(0).setDuration(150).start();
 
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED && fab.getVisibility() == View.INVISIBLE) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(mDefaultStatusBarColor);
+                    }
+
                     fab.setVisibility(View.VISIBLE);
                     fab.animate().scaleX(1).scaleY(1).setDuration(300).setListener(new Animator.AnimatorListener() {
                         @Override
