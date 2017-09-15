@@ -14,16 +14,16 @@ abstract public class ActivityViewModel {
 
     private Context mContext;
 
-    public ActivityViewModel(Context context) {
-        mContext = context;
-    }
-
     protected Context getContext() {
         return mContext;
     }
 
     protected Resources getResources() {
         return mContext.getResources();
+    }
+
+    public ActivityViewModel(Context context) {
+        mContext = context;
     }
 
     /**

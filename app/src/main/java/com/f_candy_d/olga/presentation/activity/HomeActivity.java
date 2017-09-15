@@ -1,14 +1,18 @@
 package com.f_candy_d.olga.presentation.activity;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +26,7 @@ import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
+import com.f_candy_d.olga.presentation.fragment.HomeContentFragment;
 import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
@@ -35,6 +40,7 @@ public class HomeActivity extends ViewActivity {
     private HomeViewModel mViewModel;
     private OuterListAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private BottomSheetBehavior mSheetBehavior;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -52,8 +58,11 @@ public class HomeActivity extends ViewActivity {
     private void initUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Now");
+        }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,40 +70,64 @@ public class HomeActivity extends ViewActivity {
             }
         });
 
-        final float density = getResources().getDisplayMetrics().density;
-        final int itemSideSpace = (int) (12 * density);
-        final int itemGroupTopSpace = (int) (8 * density);
-        final int itemGroupBottomSpace = (int) (4 * density);
+        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
+        mSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED && fab.getVisibility() == View.VISIBLE) {
+                    fab.animate()
+                            .setListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
+                                }
 
-        SpacerItemDecoration spacerItemDecoration =
-                new SpacerItemDecoration(this, new SpacerItemDecoration.Callback() {
-                    @Override
-                    public void getInsertedSpaceAroundItem(int adapterPosition, Rect output) {
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+                                    fab.setVisibility(View.INVISIBLE);
+                                }
 
-                        if (adapterPosition == 4 - 1) {
-                            output.bottom = itemGroupBottomSpace * 6;
-                        } else {
-                            output.bottom = itemGroupBottomSpace;
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+                                }
+                            })
+                            .scaleX(0).scaleY(0).setDuration(150).start();
+
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED && fab.getVisibility() == View.INVISIBLE) {
+                    fab.setVisibility(View.VISIBLE);
+                    fab.animate().scaleX(1).scaleY(1).setDuration(300).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
                         }
 
-                        if (adapterPosition == 0) {
-                            output.top = itemGroupTopSpace * 8;
-                        } else {
-                            output.top = itemGroupTopSpace;
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            fab.setVisibility(View.VISIBLE);
                         }
 
-                        output.left = itemSideSpace;
-                        output.right = itemSideSpace;
-                    }
-                });
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(spacerItemDecoration);
+                        }
 
-        mAdapter = new OuterListAdapter(this);
-        initAdapter(mRecyclerView);
-        mRecyclerView.setAdapter(mAdapter);
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    }).start();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
     }
 
     private void initAdapter(RecyclerView recyclerView) {
@@ -214,7 +247,7 @@ public class HomeActivity extends ViewActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        refresh();
+//        refresh();
     }
 
     private void refresh() {

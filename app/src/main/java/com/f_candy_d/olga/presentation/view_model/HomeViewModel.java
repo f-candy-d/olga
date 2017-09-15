@@ -23,11 +23,6 @@ public class HomeViewModel extends ActivityViewModel {
         super(context);
     }
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-    }
-
     public ArrayList<Task> getAllTasks() {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.MONTH, Calendar.APRIL);
