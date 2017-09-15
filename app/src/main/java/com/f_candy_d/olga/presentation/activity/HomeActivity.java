@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.f_candy_d.dutils.BottomSheetStateObserver;
 import com.f_candy_d.dutils.MergeAdapter;
 import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
@@ -44,8 +46,9 @@ public class HomeActivity extends ViewActivity {
     private HomeViewModel mViewModel;
     private OuterListAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private BottomSheetBehavior mSheetBehavior;
+    private BottomSheetStateObserver mSheetStateObserver;
     private int mDefaultStatusBarColor;
+    private int mStatusBarColorSheetExpanded;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -58,6 +61,8 @@ public class HomeActivity extends ViewActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Get colors
+        mStatusBarColorSheetExpanded = ContextCompat.getColor(this, R.color.status_bar_transparent_dark);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mDefaultStatusBarColor = getWindow().getStatusBarColor();
         }
@@ -81,17 +86,17 @@ public class HomeActivity extends ViewActivity {
         });
 
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        mSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        mSheetStateObserver = new BottomSheetStateObserver(BottomSheetBehavior.from(bottomSheet),
+                new BottomSheetStateObserver.StateChangeCallback() {
             @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED && fab.getVisibility() == View.VISIBLE) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(Color.BLUE);
-                    }
+            protected void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetStateObserver.STATE_EXPANDED) {
+                    changeStatusBarColor(mStatusBarColorSheetExpanded);
+                } else if (newState == BottomSheetStateObserver.STATE_START_COLLAPSING) {
+                    changeStatusBarColor(mDefaultStatusBarColor);
+                }
 
+                if (newState == BottomSheetStateObserver.STATE_EXPANDED && fab.getVisibility() == View.VISIBLE) {
                     fab.animate()
                             .setListener(new Animator.AnimatorListener() {
                                 @Override
@@ -113,13 +118,7 @@ public class HomeActivity extends ViewActivity {
                             })
                             .scaleX(0).scaleY(0).setDuration(150).start();
 
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED && fab.getVisibility() == View.INVISIBLE) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(mDefaultStatusBarColor);
-                    }
-
+                } else if (newState == BottomSheetStateObserver.STATE_COLLAPSED && fab.getVisibility() == View.INVISIBLE) {
                     fab.setVisibility(View.VISIBLE);
                     fab.animate().scaleX(1).scaleY(1).setDuration(300).setListener(new Animator.AnimatorListener() {
                         @Override
@@ -144,12 +143,18 @@ public class HomeActivity extends ViewActivity {
                     }).start();
                 }
             }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
         });
+
+//        mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//
+//            }
+//        });
     }
 
     private void initAdapter(RecyclerView recyclerView) {
@@ -264,6 +269,14 @@ public class HomeActivity extends ViewActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changeStatusBarColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
     }
 
     @Override
