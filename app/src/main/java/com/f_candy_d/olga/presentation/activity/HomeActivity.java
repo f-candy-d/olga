@@ -33,6 +33,7 @@ import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
 import com.f_candy_d.olga.presentation.fragment.HomeContentFragment;
+import com.f_candy_d.olga.presentation.fragment.HomeSubContentFragment;
 import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
@@ -41,7 +42,8 @@ import com.f_candy_d.vvm.ViewActivity;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class HomeActivity extends ViewActivity {
+public class HomeActivity extends ViewActivity
+        implements HomeSubContentFragment.InteractionListener {
 
     private HomeViewModel mViewModel;
     private OuterListAdapter mAdapter;
@@ -49,6 +51,7 @@ public class HomeActivity extends ViewActivity {
     private BottomSheetStateObserver mSheetStateObserver;
     private int mDefaultStatusBarColor;
     private int mStatusBarColorSheetExpanded;
+    private HomeSubContentFragment mSubContentFragment;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -85,6 +88,8 @@ public class HomeActivity extends ViewActivity {
             }
         });
 
+        mSubContentFragment = (HomeSubContentFragment) getSupportFragmentManager().findFragmentById(R.id.home_sub_content_fragment);
+
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         mSheetStateObserver = new BottomSheetStateObserver(BottomSheetBehavior.from(bottomSheet),
                 new BottomSheetStateObserver.StateChangeCallback() {
@@ -95,66 +100,14 @@ public class HomeActivity extends ViewActivity {
                 } else if (newState == BottomSheetStateObserver.STATE_START_COLLAPSING) {
                     changeStatusBarColor(mDefaultStatusBarColor);
                 }
-
-                if (newState == BottomSheetStateObserver.STATE_EXPANDED && fab.getVisibility() == View.VISIBLE) {
-                    fab.animate()
-                            .setListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animator) {
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animator) {
-                                    fab.setVisibility(View.INVISIBLE);
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animator) {
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animator) {
-                                }
-                            })
-                            .scaleX(0).scaleY(0).setDuration(150).start();
-
-                } else if (newState == BottomSheetStateObserver.STATE_COLLAPSED && fab.getVisibility() == View.INVISIBLE) {
-                    fab.setVisibility(View.VISIBLE);
-                    fab.animate().scaleX(1).scaleY(1).setDuration(300).setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animator) {
-                            fab.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animator) {
-
-                        }
-                    }).start();
-                }
             }
-        });
 
-//        mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
+            @Override
+            protected void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                mSubContentFragment.setHeaderAlpha(1.0f - slideOffset);
+            }
+
+        });
     }
 
     private void initAdapter(RecyclerView recyclerView) {
@@ -307,5 +260,17 @@ public class HomeActivity extends ViewActivity {
 
         dialog.setContentView(sheetView);
         dialog.show();
+    }
+
+    /**
+     * region; HomeSubContentFragment.InteractionListener implementation
+     */
+
+    @Override
+    public void onHeaderClick() {
+        final int state = mSheetStateObserver.getTarget().getState();
+        if (state == BottomSheetBehavior.STATE_COLLAPSED) {
+            mSheetStateObserver.getTarget().setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 }

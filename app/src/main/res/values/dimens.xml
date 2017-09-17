@@ -3,4 +3,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="toolbar_elevation">2dp</dimen>
+    <dimen name="home_sub_contents_header_height">72dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="home_fab_bottom_margin">44dp</dimen>
 </resources>

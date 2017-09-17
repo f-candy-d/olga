@@ -1,17 +1,13 @@
 package com.f_candy_d.olga.presentation.fragment;
 
 
-import android.animation.Animator;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +25,19 @@ import com.f_candy_d.vvm.VIewModelFragment;
  */
 public class HomeSubContentFragment extends VIewModelFragment {
 
+    public interface InteractionListener {
+        void onHeaderClick();
+    }
+
     // Use as a second parameter of #View.canScrollVertically(int)
     private static final int CHECK_SCROLLING_UP_FLAG = -1;
 
     private static final int TAB_POSITION_EXPIRED = 0;
     private static final int TAB_POSITION_UPCOMING = 1;
     private static final int TAB_POSITION_FEATURE = 2;
+
+    // header
+    private View mHeader;
 
     // tabs
     private ImageView mTabIconExpired;
@@ -54,6 +57,7 @@ public class HomeSubContentFragment extends VIewModelFragment {
     private int mPrevTabPosition;
     private HomeSubContentViewModel mViewModel;
     private RecyclerView mRecyclerView;
+    private InteractionListener mInteractionListener;
 
     @Override
     protected FragmentViewModel onCreateViewModel() {
@@ -66,10 +70,30 @@ public class HomeSubContentFragment extends VIewModelFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mInteractionListener = (InteractionListener) context;
+        } catch (ClassCastException e) {
+            throw new RuntimeException(context.toString()
+                    + " must implement HomeSubContentFragment.InteractionListener interface");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_sub_content, container, false);
+
+        // Header
+        mHeader = view.findViewById(R.id.header);
+        mHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mInteractionListener.onHeaderClick();
+            }
+        });
 
         // Tabs
         mTabs = view.findViewById(R.id.tabs_layout);
@@ -116,15 +140,17 @@ public class HomeSubContentFragment extends VIewModelFragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                // Set elevation to tabs only when the user starts scrolling
+                // Set elevation to tabs & header view only when the user starts scrolling
                 super.onScrolled(recyclerView, dx, dy);
                 boolean canScrollVertically = recyclerView.canScrollVertically(CHECK_SCROLLING_UP_FLAG);
                 boolean hasTabsElevationZero = (ViewCompat.getElevation(mTabs) == 0f);
 
                 if (hasTabsElevationZero && canScrollVertically) {
                     ViewCompat.setElevation(mTabs, mTabsElevation);
+                    ViewCompat.setElevation(mHeader, mTabsElevation);
                 } else if (!hasTabsElevationZero && !canScrollVertically){
                     ViewCompat.setElevation(mTabs, 0);
+                    ViewCompat.setElevation(mHeader, 0);
                 }
             }
         });
@@ -180,5 +206,14 @@ public class HomeSubContentFragment extends VIewModelFragment {
 
     private void switchAdapter(final RecyclerView.Adapter adapter) {
         mRecyclerView.swapAdapter(adapter, true);
+    }
+
+    public void setHeaderAlpha(float alpha) {
+        mHeader.setAlpha(alpha);
+        if (alpha == 0.0f && mHeader.getVisibility() == View.VISIBLE) {
+            mHeader.setVisibility(View.GONE);
+        } else if (mHeader.getVisibility() == View.GONE) {
+            mHeader.setVisibility(View.VISIBLE);
+        }
     }
 }

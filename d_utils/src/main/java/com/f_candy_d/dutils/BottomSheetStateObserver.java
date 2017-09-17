@@ -102,6 +102,7 @@ public class BottomSheetStateObserver {
     }
 
     private void notifyNewState(@NonNull View bottomSheet, int newState) {
+//        logState(newState);
         if (mListener != null) {
             mListener.onStateChanged(bottomSheet, newState);
         }
