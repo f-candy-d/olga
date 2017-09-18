@@ -1,47 +1,29 @@
 package com.f_candy_d.olga.presentation.activity;
 
-import android.animation.Animator;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
 
-import com.f_candy_d.dutils.BottomSheetStateObserver;
-import com.f_candy_d.dutils.MergeAdapter;
 import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.FullSpanViewAdapter;
-import com.f_candy_d.olga.presentation.OuterListAdapter;
+import com.f_candy_d.olga.presentation.OldSimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
-import com.f_candy_d.olga.presentation.SpacerItemDecoration;
-import com.f_candy_d.olga.presentation.fragment.HomeContentFragment;
-import com.f_candy_d.olga.presentation.fragment.HomeSubContentFragment;
 import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
@@ -84,13 +66,24 @@ public class HomeActivity extends ViewActivity {
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         SimpleTaskAdapter adapter = new SimpleTaskAdapter(mViewModel.getTasksNeedToBeRescheduled());
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+
+        adapter.setCallback(new SimpleTaskAdapter.Callback() {
             @Override
-            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+            public boolean isItemFullSpan(int position) {
+                return false;
+            }
+
+            @Override
+            public void onBind(SimpleTaskAdapter.OutVisibility outVisibility, Task task,
+                               StringBuffer title, StringBuffer time, StringBuffer location) {
+                // title
                 title.append(task.title);
+                // time
                 Calendar now = Calendar.getInstance();
                 String diff = AppDataDecoration.formatCalendarDiff(now, task.dateTermEnd.asCalendar());
-                dateLabel.append(diff.concat(" ago"));
+                time.append(diff.concat(" ago"));
+                // location
+                location.append("Shizuoka hamamatsushi 432-8061");
             }
         });
 
@@ -98,14 +91,13 @@ public class HomeActivity extends ViewActivity {
 
         LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
-        View view = inflater.inflate(R.layout.simple_event_card, mRecyclerView, false);
 
         if (mViewModel.getTasksNeedToBeRescheduled().size() != 0) {
             View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
-            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView, view);
+            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
             mAdapter.addAdapter(fullSpanViewAdapter);
         } else {
-            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView, view);
+            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
             mAdapter.addAdapter(fullSpanViewAdapter);
         }
 

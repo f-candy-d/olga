@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
+import com.f_candy_d.olga.presentation.OldSimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeContentViewModel;
 import com.f_candy_d.vvm.FragmentViewModel;
 import com.f_candy_d.vvm.VIewModelFragment;
@@ -21,7 +21,7 @@ import com.f_candy_d.vvm.VIewModelFragment;
 public class HomeContentFragment extends VIewModelFragment {
 
     private HomeContentViewModel mViewModel;
-    private SimpleTaskAdapter mAdapter;
+    private OldSimpleTaskAdapter mAdapter;
 
     @Override
     protected FragmentViewModel onCreateViewModel() {
@@ -47,8 +47,8 @@ public class HomeContentFragment extends VIewModelFragment {
         return view;
     }
 
-    private void initAdapter(SimpleTaskAdapter adapter) {
-        mAdapter = new SimpleTaskAdapter(mViewModel.getAllTasks());
+    private void initAdapter(OldSimpleTaskAdapter adapter) {
+        mAdapter = new OldSimpleTaskAdapter(mViewModel.getAllTasks());
         mAdapter.setNoItemMessage(R.string.no_tasks_message);
     }
 }

@@ -1,7 +1,6 @@
 package com.f_candy_d.olga.presentation.fragment;
 
 
-import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,16 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.f_candy_d.dutils.MergeAdapter;
 import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
-import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
+import com.f_candy_d.olga.presentation.OldSimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeSubContentViewModel;
 import com.f_candy_d.vvm.FragmentViewModel;
 import com.f_candy_d.vvm.VIewModelFragment;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
@@ -181,12 +178,12 @@ public class HomeSubContentFragment extends VIewModelFragment {
     }
 
     private void initAdapter(RecyclerView recyclerView) {
-        SimpleTaskAdapter adapter;
+        OldSimpleTaskAdapter adapter;
 
         // Tasks needs to be rescheduled
-        adapter = new SimpleTaskAdapter(mViewModel.getTasksNeedToBeRescheduled());
+        adapter = new OldSimpleTaskAdapter(mViewModel.getTasksNeedToBeRescheduled());
         adapter.setNoItemMessage(R.string.no_tasks_message);
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+        adapter.setOnBindItemCallback(new OldSimpleTaskAdapter.OnBindItemCallback() {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
                 title.append(task.title);
@@ -199,9 +196,9 @@ public class HomeSubContentFragment extends VIewModelFragment {
         mExpiredDataAdapter.addAdapter(adapter);
 
         // Upcoming tasks
-        adapter = new SimpleTaskAdapter(mViewModel.getTasksUpcoming());
+        adapter = new OldSimpleTaskAdapter(mViewModel.getTasksUpcoming());
         adapter.setNoItemMessage(R.string.no_tasks_message_upcoming);
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+        adapter.setOnBindItemCallback(new OldSimpleTaskAdapter.OnBindItemCallback() {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
                 title.append(task.title);
@@ -213,8 +210,8 @@ public class HomeSubContentFragment extends VIewModelFragment {
         mUpcomingDataAdapter.addAdapter(adapter);
 
         // Feature tasks
-        adapter = new SimpleTaskAdapter(mViewModel.getTasksInFeature());
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+        adapter = new OldSimpleTaskAdapter(mViewModel.getTasksInFeature());
+        adapter.setOnBindItemCallback(new OldSimpleTaskAdapter.OnBindItemCallback() {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
                 title.append(task.title);

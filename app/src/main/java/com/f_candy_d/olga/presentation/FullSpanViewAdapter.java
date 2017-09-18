@@ -1,7 +1,6 @@
 package com.f_candy_d.olga.presentation;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,7 +11,7 @@ import java.util.Arrays;
  * Created by daichi on 9/18/17.
  */
 
-public class FullSpanViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FullSpanViewAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
 
     private ArrayList<View> mViews;
 
@@ -35,14 +34,6 @@ public class FullSpanViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
-        if (params instanceof StaggeredGridLayoutManager.LayoutParams) {
-            ((StaggeredGridLayoutManager.LayoutParams) params).setFullSpan(true);
-        }
-    }
-
-    @Override
     public int getItemCount() {
         return mViews.size();
     }
@@ -52,5 +43,10 @@ public class FullSpanViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ViewHolder(View view) {
             super(view);
         }
+    }
+
+    @Override
+    protected boolean isFullSpan(int position) {
+        return true;
     }
 }

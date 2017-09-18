@@ -39,7 +39,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Some tasks are overdue. Please delete, or reschedule them."/>
+            android:text="Some items are overdue. Please delete, or reschedule them."/>
 
         <Button
             android:id="@+id/delete_all_button"
