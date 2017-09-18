@@ -1,6 +1,7 @@
 package com.f_candy_d.olga.presentation.fragment;
 
 
+import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,11 +15,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.f_candy_d.dutils.MergeAdapter;
+import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.domain.Task;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeSubContentViewModel;
 import com.f_candy_d.vvm.FragmentViewModel;
 import com.f_candy_d.vvm.VIewModelFragment;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,8 +58,11 @@ public class HomeSubContentFragment extends VIewModelFragment {
     private View mTabs;
 
     // adapters
-    private SimpleTaskAdapter mAdapter;
+    private RecyclerViewMergeAdapter mExpiredDataAdapter;
+    private RecyclerViewMergeAdapter mUpcomingDataAdapter;
+    private RecyclerViewMergeAdapter mFeatureDataAdapter;
 
+    // misc
     private int mSelectedTabColor;
     private int mUnselectedTabColor;
     private int mTabsElevation;
@@ -155,15 +167,65 @@ public class HomeSubContentFragment extends VIewModelFragment {
             }
         });
 
+        // adapters
+        initAdapter(mRecyclerView);
+
         // Set up initial state
+        mPrevTabPosition = -1;
+        onTabClick(TAB_POSITION_EXPIRED);
         mPrevTabPosition = TAB_POSITION_EXPIRED;
-        applyTabColor(mTabIconExpired, mTabTitleExpired, mSelectedTabColor);
         ViewCompat.setElevation(mTabs, 0);
-        mAdapter = new SimpleTaskAdapter(mViewModel.getAllTasks());
-        mAdapter.setNoItemMessage(R.string.no_tasks_message);
-        mRecyclerView.setAdapter(mAdapter);
+        ViewCompat.setElevation(mHeader, 0);
 
         return view;
+    }
+
+    private void initAdapter(RecyclerView recyclerView) {
+        SimpleTaskAdapter adapter;
+
+        // Tasks needs to be rescheduled
+        adapter = new SimpleTaskAdapter(mViewModel.getTasksNeedToBeRescheduled());
+        adapter.setNoItemMessage(R.string.no_tasks_message);
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                Calendar now = Calendar.getInstance();
+                String diff = AppDataDecoration.formatCalendarDiff(now, task.dateTermEnd.asCalendar());
+                dateLabel.append(diff.concat(" ago"));
+            }
+        });
+        mExpiredDataAdapter = new RecyclerViewMergeAdapter();
+        mExpiredDataAdapter.addAdapter(adapter);
+
+        // Upcoming tasks
+        adapter = new SimpleTaskAdapter(mViewModel.getTasksUpcoming());
+        adapter.setNoItemMessage(R.string.no_tasks_message_upcoming);
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                String text = AppDataDecoration.formatTime(task.dateTermStart.asCalendar(), false);
+                dateLabel.append(text);
+            }
+        });
+        mUpcomingDataAdapter = new RecyclerViewMergeAdapter();
+        mUpcomingDataAdapter.addAdapter(adapter);
+
+        // Feature tasks
+        adapter = new SimpleTaskAdapter(mViewModel.getTasksInFeature());
+        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
+            @Override
+            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
+                title.append(task.title);
+                dateLabel.append(AppDataDecoration.formatDatetimeShortly(task.dateTermStart.asCalendar(), false));
+            }
+        });
+        mFeatureDataAdapter = new RecyclerViewMergeAdapter();
+        mFeatureDataAdapter.addAdapter(adapter);
+        // Footer
+        View footer = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.item_show_more_button, recyclerView, false);
+        mFeatureDataAdapter.addView(footer);
     }
 
     private void onTabClick(int position) {
@@ -171,25 +233,23 @@ public class HomeSubContentFragment extends VIewModelFragment {
             return;
         }
 
-        switchAdapter(new SimpleTaskAdapter(mViewModel.getAllTasks()));
-
         switch (position) {
             case TAB_POSITION_EXPIRED:
-                switchAdapter(mAdapter);
+                switchAdapter(mExpiredDataAdapter);
                 applyTabColor(mTabIconExpired, mTabTitleExpired, mSelectedTabColor);
                 applyTabColor(mTabIconUpcoming, mTabTitleUpcoming, mUnselectedTabColor);
                 applyTabColor(mTabIconFeature, mTabTitleFeature, mUnselectedTabColor);
                 break;
 
             case TAB_POSITION_UPCOMING:
-                switchAdapter(mAdapter);
+                switchAdapter(mUpcomingDataAdapter);
                 applyTabColor(mTabIconExpired, mTabTitleExpired, mUnselectedTabColor);
                 applyTabColor(mTabIconUpcoming, mTabTitleUpcoming, mSelectedTabColor);
                 applyTabColor(mTabIconFeature, mTabTitleFeature, mUnselectedTabColor);
                 break;
 
             case TAB_POSITION_FEATURE:
-                switchAdapter(mAdapter);
+                switchAdapter(mFeatureDataAdapter);
                 applyTabColor(mTabIconExpired, mTabTitleExpired, mUnselectedTabColor);
                 applyTabColor(mTabIconUpcoming, mTabTitleUpcoming, mUnselectedTabColor);
                 applyTabColor(mTabIconFeature, mTabTitleFeature, mSelectedTabColor);
@@ -205,7 +265,31 @@ public class HomeSubContentFragment extends VIewModelFragment {
     }
 
     private void switchAdapter(final RecyclerView.Adapter adapter) {
-        mRecyclerView.swapAdapter(adapter, true);
+//        mRecyclerView.swapAdapter(adapter, true);
+        mRecyclerView.setAdapter(adapter);
+//        mRecyclerView.animate().alpha(0.0f).setDuration(150)
+//                .setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animator) {
+//                        mRecyclerView.setAdapter(adapter);
+//                        mRecyclerView.animate().alpha(1.0f).setDuration(150).start();
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animator) {
+//
+//                    }
+//                }).start();
     }
 
     public void setHeaderAlpha(float alpha) {

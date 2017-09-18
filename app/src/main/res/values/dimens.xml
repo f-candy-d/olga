@@ -6,4 +6,7 @@
     <dimen name="home_sub_contents_header_height">72dp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="home_fab_bottom_margin">44dp</dimen>
+
+    <dimen name="primary_text">24sp</dimen>
+    <dimen name="secondary_text">14sp</dimen>
 </resources>

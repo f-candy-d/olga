@@ -2,6 +2,7 @@ package com.f_candy_d.dutils;
 
 
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,21 +15,42 @@ import java.util.List;
 
 public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    // Contains View or RecyclerView.Adapter
-    // Indexes of this array means ContentIndex
-    private ArrayList<RecyclerView.Adapter> mContents;
+    private static class SubAdapter {
+        RecyclerView.Adapter adapter;
+        // {@key::globalViewType @value::localViewType}
+        SparseIntArray viewTypeMap;
+
+        SubAdapter(RecyclerView.Adapter adapter) {
+            this.adapter = adapter;
+            viewTypeMap = new SparseIntArray();
+        }
+
+        int getLocalViewType(int globalViewType) {
+            return viewTypeMap.get(globalViewType);
+        }
+
+        int getGlobalViewType(int localPosition){
+            int localVt = adapter.getItemViewType(localPosition);
+            int keyIndex = viewTypeMap.indexOfValue(localVt);
+            return viewTypeMap.keyAt(keyIndex);
+        }
+    }
+
+    private ArrayList<SubAdapter> mAdapters;
+    private SparseIntArray mViewTypeAdapterPositionMap;
 
     public MergeAdapter() {
-        mContents = new ArrayList<>();
+        mAdapters = new ArrayList<>();
+        mViewTypeAdapterPositionMap = new SparseIntArray();
     }
 
     public void addView(View view) {
-        addView(mContents.size(), view);
+        addView(mAdapters.size(), view);
     }
 
     public void addView(int index, View view) {
         SingleViewAdapter adapter = new SingleViewAdapter(view);
-        mContents.add(index, adapter);
+        addAdapter(index, adapter);
     }
 
     public View getView(int index) {
@@ -41,39 +63,65 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void addAdapter(RecyclerView.Adapter adapter) {
-        addAdapter(mContents.size(), adapter);
+        addAdapter(mAdapters.size(), adapter);
     }
 
     public void addAdapter(int index, RecyclerView.Adapter adapter) {
-        mContents.add(index, adapter);
+        SubAdapter subAdapter = new SubAdapter(adapter);
+        mAdapters.add(index, subAdapter);
+        mapViewTypes();
     }
 
     public RecyclerView.Adapter getAdapter(int index) {
-        return mContents.get(index);
+        return mAdapters.get(index).adapter;
     }
 
     public <T extends RecyclerView.Adapter> T getAdapter(int index, Class<T> adapterClass) {
         return adapterClass.cast(getAdapter(index));
     }
 
+    /**
+     * Mapping view-types to adapter positions
+     */
+    private void mapViewTypes() {
+        int itemCount, viewType, globalViewType = 0;
+        SubAdapter subAdapter;
+        mViewTypeAdapterPositionMap.clear();
+        for (int i = 0; i < mAdapters.size(); ++i) {
+            subAdapter = mAdapters.get(i);
+            subAdapter.viewTypeMap.clear();
+            itemCount = subAdapter.adapter.getItemCount();
+            for (int j = 0; j < itemCount; ++j) {
+                // local view type
+                viewType = subAdapter.adapter.getItemViewType(j);
+                if (subAdapter.viewTypeMap.indexOfValue(viewType) < 0) {
+                    subAdapter.viewTypeMap.put(globalViewType, viewType);
+                    ++globalViewType;
+                }
+            }
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
-        // Return a global index
-        return position;
+        // Return a global view type
+        int adapterPosition = getAdapterPositionOf(position);
+        int localPosition = getLocalPositionOf(position, adapterPosition);
+        return mAdapters.get(adapterPosition).getGlobalViewType(localPosition);
     }
 
     /**
      *
      * @param parent
-     * @param viewType Global index of an item returned from #getItemViewType()
+     * @param viewType Global view type returned from #getItemViewType()
      * @return
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int contentIndex = getContentIndexOf(viewType);
-        RecyclerView.Adapter adapter = mContents.get(contentIndex);
-        int localViewType = adapter.getItemViewType(getLocalIndexOf(viewType, contentIndex));
-        return adapter.onCreateViewHolder(parent, localViewType);
+        int adapterPosition = mViewTypeAdapterPositionMap.get(viewType);
+        SubAdapter subAdapter = mAdapters.get(adapterPosition);
+        int localViewType = subAdapter.getLocalViewType(viewType);
+        return subAdapter.adapter.onCreateViewHolder(parent, localViewType);
     }
 
     /**
@@ -84,50 +132,46 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @SuppressWarnings("unchecked cast")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int adpPos = holder.getAdapterPosition();
-        int contentIndex = getContentIndexOf(adpPos);
-        RecyclerView.Adapter content = mContents.get(contentIndex);
-        content.onBindViewHolder(holder, getLocalIndexOf(adpPos, contentIndex));
+        int adapterPosition = getAdapterPositionOf(position);
+        mAdapters.get(adapterPosition).adapter.onBindViewHolder(holder, getLocalPositionOf(position, adapterPosition));
     }
 
     @SuppressWarnings("unchecked cast")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
-        int adpPos = holder.getAdapterPosition();
-        int contentIndex = getContentIndexOf(adpPos);
-        RecyclerView.Adapter content = mContents.get(contentIndex);
-        content.onBindViewHolder(holder, getLocalIndexOf(adpPos, contentIndex));
+        int adapterPosition = getAdapterPositionOf(position);
+        mAdapters.get(adapterPosition).adapter.onBindViewHolder(holder, getLocalPositionOf(position, adapterPosition), payloads);
     }
 
     @Override
     public int getItemCount() {
-        return getItemCountInRange(0, mContents.size());
+        return getItemCountInRange(0, mAdapters.size());
     }
 
     /**
-     * Count the number of items int each contents in range of index.
-     * @param startContentIndex Include this
-     * @param endContentIndex Exclude this
+     * Count the number of items int each adapters in range of index.
+     * @param startAdapterPosition Include this
+     * @param endAdapterPosition Exclude this
      * @return Item count
      */
-    private int getItemCountInRange(int startContentIndex, int endContentIndex) {
+    private int getItemCountInRange(int startAdapterPosition, int endAdapterPosition) {
         int itemCount = 0;
-        for (int i = startContentIndex; i < endContentIndex; ++i) {
-            itemCount += mContents.get(i).getItemCount();
+        for (int i = startAdapterPosition; i < endAdapterPosition; ++i) {
+            itemCount += mAdapters.get(i).adapter.getItemCount();
         }
 
         return itemCount;
     }
 
-    private int getLocalIndexOf(int globalIndex, int contentIndex) {
-        return globalIndex - getItemCountInRange(0, contentIndex);
+    private int getLocalPositionOf(int globalPosition, int adapterPosition) {
+        return globalPosition - getItemCountInRange(0, adapterPosition);
     }
 
-    private int getContentIndexOf(int globalIndex) {
+    private int getAdapterPositionOf(int globalPosition) {
         int itemCount = 0;
-        for (int i = 0; i < mContents.size(); ++i) {
+        for (int i = 0; i < mAdapters.size(); ++i) {
             itemCount += getItemCountInRange(i, i + 1);
-            if (globalIndex < itemCount) {
+            if (globalPosition < itemCount) {
                 return i;
             }
         }
@@ -135,7 +179,7 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         throw new IndexOutOfBoundsException();
     }
 
-    private int getGlobalIndexOf(int contentIndex, int localIndex) {
-        return getItemCountInRange(0, mContents.size()) + localIndex;
+    private int getGlobalPositionOf(int adapterPosition, int localPosition) {
+        return getItemCountInRange(0, mAdapters.size()) + localPosition;
     }
 }

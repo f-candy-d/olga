@@ -10,7 +10,7 @@ import android.view.ViewGroup;
  * Used in MergeAdapter class.
  */
 
-public class SingleViewAdapter extends RecyclerView.Adapter<SingleViewAdapter.SingleViewHolder> {
+public class SingleViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private View mView;
 
@@ -31,25 +31,15 @@ public class SingleViewAdapter extends RecyclerView.Adapter<SingleViewAdapter.Si
     }
 
     @Override
-    public SingleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SingleViewHolder(mView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new RecyclerView.ViewHolder(mView) {};
     }
 
     @Override
-    public void onBindViewHolder(SingleViewHolder holder, int position) {}
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {}
 
     @Override
     public int getItemCount() {
         return 1;
-    }
-
-    /**
-     * VH class
-     */
-    static class SingleViewHolder extends RecyclerView.ViewHolder {
-
-        SingleViewHolder(View view) {
-            super(view);
-        }
     }
 }

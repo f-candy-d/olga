@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.f_candy_d.dutils.MergeAdapter;
 import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.Task;
+import com.f_candy_d.olga.presentation.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.OuterListAdapter;
 import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.SpacerItemDecoration;
@@ -42,16 +44,13 @@ import com.f_candy_d.vvm.ViewActivity;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class HomeActivity extends ViewActivity
-        implements HomeSubContentFragment.InteractionListener {
+import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
+
+public class HomeActivity extends ViewActivity {
 
     private HomeViewModel mViewModel;
-    private OuterListAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private BottomSheetStateObserver mSheetStateObserver;
-    private int mDefaultStatusBarColor;
-    private int mStatusBarColorSheetExpanded;
-    private HomeSubContentFragment mSubContentFragment;
+    private RecyclerViewMergeAdapter mAdapter;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -63,13 +62,6 @@ public class HomeActivity extends ViewActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        // Get colors
-        mStatusBarColorSheetExpanded = ContextCompat.getColor(this, R.color.status_bar_transparent_dark);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mDefaultStatusBarColor = getWindow().getStatusBarColor();
-        }
-
         initUI();
     }
 
@@ -88,41 +80,10 @@ public class HomeActivity extends ViewActivity
             }
         });
 
-        mSubContentFragment = (HomeSubContentFragment) getSupportFragmentManager().findFragmentById(R.id.home_sub_content_fragment);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        mSheetStateObserver = new BottomSheetStateObserver(BottomSheetBehavior.from(bottomSheet),
-                new BottomSheetStateObserver.StateChangeCallback() {
-            @Override
-            protected void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetStateObserver.STATE_EXPANDED) {
-                    changeStatusBarColor(mStatusBarColorSheetExpanded);
-                } else if (newState == BottomSheetStateObserver.STATE_START_COLLAPSING) {
-                    changeStatusBarColor(mDefaultStatusBarColor);
-                }
-            }
-
-            @Override
-            protected void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                mSubContentFragment.setHeaderAlpha(1.0f - slideOffset);
-            }
-
-        });
-    }
-
-    private void initAdapter(RecyclerView recyclerView) {
-        mAdapter.removeAll();
-        MergeAdapter mergeAdapter;
-        SimpleTaskAdapter adapter;
-        ArrayList<Task> tasks;
-        LayoutInflater inflater = getLayoutInflater();
-        View header;
-
-        /**
-         * Tasks needs to be rescheduled
-         */
-        tasks = mViewModel.getTasksNeedToBeRescheduled();
-        adapter = new SimpleTaskAdapter(tasks);
+        SimpleTaskAdapter adapter = new SimpleTaskAdapter(mViewModel.getTasksNeedToBeRescheduled());
         adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
             @Override
             public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
@@ -132,75 +93,23 @@ public class HomeActivity extends ViewActivity
                 dateLabel.append(diff.concat(" ago"));
             }
         });
-        header = inflater.inflate(R.layout.item_header_with_done_all_button, recyclerView, false);
-        ((TextView) header.findViewById(R.id.header_title)).setText("Needs To Be Rescheduled");
-        mergeAdapter = new MergeAdapter();
-        mergeAdapter.addView(header);
-        mergeAdapter.addAdapter(adapter);
-        mAdapter.addAdapter(mergeAdapter);
 
-        /**
-         * Tasks in process
-         */
-        tasks = mViewModel.getTasksInProcess();
-        adapter = new SimpleTaskAdapter(tasks);
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
-            @Override
-            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
-                title.append(task.title);
-                String text = "due by " + AppDataDecoration.formatDatetime(task.dateTermEnd.asCalendar(), false);
-                dateLabel.append(text);
-            }
-        });
-        header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Now");
-        mergeAdapter = new MergeAdapter();
-        mergeAdapter.addView(header);
-        mergeAdapter.addAdapter(adapter);
-        mAdapter.addAdapter(mergeAdapter);
+        mAdapter = new RecyclerViewMergeAdapter();
 
-        /**
-         * Upcoming tasks
-         */
-        tasks = mViewModel.getTasksUpcoming();
-        adapter = new SimpleTaskAdapter(tasks);
-        adapter.setNoItemMessage(R.string.no_tasks_message_upcoming);
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
-            @Override
-            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
-                title.append(task.title);
-                String text = AppDataDecoration.formatTime(task.dateTermStart.asCalendar(), false);
-                dateLabel.append(text);
-            }
-        });
-        header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Upcoming");
-        mergeAdapter = new MergeAdapter();
-        mergeAdapter.addView(header);
-        mergeAdapter.addAdapter(adapter);
-        mAdapter.addAdapter(mergeAdapter);
+        LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
+        View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
 
-        /**
-         * Feature tasks
-         */
-        tasks = mViewModel.getTasksInFeature();
-        adapter = new SimpleTaskAdapter(tasks);
-        adapter.setOnBindItemCallback(new SimpleTaskAdapter.OnBindItemCallback() {
-            @Override
-            public void onDecorateItemData(Task task, StringBuffer title, StringBuffer dateLabel) {
-                title.append(task.title);
-                dateLabel.append(AppDataDecoration.formatDatetimeShortly(task.dateTermStart.asCalendar(), false));
-            }
-        });
-        header = inflater.inflate(R.layout.item_header_basic, recyclerView, false);
-        ((TextView) header.findViewById(R.id.simple_task_adapter_header_title)).setText("Next 6 Days");
-        mergeAdapter = new MergeAdapter();
-        mergeAdapter.addView(header);
-        mergeAdapter.addAdapter(adapter);
-        // Footer
-        header = inflater.inflate(R.layout.item_show_more_button, recyclerView, false);
-        mergeAdapter.addView(header);
-        mAdapter.addAdapter(mergeAdapter);
+        if (mViewModel.getTasksNeedToBeRescheduled().size() != 0) {
+            View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
+            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
+            mAdapter.addAdapter(fullSpanViewAdapter);
+        } else {
+            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
+            mAdapter.addAdapter(fullSpanViewAdapter);
+        }
+
+        mAdapter.addAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -224,25 +133,6 @@ public class HomeActivity extends ViewActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void changeStatusBarColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(color);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        refresh();
-    }
-
-    private void refresh() {
-        initAdapter(mRecyclerView);
-        mAdapter.notifyDataSetChanged();
-    }
-
     private void showAddTaskBottomSheetDialog() {
         final BottomSheetDialog dialog = new BottomSheetDialog(this);
         View sheetView = getLayoutInflater().inflate(R.layout.what_add_dialog, null);
@@ -260,17 +150,5 @@ public class HomeActivity extends ViewActivity
 
         dialog.setContentView(sheetView);
         dialog.show();
-    }
-
-    /**
-     * region; HomeSubContentFragment.InteractionListener implementation
-     */
-
-    @Override
-    public void onHeaderClick() {
-        final int state = mSheetStateObserver.getTarget().getState();
-        if (state == BottomSheetBehavior.STATE_COLLAPSED) {
-            mSheetStateObserver.getTarget().setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
     }
 }
