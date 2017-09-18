@@ -98,13 +98,14 @@ public class HomeActivity extends ViewActivity {
 
         LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
+        View view = inflater.inflate(R.layout.simple_event_card, mRecyclerView, false);
 
         if (mViewModel.getTasksNeedToBeRescheduled().size() != 0) {
             View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
-            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
+            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView, view);
             mAdapter.addAdapter(fullSpanViewAdapter);
         } else {
-            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
+            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView, view);
             mAdapter.addAdapter(fullSpanViewAdapter);
         }
 

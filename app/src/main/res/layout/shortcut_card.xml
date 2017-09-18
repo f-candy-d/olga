@@ -20,7 +20,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:textSize="@dimen/primary_text"
-            android:textColor="@color/primary_text"/>
+            android:textColor="@color/primary_text_light"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,12 +44,13 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/circular_background"
                     android:src="@drawable/ic_local_dining"
-                    android:padding="8dp"/>
+                    android:padding="12dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event"
+                    android:textSize="@dimen/shortcut_card_text"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"/>
 
@@ -70,12 +71,13 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/circular_background"
                     android:src="@drawable/ic_local_dining"
-                    android:padding="8dp"/>
+                    android:padding="12dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event"
+                    android:textSize="@dimen/shortcut_card_text"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"/>
 
@@ -106,12 +108,13 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/circular_background"
                     android:src="@drawable/ic_local_dining"
-                    android:padding="8dp"/>
+                    android:padding="12dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event"
+                    android:textSize="@dimen/shortcut_card_text"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"/>
 
@@ -132,12 +135,13 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/circular_background"
                     android:src="@drawable/ic_local_dining"
-                    android:padding="8dp"/>
+                    android:padding="12dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Event"
+                    android:textSize="@dimen/shortcut_card_text"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"/>
 
