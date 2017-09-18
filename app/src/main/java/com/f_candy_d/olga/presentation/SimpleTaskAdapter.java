@@ -76,6 +76,13 @@ public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHold
         } else {
             vh.locationLayout.setVisibility(View.GONE);
         }
+
+        // done-mask
+        if (mTasks.get(position).isDone) {
+            vh.doneMask.setVisibility(View.VISIBLE);
+        } else {
+            vh.doneMask.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -98,6 +105,7 @@ public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHold
         TextView location;
         View timeLayout;
         View locationLayout;
+        View doneMask;
 
         TaskViewHolder(View view) {
             super(view);
@@ -106,6 +114,7 @@ public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHold
             location = view.findViewById(R.id.location_label);
             timeLayout = view.findViewById(R.id.layout_time_label);
             locationLayout = view.findViewById(R.id.layout_location_label);
+            doneMask = view.findViewById(R.id.done_mask);
         }
     }
 

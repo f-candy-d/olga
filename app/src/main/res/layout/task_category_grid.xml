@@ -19,7 +19,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
-            android:background="@drawable/circular_background"
+            android:background="@drawable/shortcut_card_icon_bg"
             android:src="@drawable/ic_event"
             android:contentDescription="@string/app_name"
             android:padding="12dp"/>
@@ -47,7 +47,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
-            android:background="@drawable/circular_background"
+            android:background="@drawable/shortcut_card_icon_bg"
             android:src="@drawable/ic_directions_bike"
             android:contentDescription="@string/app_name"
             android:padding="12dp"/>
@@ -75,7 +75,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
-            android:background="@drawable/circular_background"
+            android:background="@drawable/shortcut_card_icon_bg"
             android:src="@drawable/ic_flight"
             android:contentDescription="@string/app_name"
             android:padding="12dp"/>
@@ -104,7 +104,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
-            android:background="@drawable/circular_background"
+            android:background="@drawable/shortcut_card_icon_bg"
             android:src="@drawable/ic_local_dining"
             android:contentDescription="@string/app_name"
             android:padding="12dp"/>

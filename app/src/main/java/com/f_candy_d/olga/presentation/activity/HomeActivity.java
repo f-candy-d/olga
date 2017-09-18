@@ -24,6 +24,7 @@ import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
@@ -64,34 +65,10 @@ public class HomeActivity extends ViewActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        SimpleTaskAdapter adapter = new SimpleTaskAdapter(mViewModel.getTasksNeedToBeRescheduled());
-
-        adapter.setCallback(new SimpleTaskAdapter.Callback() {
-            @Override
-            public boolean isItemFullSpan(int position) {
-                return false;
-            }
-
-            @Override
-            public void onBind(SimpleTaskAdapter.OutVisibility outVisibility, Task task,
-                               StringBuffer title, StringBuffer time, StringBuffer location) {
-                // title
-                title.append(task.title);
-                // time
-                Calendar now = Calendar.getInstance();
-                String diff = AppDataDecoration.formatCalendarDiff(now, task.dateTermEnd.asCalendar());
-                time.append(diff.concat(" ago"));
-                // location
-                location.append("Shizuoka hamamatsushi 432-8061");
-            }
-        });
-
         mAdapter = new RecyclerViewMergeAdapter();
 
         LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
-
         if (mViewModel.getTasksNeedToBeRescheduled().size() != 0) {
             View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
@@ -101,7 +78,35 @@ public class HomeActivity extends ViewActivity {
             mAdapter.addAdapter(fullSpanViewAdapter);
         }
 
-        mAdapter.addAdapter(adapter);
+        ArrayList<Task> tasks = mViewModel.getAllTasks();
+        if (tasks.size() != 0) {
+            SimpleTaskAdapter adapter = new SimpleTaskAdapter(tasks);
+            adapter.setCallback(new SimpleTaskAdapter.Callback() {
+                @Override
+                public boolean isItemFullSpan(int position) {
+                    return false;
+                }
+
+                @Override
+                public void onBind(SimpleTaskAdapter.OutVisibility outVisibility, Task task,
+                                   StringBuffer title, StringBuffer time, StringBuffer location) {
+                    // title
+                    title.append(task.title);
+                    // time
+                    Calendar now = Calendar.getInstance();
+                    String diff = AppDataDecoration.formatCalendarDiff(now, task.dateTermEnd.asCalendar());
+                    time.append(diff.concat(" ago"));
+                    // location
+                    location.append("Shizuoka hamamatsushi 432-8061");
+                }
+            });
+            mAdapter.addAdapter(adapter);
+
+        } else {
+            View emptyView = inflater.inflate(R.layout.home_no_task_message, mRecyclerView, false);
+            mAdapter.addAdapter(new FullSpanViewAdapter(emptyView));
+        }
+
         mRecyclerView.setAdapter(mAdapter);
     }
 

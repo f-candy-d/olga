@@ -60,4 +60,7 @@
     <!-- White 38% -->
     <color name="secondary_text_dark">#61ffffff</color>
 
+    <color name="item_simple_task_card_done_mask_bg">#4C000000</color>
+    <color name="item_simple_task_card_done_icon_bg">#78909C</color>
+
 </resources>
