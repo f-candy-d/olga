@@ -5,7 +5,7 @@
     <color name="colorAccent">#FFC400</color>
     <color name="google_material_icon_gray">#707070</color>
     <color name="system_light_bg">#fffafafa</color>
-    <color name="status_bar_transparent_dark">#33000000</color>
+    <color name="status_bar_transparent_dark">#4c000000</color>
     <color name="event_theme_color">#388E3C</color>
 
     <!--<color name="color_set_1_primary">#8acfa3</color>-->
