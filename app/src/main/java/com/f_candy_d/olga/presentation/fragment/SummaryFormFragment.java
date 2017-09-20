@@ -28,7 +28,7 @@ public class SummaryFormFragment extends FormFragment {
     }
 
     @Override
-    protected String getTitle() {
-        return null;
+    public String getTitle() {
+        return "Which exercise?";
     }
 }

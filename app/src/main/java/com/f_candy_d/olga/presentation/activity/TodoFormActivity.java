@@ -25,11 +25,11 @@ public class TodoFormActivity extends FormActivity {
 
     @Override
     protected FormFragment[] getFormFragments() {
-        return new FormFragment[] {new SummaryFormFragment()};
+        return new FormFragment[] {new SummaryFormFragment(), new SummaryFormFragment()};
     }
 
     @Override
-    public void onDataInput(Bundle data, String simpleClassName) {
+    public void onDataInput(Bundle data, String simpleFragmentClassName) {
 
     }
 

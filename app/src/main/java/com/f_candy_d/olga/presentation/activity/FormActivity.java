@@ -34,8 +34,8 @@ abstract public class FormActivity extends AppCompatActivity
 
     public static final String EXTRA_CONTENT_ID = "contentId";
 
-    private FragmentPagerAdapter mPagerAdapter;
     private FormFragment[] mFormFragments;
+    private int mPrevPagePosition;
 
     public static Bundle makeExtras(long contentId) {
         Bundle bundle = new Bundle();
@@ -70,6 +70,9 @@ abstract public class FormActivity extends AppCompatActivity
     }
 
     private void initUI() {
+
+        // # ToolBar
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -89,9 +92,37 @@ abstract public class FormActivity extends AppCompatActivity
             }
         });
 
+        // # TextSwitcher
+
+        /**
+         * See {@link https://github.com/pjambo/ToolbarTitleAnimation/blob/master/app/src/main/java/com/jambo/example/toolbartitleanimation/PagerActivity.java}
+         *
+         * Set IN an OUT animation for the {@link ToolBar} title
+         * ({@link TextSwitcher} in this case) when pager is swiped to the left
+         */
+        final Animation IN_SWIPE_BACKWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_top);
+        final Animation OUT_SWIPE_BACKWARD = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
+
+        /**
+         * Set IN an OUT animation for the {@link ToolBar} title
+         * ({@link TextSwitcher} in this case) when pager is swiped to the right
+         */
+        final Animation IN_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
+        final Animation OUT_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_out_top);
+
+        final TextSwitcher textSwitcher = (TextSwitcher) findViewById(R.id.title_switcher);
+        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                return getLayoutInflater().inflate(R.layout.title_switcher_text_view, textSwitcher, false);
+            }
+        });
+
+        // # ViewPager
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         mFormFragments = getFormFragments();
-        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        FragmentPagerAdapter pagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 return mFormFragments[position];
@@ -102,17 +133,37 @@ abstract public class FormActivity extends AppCompatActivity
                 return mFormFragments.length;
             }
         };
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            @Override public void onPageScrollStateChanged(int state) {}
 
-        viewPager.setAdapter(mPagerAdapter);
-        if (0 < mFormFragments.length) {
-            // initial position
-            viewPager.setCurrentItem(0);
-        }
+            @Override
+            public void onPageSelected(int position) {
+                //Set TextSwitcher animation based on swipe direction
+                if (position >= mPrevPagePosition) {
+                    textSwitcher.setInAnimation(IN_SWIPE_FORWARD);
+                    textSwitcher.setOutAnimation(OUT_SWIPE_FORWARD);
+                } else {
+                    textSwitcher.setInAnimation(IN_SWIPE_BACKWARD);
+                    textSwitcher.setOutAnimation(OUT_SWIPE_BACKWARD);
+                }
+                textSwitcher.setText(mFormFragments[position].getTitle());
+                mPrevPagePosition = position;
+            }
+        });
 
-        // Set theme color
+        // # Background Color
         int color = getThemeColor();
         appBarLayout.setBackgroundColor(color);
         viewPager.setBackgroundColor(color);
+
+        // # Initial Status
+        if (0 < mFormFragments.length) {
+            mPrevPagePosition = 0;
+            viewPager.setCurrentItem(mPrevPagePosition);
+            textSwitcher.setText(mFormFragments[mPrevPagePosition].getTitle());
+        }
     }
 
     // A method to find height of the status bar

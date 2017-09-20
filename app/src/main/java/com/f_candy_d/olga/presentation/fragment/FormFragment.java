@@ -32,7 +32,7 @@ abstract public class FormFragment extends Fragment {
         mListener.onDataInput(data, this.getClass().getSimpleName());
     }
 
-    abstract protected String getTitle();
+    abstract public String getTitle();
 
     /**
      * This interface must be implemented by activities that contain this
@@ -45,6 +45,6 @@ abstract public class FormFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDataInputListener {
-        void onDataInput(Bundle data, String simpleClassName);
+        void onDataInput(Bundle data, String simpleFragmentClassName);
     }
 }
