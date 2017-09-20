@@ -1,7 +1,9 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 
+import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.presentation.fragment.FormFragment;
 import com.f_candy_d.olga.presentation.fragment.SummaryFormFragment;
 
@@ -34,5 +36,10 @@ public class TodoFormActivity extends FormActivity {
     @Override
     protected void onSave() {
 
+    }
+
+    @Override
+    protected int getThemeColor() {
+        return ContextCompat.getColor(this, R.color.color_blue_gray);
     }
 }

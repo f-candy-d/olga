@@ -35,6 +35,7 @@ abstract public class FormActivity extends AppCompatActivity
     public static final String EXTRA_CONTENT_ID = "contentId";
 
     private FragmentPagerAdapter mPagerAdapter;
+    private FormFragment[] mFormFragments;
 
     public static Bundle makeExtras(long contentId) {
         Bundle bundle = new Bundle();
@@ -76,6 +77,9 @@ abstract public class FormActivity extends AppCompatActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        // Set the padding to match the Status Bar height
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        appBarLayout.setPadding(0, getStatusBarHeight(), 0, 0);
 
         FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.fab);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -86,23 +90,40 @@ abstract public class FormActivity extends AppCompatActivity
         });
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        final FormFragment[] formFragments = getFormFragments();
+        mFormFragments = getFormFragments();
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return formFragments[position];
+                return mFormFragments[position];
             }
 
             @Override
             public int getCount() {
-                return formFragments.length;
+                return mFormFragments.length;
             }
         };
 
         viewPager.setAdapter(mPagerAdapter);
-        if (0 < formFragments.length) {
+        if (0 < mFormFragments.length) {
             // initial position
             viewPager.setCurrentItem(0);
         }
+
+        // Set theme color
+        int color = getThemeColor();
+        appBarLayout.setBackgroundColor(color);
+        viewPager.setBackgroundColor(color);
     }
+
+    // A method to find height of the status bar
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    abstract protected int getThemeColor();
 }

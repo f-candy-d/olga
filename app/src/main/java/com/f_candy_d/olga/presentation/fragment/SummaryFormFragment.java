@@ -27,4 +27,8 @@ public class SummaryFormFragment extends FormFragment {
         return inflater.inflate(R.layout.fragment_summary_form, container, false);
     }
 
+    @Override
+    protected String getTitle() {
+        return null;
+    }
 }

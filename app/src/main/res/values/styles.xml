@@ -13,6 +13,15 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="FormTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="FormTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
@@ -30,29 +39,6 @@
         <item name="android:paddingLeft">0dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="SubAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/color_set_1_primary</item>
-        <item name="colorPrimaryDark">@color/color_set_1_dark</item>
-        <item name="colorAccent">@color/color_set_1_accent</item>
-        <item name="android:statusBarColor">@color/color_set_1_dark</item>
-    </style>
-
-    <style name="SubAppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <!-- Use for TextSwitcher -->
-    <style name="TitleTextAppearance" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="EditTextErrorMessageAppearance" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/color_cream_orange_2</item>
-        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

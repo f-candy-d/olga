@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
 abstract public class FormFragment extends Fragment {
@@ -30,6 +31,8 @@ abstract public class FormFragment extends Fragment {
     protected void onDispatchUserInput(Bundle data) {
         mListener.onDataInput(data, this.getClass().getSimpleName());
     }
+
+    abstract protected String getTitle();
 
     /**
      * This interface must be implemented by activities that contain this
