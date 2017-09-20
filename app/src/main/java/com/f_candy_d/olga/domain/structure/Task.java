@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.domain;
+package com.f_candy_d.olga.domain.structure;
 
 
 import android.support.annotation.NonNull;
@@ -7,14 +7,13 @@ import com.f_candy_d.dutils.InstantDate;
 import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.infra.SqlEntity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
  * Created by daichi on 17/09/03.
  */
 
-public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
+public class Task extends SqlEntityObject {
 
     public String title;
     public InstantDate startDate;
@@ -24,7 +23,6 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
 
     public Task() {
         super(TaskTable.TABLE_NAME);
-        init();
     }
 
     public Task(Task task) {
@@ -44,8 +42,6 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
                     ? new InstantDate(task.endDate)
                     : null;
 
-        } else {
-            init();
         }
     }
 
@@ -53,36 +49,12 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
         super(TaskTable.TABLE_NAME);
         if (entity != null) {
             constructFromSqlEntity(entity);
-        } else {
-            init();
         }
     }
 
     @NonNull
     @Override
-    public TaskTable.ValidationErrorCode[] checkValidation() {
-        ArrayList<TaskTable.ValidationErrorCode> errorCodes = new ArrayList<>();
-        TaskTable.ValidationErrorCode errorCode;
-
-        if ((errorCode = TaskTable.isTitleValid(this.title)) != null) {
-            errorCodes.add(errorCode);
-        }
-
-        if ((errorCode = TaskTable.isDateValid(
-                this.startDate.getTimeInMillis(), this.endDate.getTimeInMillis())) != null) {
-            errorCodes.add(errorCode);
-        }
-
-        if ((errorCode = TaskTable.isTypeValid(this.type)) != null) {
-            errorCodes.add(errorCode);
-        }
-
-        return errorCodes.toArray(new TaskTable.ValidationErrorCode[]{});
-    }
-
-    @NonNull
-    @Override
-    SqlEntity toSqlEntity(boolean includeRowId) {
+    public SqlEntity toSqlEntity(boolean includeRowId) {
         SqlEntity entity = new SqlEntity(TaskTable.TABLE_NAME);
 
         if (includeRowId) {
@@ -98,7 +70,7 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
     }
 
     @Override
-    void constructFromSqlEntity(SqlEntity entity) {
+    public void constructFromSqlEntity(SqlEntity entity) {
         if (entity == null) {
             return;
         }
@@ -113,18 +85,5 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
 
         date = entity.getCalendarOrDefault(TaskTable._DATE_TERM_START, null);
         this.startDate = (date != null) ? new InstantDate(date) : this.startDate;
-    }
-
-    private void init() {
-        super.id = TaskTable.defaultId();
-        this.title = TaskTable.defaultTitle();
-        this.startDate = new InstantDate(TaskTable.defaultDateTermStart());
-        this.endDate = new InstantDate(TaskTable.defaultDateTermEnd());
-        this.isDone = TaskTable.defaultIsDone();
-        this.type = TaskTable.defaultType();
-    }
-
-    public String toSummary() {
-        return this.title;
     }
 }

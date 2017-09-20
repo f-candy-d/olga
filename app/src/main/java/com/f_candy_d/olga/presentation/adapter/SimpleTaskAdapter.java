@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.presentation;
+package com.f_candy_d.olga.presentation.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.Task;
+import com.f_candy_d.olga.domain.structure.Task;
 
 import java.util.ArrayList;
 import java.util.Collection;

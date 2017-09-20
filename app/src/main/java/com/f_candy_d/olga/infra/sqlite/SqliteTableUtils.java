@@ -2,7 +2,6 @@ package com.f_candy_d.olga.infra.sqlite;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -16,8 +15,8 @@ import java.util.Set;
 public class SqliteTableUtils {
 
     public static class TableSource {
-        // key -> columnName | value -> {dataType, isNullable}
-        @NonNull private Map<String, Pair<SqliteColumnDataType, Boolean>> mPairMap;
+        // key -> columnName | value -> dataType
+        @NonNull private Map<String, SqliteColumnDataType> mPairMap;
         private String mTableName;
 
         public TableSource(String tableName) {
@@ -33,12 +32,12 @@ public class SqliteTableUtils {
             mTableName = tableName;
         }
 
-        public TableSource put(@NonNull String column, @NonNull SqliteColumnDataType dataType, boolean isNullable) {
-            mPairMap.put(column, new Pair<>(dataType, isNullable));
+        public TableSource put(@NonNull String column, @NonNull SqliteColumnDataType dataType) {
+            mPairMap.put(column, dataType);
             return this;
         }
 
-        public Pair<SqliteColumnDataType, Boolean> get(@NonNull String column) {
+        public SqliteColumnDataType getDataType(@NonNull String column) {
             return mPairMap.get(column);
         }
 
@@ -67,17 +66,10 @@ public class SqliteTableUtils {
         String sqlCreate = "CREATE TABLE " + source.getTableName() + " (";
         Set<String> columns = source.getAllColumns();
         String[] tokens = new String[columns.size()];
-        Pair<SqliteColumnDataType, Boolean> pair;
         int i = 0;
 
         for (String column : columns) {
-            pair = source.get(column);
-            // pair.mSecond -> is a column nullable or not
-            if (pair.second) {
-                tokens[i] = column + " " + pair.first.toString();
-            } else {
-                tokens[i] = column + " " + pair.first.toString() + " NOT NULL";
-            }
+            tokens[i] = column + " " + source.getDataType(column).toString();
             ++i;
         }
 

@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.domain;
+package com.f_candy_d.olga.domain.usecase;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,10 +16,6 @@ public class SqlStreamUseCase {
 
 
     public static long insert(SqlEntityObject entityObject) {
-        if (!entityObject.isValid()) {
-            return DbContract.NULL_ID;
-        }
-
         SqlEntity entity = entityObject.toSqlEntity(false);
         final long id = Repository.getSql().insert(entity);
 
@@ -32,10 +28,6 @@ public class SqlStreamUseCase {
     }
 
     public static boolean update(SqlEntityObject entityObject) {
-        if (!entityObject.isValid()) {
-            return false;
-        }
-
         SqlEntity entity = entityObject.toSqlEntity(true);
         return Repository.getSql().update(entity);
     }

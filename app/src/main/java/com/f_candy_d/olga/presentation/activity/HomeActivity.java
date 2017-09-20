@@ -15,11 +15,9 @@ import android.view.View;
 
 import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.Task;
-import com.f_candy_d.olga.presentation.FullSpanViewAdapter;
-import com.f_candy_d.olga.presentation.OldSimpleTaskAdapter;
-import com.f_candy_d.olga.presentation.SimpleTaskAdapter;
-import com.f_candy_d.olga.presentation.view_model.FormViewModelFactory;
+import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
+import com.f_candy_d.olga.presentation.adapter.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
@@ -95,7 +93,7 @@ public class HomeActivity extends ViewActivity {
                     title.append(task.title);
                     // time
                     Calendar now = Calendar.getInstance();
-                    String diff = AppDataDecoration.formatCalendarDiff(now, task.dateTermEnd.asCalendar());
+                    String diff = AppDataDecoration.formatCalendarDiff(now, task.endDate.asCalendar());
                     time.append(diff.concat(" ago"));
                     // location
                     location.append("Shizuoka hamamatsushi 432-8061");
@@ -139,9 +137,7 @@ public class HomeActivity extends ViewActivity {
         sheetView.findViewById(R.id.add_event).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle extras = FormActivity.makeExtras(FormViewModelFactory.Model.EVENT_FORM);
-                Intent intent = new Intent(HomeActivity.this, FormActivity.class);
-                intent.putExtras(extras);
+                Intent intent = new Intent(HomeActivity.this, TodoFormActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
             }

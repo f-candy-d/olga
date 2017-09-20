@@ -1,11 +1,9 @@
 package com.f_candy_d.olga.presentation.view_model;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 
-import com.f_candy_d.olga.domain.Task;
-import com.f_candy_d.olga.domain.TaskStreamUseCase;
+import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.domain.usecase.TaskStreamUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
 
 import java.util.ArrayList;
@@ -81,7 +79,7 @@ public class HomeViewModel extends ActivityViewModel {
         Comparator<Task> comparator = new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
-                return t1.dateTermEnd.compareTo(t2.dateTermEnd);
+                return t1.endDate.compareTo(t2.endDate);
             }
         };
 
@@ -92,7 +90,7 @@ public class HomeViewModel extends ActivityViewModel {
         Comparator<Task> comparator = new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
-                return t1.dateTermStart.compareTo(t2.dateTermStart);
+                return t1.startDate.compareTo(t2.startDate);
             }
         };
 

@@ -4,15 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnDataInputListener} interface
- * to handle interaction events.
- */
 abstract public class FormFragment extends Fragment {
 
     private OnDataInputListener mListener;
@@ -35,21 +28,8 @@ abstract public class FormFragment extends Fragment {
     }
 
     protected void onDispatchUserInput(Bundle data) {
-        mListener.onUserInputData(data, getFragmentTag());
+        mListener.onDataInput(data, this.getClass().getSimpleName());
     }
-
-    /**
-     * @return An unique name of a fragment class
-     */
-    @NonNull
-    abstract public String getFragmentTag();
-
-    abstract public String getTitle();
-
-    abstract public void onShowError(int errorCode);
-
-    @DrawableRes
-    abstract public int getIcon();
 
     /**
      * This interface must be implemented by activities that contain this
@@ -62,6 +42,6 @@ abstract public class FormFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDataInputListener {
-        void onUserInputData(Bundle data, String fragmentTag);
+        void onDataInput(Bundle data, String simpleClassName);
     }
 }

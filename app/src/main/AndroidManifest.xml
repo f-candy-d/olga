@@ -20,11 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.activity.EventFormActivity">
-        </activity>
         <activity
-            android:name=".presentation.activity.FormActivity"
-            android:label="@string/title_activity_form"
+            android:name=".presentation.activity.TodoFormActivity"
+            android:label="@string/title_activity_form_todo"
             android:theme="@style/SubAppTheme.NoActionBar">
         </activity>
     </application>

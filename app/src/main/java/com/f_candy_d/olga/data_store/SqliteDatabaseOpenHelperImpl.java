@@ -37,6 +37,6 @@ public class SqliteDatabaseOpenHelperImpl extends SQLiteOpenHelper implements Sq
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        SqliteTableUtils.resetTable(sqLiteDatabase, DbContract.getTableSources());
     }
 }

@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.presentation;
+package com.f_candy_d.olga.presentation.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;

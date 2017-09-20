@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.domain;
+package com.f_candy_d.olga.domain.usecase;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
