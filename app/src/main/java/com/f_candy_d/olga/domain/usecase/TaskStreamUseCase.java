@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.f_candy_d.olga.data_store.TaskTable;
+import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.infra.Repository;
 import com.f_candy_d.olga.infra.SqlEntity;
 import com.f_candy_d.olga.infra.sql_utils.SqlBetweenExpr;

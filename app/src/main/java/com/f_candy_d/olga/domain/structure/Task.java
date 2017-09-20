@@ -17,10 +17,9 @@ import java.util.Calendar;
 public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
 
     public String title;
-    public InstantDate dateTermStart;
-    public InstantDate dateTermEnd;
+    public InstantDate startDate;
+    public InstantDate endDate;
     public boolean isDone;
-    public boolean doThroughoutTerm;
     public int type;
 
     public Task() {
@@ -35,15 +34,14 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
             super.id = task.id;
             this.title = task.title;
             this.isDone = task.isDone;
-            this.doThroughoutTerm = task.doThroughoutTerm;
             this.type = task.type;
 
-            this.dateTermStart = (task.dateTermStart != null)
-                    ? new InstantDate(task.dateTermStart)
+            this.startDate = (task.startDate != null)
+                    ? new InstantDate(task.startDate)
                     : null;
 
-            this.dateTermEnd = (task.dateTermEnd != null)
-                    ? new InstantDate(task.dateTermEnd)
+            this.endDate = (task.endDate != null)
+                    ? new InstantDate(task.endDate)
                     : null;
 
         } else {
@@ -71,7 +69,7 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
         }
 
         if ((errorCode = TaskTable.isDateValid(
-                this.dateTermStart.getTimeInMillis(), this.dateTermEnd.getTimeInMillis())) != null) {
+                this.startDate.getTimeInMillis(), this.endDate.getTimeInMillis())) != null) {
             errorCodes.add(errorCode);
         }
 
@@ -90,11 +88,10 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
         if (includeRowId) {
             entity.put(TaskTable._ID, super.id);
         }
-        entity.put(TaskTable._DATE_TERM_END, this.dateTermEnd.asCalendar());
-        entity.put(TaskTable._DATE_TERM_START, this.dateTermStart.asCalendar());
+        entity.put(TaskTable._DATE_TERM_END, this.endDate.asCalendar());
+        entity.put(TaskTable._DATE_TERM_START, this.startDate.asCalendar());
         entity.put(TaskTable._TITLE, this.title);
         entity.put(TaskTable._IS_DONE, this.isDone);
-        entity.put(TaskTable._DO_THROUGHOUT_TERM, this.doThroughoutTerm);
         entity.put(TaskTable._TYPE, this.type);
 
         return entity;
@@ -109,23 +106,21 @@ public class Task extends SqlEntityObject<TaskTable.ValidationErrorCode> {
         super.id = entity.getLongOrDefault(TaskTable._ID, super.id);
         this.title = entity.getStringOrDefault(TaskTable._TITLE, this.title);
         this.isDone = entity.getBooleanOrDefault(TaskTable._IS_DONE, this.isDone);
-        this.doThroughoutTerm = entity.getBooleanOrDefault(TaskTable._DO_THROUGHOUT_TERM, this.doThroughoutTerm);
         this.type = entity.getIntOrDefault(TaskTable._TYPE, this.type);
 
         Calendar date = entity.getCalendarOrDefault(TaskTable._DATE_TERM_END, null);
-        this.dateTermEnd = (date != null) ? new InstantDate(date) : this.dateTermEnd;
+        this.endDate = (date != null) ? new InstantDate(date) : this.endDate;
 
         date = entity.getCalendarOrDefault(TaskTable._DATE_TERM_START, null);
-        this.dateTermStart= (date != null) ? new InstantDate(date) : this.dateTermStart;
+        this.startDate = (date != null) ? new InstantDate(date) : this.startDate;
     }
 
     private void init() {
         super.id = TaskTable.defaultId();
         this.title = TaskTable.defaultTitle();
-        this.dateTermStart = new InstantDate(TaskTable.defaultDateTermStart());
-        this.dateTermEnd = new InstantDate(TaskTable.defaultDateTermEnd());
+        this.startDate = new InstantDate(TaskTable.defaultDateTermStart());
+        this.endDate = new InstantDate(TaskTable.defaultDateTermEnd());
         this.isDone = TaskTable.defaultIsDone();
-        this.doThroughoutTerm = TaskTable.defaultDoThroughoutTerm();
         this.type = TaskTable.defaultType();
     }
 

@@ -18,24 +18,23 @@ public class EventTask extends Task {
     }
 
     public void format() {
-        this.doThroughoutTerm = true;
         this.type = TaskTable.TYPE_EVENT;
     }
 
     public void setStartDate(InstantDate date) {
-        this.dateTermStart = date;
+        this.startDate = date;
     }
 
     public InstantDate getStartDate() {
-        return this.dateTermStart;
+        return this.startDate;
     }
 
     public void setEndDate(InstantDate date) {
-        this.dateTermEnd = date;
+        this.endDate = date;
     }
 
     public InstantDate getEndDate() {
-        return this.dateTermEnd;
+        return this.endDate;
     }
 
     public void setTitle(String title) {

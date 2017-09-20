@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.f_candy_d.olga.data_store.DbContract;
+import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.infra.Repository;
 import com.f_candy_d.olga.infra.SqlEntity;
 
