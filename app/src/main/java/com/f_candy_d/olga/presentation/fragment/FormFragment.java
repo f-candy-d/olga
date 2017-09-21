@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
+import com.f_candy_d.olga.presentation.activity.FormActivity;
+
 abstract public class FormFragment extends Fragment {
 
     private OnDataInputListener mListener;
@@ -34,6 +36,10 @@ abstract public class FormFragment extends Fragment {
 
     abstract public String getTitle();
 
+    public FormActivity.Style getStyle() {
+        return mListener.getStyle();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -46,5 +52,6 @@ abstract public class FormFragment extends Fragment {
      */
     public interface OnDataInputListener {
         void onDataInput(Bundle data, String simpleFragmentClassName);
+        @NonNull FormActivity.Style getStyle();
     }
 }

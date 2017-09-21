@@ -1,22 +1,21 @@
 package com.f_candy_d.olga.presentation.activity;
 
-import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.util.Pair;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextSwitcher;
@@ -24,10 +23,9 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.presentation.fragment.FormFragment;
-import com.f_candy_d.vvm.ActivityViewModel;
-import com.f_candy_d.vvm.ViewActivity;
 
 abstract public class FormActivity extends AppCompatActivity
         implements FormFragment.OnDataInputListener {
@@ -70,6 +68,8 @@ abstract public class FormActivity extends AppCompatActivity
     }
 
     private void initUI() {
+        // color set
+        final Style style = getStyle();
 
         // # ToolBar
 
@@ -82,9 +82,10 @@ abstract public class FormActivity extends AppCompatActivity
         }
         // Set the padding to match the Status Bar height
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
-        appBarLayout.setPadding(0, getStatusBarHeight(), 0, 0);
+        appBarLayout.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
 
         FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.fab);
+        saveButton.setBackgroundTintList(ColorStateList.valueOf(style.colorSecondary));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +115,9 @@ abstract public class FormActivity extends AppCompatActivity
         textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
-                return getLayoutInflater().inflate(R.layout.title_switcher_text_view, textSwitcher, false);
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.title_switcher_text_view, textSwitcher, false);
+                view.setTextColor(style.textColorPrimary);
+                return view;
             }
         });
 
@@ -153,10 +156,14 @@ abstract public class FormActivity extends AppCompatActivity
             }
         });
 
+        // # Navigation Back Button Color
+        final Drawable upArrow = Utils.getDrawable(R.drawable.ic_arrow_back);
+        upArrow.setColorFilter(style.textColorPrimary, PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
         // # Background Color
-        int color = getThemeColor();
-        appBarLayout.setBackgroundColor(color);
-        viewPager.setBackgroundColor(color);
+        appBarLayout.setBackgroundColor(style.colorPrimary);
+        viewPager.setBackgroundColor(style.colorPrimary);
 
         // # Initial Status
         if (0 < mFormFragments.length) {
@@ -166,15 +173,26 @@ abstract public class FormActivity extends AppCompatActivity
         }
     }
 
-    // A method to find height of the status bar
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
+    @NonNull
+    @Override
+    public Style getStyle() {
+        // Default theme colors
+        Style style = new Style();
+        style.colorPrimary = ContextCompat.getColor(this, R.color.color_blue_gray);
+        style.colorSecondary = ContextCompat.getColor(this, R.color.color_cream_red);
+        style.textColorPrimary = ContextCompat.getColor(this, R.color.primary_text_light);
+        style.textColorSecondary = ContextCompat.getColor(this, R.color.secondary_text_light);
+        return style;
     }
 
-    abstract protected int getThemeColor();
+    /**
+     * Style data
+     */
+
+    public static class Style {
+        int colorPrimary;
+        int colorSecondary;
+        int textColorPrimary;
+        int textColorSecondary;
+    }
 }

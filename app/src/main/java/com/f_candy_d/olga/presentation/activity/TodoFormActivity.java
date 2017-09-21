@@ -1,9 +1,10 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.presentation.fragment.FormFragment;
 import com.f_candy_d.olga.presentation.fragment.SummaryFormFragment;
 
@@ -38,8 +39,12 @@ public class TodoFormActivity extends FormActivity {
 
     }
 
+    @NonNull
     @Override
-    protected int getThemeColor() {
-        return ContextCompat.getColor(this, R.color.color_blue_gray);
+    public Style getStyle() {
+        Style style = super.getStyle();
+        style.colorPrimary = Utils.getColor(R.color.color_cream_blue);
+        style.colorSecondary = Utils.getColor(R.color.color_green_dark);
+        return style;
     }
 }
