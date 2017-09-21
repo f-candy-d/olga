@@ -26,7 +26,7 @@ public class TodoFormActivity extends FormActivity {
 
     @Override
     protected FormFragment[] getFormFragments() {
-        return new FormFragment[] {new SummaryFormFragment(), new SummaryFormFragment()};
+        return new FormFragment[] {new SummaryFormFragment(), new SummaryFormFragment(), new SummaryFormFragment(), new SummaryFormFragment()};
     }
 
     @Override

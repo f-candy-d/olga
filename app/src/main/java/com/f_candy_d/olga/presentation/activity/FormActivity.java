@@ -1,5 +1,6 @@
 package com.f_candy_d.olga.presentation.activity;
 
+import android.animation.Animator;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -16,8 +17,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -34,6 +38,7 @@ abstract public class FormActivity extends AppCompatActivity
 
     private FormFragment[] mFormFragments;
     private int mPrevPagePosition;
+    private ViewPager mViewPager;
 
     public static Bundle makeExtras(long contentId) {
         Bundle bundle = new Bundle();
@@ -68,7 +73,6 @@ abstract public class FormActivity extends AppCompatActivity
     }
 
     private void initUI() {
-        // color set
         final Style style = getStyle();
 
         // # ToolBar & AppBar
@@ -84,9 +88,21 @@ abstract public class FormActivity extends AppCompatActivity
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         appBarLayout.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
 
-        // # FAB
+        // # FABs
 
-        FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton nextButton = (FloatingActionButton) findViewById(R.id.fab_next);
+        nextButton.setBackgroundTintList(ColorStateList.valueOf(style.colorSecondary));
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int next = mPrevPagePosition + 1;
+                if (next < mFormFragments.length) {
+                    mViewPager.setCurrentItem(next);
+                }
+            }
+        });
+
+        final FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.fab_save);
         saveButton.setBackgroundTintList(ColorStateList.valueOf(style.colorSecondary));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +141,7 @@ abstract public class FormActivity extends AppCompatActivity
 
         // # ViewPager
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mFormFragments = getFormFragments();
         FragmentPagerAdapter pagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -138,13 +154,21 @@ abstract public class FormActivity extends AppCompatActivity
                 return mFormFragments.length;
             }
         };
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.setAdapter(pagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override public void onPageScrollStateChanged(int state) {}
 
             @Override
             public void onPageSelected(int position) {
+                // Toggle FABs if the last page selected
+                final int lastPagePosition = mFormFragments.length - 1;
+                if (position == lastPagePosition) {
+                    toggleFab(nextButton, saveButton);
+                } else if (mPrevPagePosition == lastPagePosition) {
+                    toggleFab(saveButton, nextButton);
+                }
+
                 //Set TextSwitcher animation based on swipe direction
                 if (position >= mPrevPagePosition) {
                     textSwitcher.setInAnimation(IN_SWIPE_FORWARD);
@@ -159,20 +183,60 @@ abstract public class FormActivity extends AppCompatActivity
         });
 
         // # Navigation Back Button Color
+
         final Drawable upArrow = Utils.getDrawable(R.drawable.ic_arrow_back);
         upArrow.setColorFilter(style.textColorPrimary, PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         // # Background Color
+
         appBarLayout.setBackgroundColor(style.colorPrimary);
-        viewPager.setBackgroundColor(style.colorPrimary);
+        mViewPager.setBackgroundColor(style.colorPrimary);
 
         // # Initial Status
+
         if (0 < mFormFragments.length) {
             mPrevPagePosition = 0;
-            viewPager.setCurrentItem(mPrevPagePosition);
+            mViewPager.setCurrentItem(mPrevPagePosition);
             textSwitcher.setText(mFormFragments[mPrevPagePosition].getTitle());
         }
+        saveButton.setVisibility(View.GONE);
+        nextButton.setVisibility(View.VISIBLE);
+    }
+
+    private void toggleFab(final View oldFab, final View newFab) {
+        oldFab.clearAnimation();
+        newFab.clearAnimation();
+        oldFab.setVisibility(View.VISIBLE);
+        newFab.setVisibility(View.GONE);
+        // Scale down animation
+        ScaleAnimation shrink = new ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        shrink.setDuration(150);
+        shrink.setInterpolator(new DecelerateInterpolator());
+        shrink.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                oldFab.setVisibility(View.GONE);
+                newFab.setVisibility(View.VISIBLE);
+                // Scale up animation
+                ScaleAnimation expand =  new ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                expand.setDuration(100);
+                expand.setInterpolator(new AccelerateInterpolator());
+                newFab.startAnimation(expand);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        oldFab.startAnimation(shrink);
     }
 
     @NonNull
