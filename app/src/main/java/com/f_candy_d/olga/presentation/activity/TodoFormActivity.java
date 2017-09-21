@@ -44,7 +44,7 @@ public class TodoFormActivity extends FormActivity {
     public Style getStyle() {
         Style style = super.getStyle();
         style.colorPrimary = Utils.getColor(R.color.color_cream_blue);
-        style.colorSecondary = Utils.getColor(R.color.color_green_dark);
+        style.colorSecondary = Utils.getColor(R.color.color_cream_red_light);
         return style;
     }
 }

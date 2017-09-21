@@ -63,4 +63,7 @@
     <color name="item_simple_task_card_done_mask_bg">#4C000000</color>
     <color name="item_simple_task_card_done_icon_bg">#78909C</color>
 
+    <!-- Black 20% -->
+    <color name="form_transparent_divider">#33000000</color>
+
 </resources>

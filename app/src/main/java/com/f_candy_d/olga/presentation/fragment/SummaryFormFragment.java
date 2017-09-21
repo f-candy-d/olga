@@ -1,13 +1,20 @@
 package com.f_candy_d.olga.presentation.fragment;
 
 
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.presentation.activity.FormActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +31,21 @@ public class SummaryFormFragment extends FormFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_summary_form, container, false);
+        View view = inflater.inflate(R.layout.fragment_summary_form, container, false);
+        FormActivity.Style style = getStyle();
+
+        // Title
+        EditText editTitle = view.findViewById(R.id.edit_text_title);
+        editTitle.setTextColor(style.textColorPrimary);
+        editTitle.setHintTextColor(style.textColorSecondary);
+        editTitle.getBackground().setColorFilter(style.colorSecondary, PorterDuff.Mode.SRC_ATOP);
+
+        // Description
+        EditText editDescrip = view.findViewById(R.id.edit_text_description);
+        editDescrip.setTextColor(style.textColorPrimary);
+        editDescrip.setHintTextColor(style.textColorSecondary);
+
+        return view;
     }
 
     @Override

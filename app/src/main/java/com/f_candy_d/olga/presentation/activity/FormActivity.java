@@ -71,7 +71,7 @@ abstract public class FormActivity extends AppCompatActivity
         // color set
         final Style style = getStyle();
 
-        // # ToolBar
+        // # ToolBar & AppBar
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,6 +83,8 @@ abstract public class FormActivity extends AppCompatActivity
         // Set the padding to match the Status Bar height
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         appBarLayout.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
+
+        // # FAB
 
         FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.fab);
         saveButton.setBackgroundTintList(ColorStateList.valueOf(style.colorSecondary));
@@ -190,9 +192,9 @@ abstract public class FormActivity extends AppCompatActivity
      */
 
     public static class Style {
-        int colorPrimary;
-        int colorSecondary;
-        int textColorPrimary;
-        int textColorSecondary;
+        public int colorPrimary;
+        public int colorSecondary;
+        public int textColorPrimary;
+        public int textColorSecondary;
     }
 }

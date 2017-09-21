@@ -27,12 +27,18 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="32dp"
             android:layout_marginLeft="48dp"
             android:layout_marginStart="48dp"
             android:layout_marginBottom="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginEnd="24dp"/>
+
+        <!-- divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/form_transparent_divider"/>
 
     </android.support.design.widget.AppBarLayout>
 
