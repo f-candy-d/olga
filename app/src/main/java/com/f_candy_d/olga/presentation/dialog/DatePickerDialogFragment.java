@@ -1,10 +1,8 @@
 package com.f_candy_d.olga.presentation.dialog;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.icu.text.MessagePattern;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

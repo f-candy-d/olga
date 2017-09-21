@@ -2,9 +2,7 @@ package com.f_candy_d.olga.presentation.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
 import com.f_candy_d.olga.presentation.activity.FormActivity;
