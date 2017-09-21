@@ -1,10 +1,16 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
+import com.f_candy_d.olga.domain.TodoTaskBuilder;
+import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.domain.usecase.TaskStreamUseCase;
 import com.f_candy_d.olga.presentation.fragment.FormFragment;
 import com.f_candy_d.olga.presentation.fragment.SummaryFormFragment;
 
@@ -14,29 +20,41 @@ import com.f_candy_d.olga.presentation.fragment.SummaryFormFragment;
 
 public class TodoFormActivity extends FormActivity {
 
+    TodoTaskBuilder mBuilder;
+
     @Override
     protected void onInitWithContentId(long contentId) {
-
+        Task task = TaskStreamUseCase.findTaskById(contentId);
+        if (task != null) {
+            mBuilder = new TodoTaskBuilder(task);
+        } else {
+            onInit();
+        }
     }
 
     @Override
     protected void onInit() {
-
+        mBuilder = new TodoTaskBuilder();
     }
 
     @Override
     protected FormFragment[] getFormFragments() {
-        return new FormFragment[] {new SummaryFormFragment(), new SummaryFormFragment(), new SummaryFormFragment(), new SummaryFormFragment()};
+        Task task = mBuilder.build();
+        return new FormFragment[] {
+                SummaryFormFragment.newInstance(task.title, task.description, null)
+        };
     }
 
     @Override
     public void onDataInput(Bundle data, String simpleFragmentClassName) {
-
+        if (simpleFragmentClassName.equals(SummaryFormFragment.class.getSimpleName())) {
+            mBuilder.title(data.getString(SummaryFormFragment.FIELD_TITLE));
+            mBuilder.description(data.getString(SummaryFormFragment.FIELD_DESCRIPTION));
+        }
     }
 
     @Override
     protected void onSave() {
-
     }
 
     @NonNull

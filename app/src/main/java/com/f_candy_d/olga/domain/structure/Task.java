@@ -16,6 +16,7 @@ import java.util.Calendar;
 public class Task extends SqlEntityObject {
 
     public String title;
+    public String description;
     public InstantDate startDate;
     public InstantDate endDate;
     public boolean isDone;
@@ -23,6 +24,7 @@ public class Task extends SqlEntityObject {
 
     public Task() {
         super(TaskTable.TABLE_NAME);
+        init();
     }
 
     public Task(Task task) {
@@ -31,6 +33,7 @@ public class Task extends SqlEntityObject {
         if (task != null) {
             super.id = task.id;
             this.title = task.title;
+            this.description = task.description;
             this.isDone = task.isDone;
             this.type = task.type;
 
@@ -60,11 +63,12 @@ public class Task extends SqlEntityObject {
         if (includeRowId) {
             entity.put(TaskTable._ID, super.id);
         }
-        entity.put(TaskTable._DATE_TERM_END, this.endDate.asCalendar());
-        entity.put(TaskTable._DATE_TERM_START, this.startDate.asCalendar());
+        entity.put(TaskTable._END_DATE, this.endDate.asCalendar());
+        entity.put(TaskTable._START_DATE, this.startDate.asCalendar());
         entity.put(TaskTable._TITLE, this.title);
         entity.put(TaskTable._IS_DONE, this.isDone);
         entity.put(TaskTable._TYPE, this.type);
+        entity.put(TaskTable._DESCRIPTION, this.description);
 
         return entity;
     }
@@ -77,13 +81,24 @@ public class Task extends SqlEntityObject {
 
         super.id = entity.getLongOrDefault(TaskTable._ID, super.id);
         this.title = entity.getStringOrDefault(TaskTable._TITLE, this.title);
+        this.description = entity.getStringOrDefault(TaskTable._DESCRIPTION, this.description);
         this.isDone = entity.getBooleanOrDefault(TaskTable._IS_DONE, this.isDone);
         this.type = entity.getIntOrDefault(TaskTable._TYPE, this.type);
 
-        Calendar date = entity.getCalendarOrDefault(TaskTable._DATE_TERM_END, null);
+        Calendar date = entity.getCalendarOrDefault(TaskTable._END_DATE, null);
         this.endDate = (date != null) ? new InstantDate(date) : this.endDate;
 
-        date = entity.getCalendarOrDefault(TaskTable._DATE_TERM_START, null);
+        date = entity.getCalendarOrDefault(TaskTable._START_DATE, null);
         this.startDate = (date != null) ? new InstantDate(date) : this.startDate;
+    }
+
+    public void init() {
+        super.id = TaskTable.defaultId();
+        this.title = TaskTable.defaultTitle();
+        this.description = TaskTable.defaultDescription();
+        this.isDone = TaskTable.defaultIsDone();
+        this.type = TaskTable.defaultType();
+        this.startDate = new InstantDate(TaskTable.defaultStartDate());
+        this.endDate = new InstantDate(TaskTable.defaultEndDate());
     }
 }

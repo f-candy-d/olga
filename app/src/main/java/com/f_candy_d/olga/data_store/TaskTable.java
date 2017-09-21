@@ -19,8 +19,9 @@ public class TaskTable implements BaseColumns {
      * Columns
      */
     public static final String _TITLE = "title";
-    public static final String _DATE_TERM_START = "date_term_start";
-    public static final String _DATE_TERM_END = "date_term_end";
+    public static final String _DESCRIPTION = "description";
+    public static final String _START_DATE = "start_date";
+    public static final String _END_DATE = "end_date";
     public static final String _IS_DONE = "is_done";
     public static final String _TYPE = "type";
 
@@ -31,15 +32,15 @@ public class TaskTable implements BaseColumns {
         return new SqliteTableUtils.TableSource(TABLE_NAME)
                 .put(_ID, SqliteColumnDataType.INTEGER_PK)
                 .put(_TITLE, SqliteColumnDataType.TEXT)
-                .put(_DATE_TERM_START, SqliteColumnDataType.INTEGER)
-                .put(_DATE_TERM_END, SqliteColumnDataType.INTEGER)
+                .put(_DESCRIPTION, SqliteColumnDataType.TEXT)
+                .put(_START_DATE, SqliteColumnDataType.INTEGER)
+                .put(_END_DATE, SqliteColumnDataType.INTEGER)
                 .put(_IS_DONE, SqliteColumnDataType.INTEGER)
                 .put(_TYPE, SqliteColumnDataType.INTEGER);
     }
 
     /**
      * Constant values for the column 'type'.
-     * These values are must be the consecutive number.
      */
 
     public static final int TYPE_TODO = 0;
@@ -56,14 +57,20 @@ public class TaskTable implements BaseColumns {
         return null;
     }
 
-    public static long defaultStartDate() {
-        // Current date
-        return Calendar.getInstance().getTimeInMillis();
+    public static String defaultDescription() {
+        return null;
     }
 
-    public static long defaultEndDate() {
-        // Max date value of Calendar
-        return Long.MAX_VALUE;
+    public static Calendar defaultStartDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(0);
+        return calendar;
+    }
+
+    public static Calendar defaultEndDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(Long.MAX_VALUE);
+        return calendar;
     }
 
     public static boolean defaultIsDone() {

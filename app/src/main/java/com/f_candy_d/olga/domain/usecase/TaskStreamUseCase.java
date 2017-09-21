@@ -32,7 +32,7 @@ final public class TaskStreamUseCase extends SqlStreamUseCase {
 
     @NonNull
     public static ArrayList<Task> getTasksStartInTerm(long dateTermStart, long dateTermEnd) {
-        SqlBetweenExpr between = new SqlBetweenExpr(TaskTable._DATE_TERM_START)
+        SqlBetweenExpr between = new SqlBetweenExpr(TaskTable._START_DATE)
                         .setRange(dateTermStart, dateTermEnd)
                         .setRangeBoundaries(true, false);
 
@@ -46,8 +46,8 @@ final public class TaskStreamUseCase extends SqlStreamUseCase {
     @NonNull
     public static ArrayList<Task> getTasksInProcess() {
         final long now = Calendar.getInstance().getTimeInMillis();
-        SqlCondExpr left = new SqlCondExpr(TaskTable._DATE_TERM_START).lessThanOrEqualTo(now);
-        SqlCondExpr right = new SqlCondExpr(TaskTable._DATE_TERM_END).graterThanOrEqualTo(now);
+        SqlCondExpr left = new SqlCondExpr(TaskTable._START_DATE).lessThanOrEqualTo(now);
+        SqlCondExpr right = new SqlCondExpr(TaskTable._END_DATE).graterThanOrEqualTo(now);
         SqlLogicExpr where = new SqlLogicExpr(left).and(right);
 
         SqlQuery query = new SqlQuery();
@@ -60,7 +60,7 @@ final public class TaskStreamUseCase extends SqlStreamUseCase {
     @NonNull
     public static ArrayList<Task> getTasksNeedToBeRescheduled() {
         final long now = Calendar.getInstance().getTimeInMillis();
-        SqlCondExpr where = new SqlCondExpr(TaskTable._DATE_TERM_END).lessThan(now);
+        SqlCondExpr where = new SqlCondExpr(TaskTable._END_DATE).lessThan(now);
 
         SqlQuery query = new SqlQuery();
         query.putTables(TaskTable.TABLE_NAME);

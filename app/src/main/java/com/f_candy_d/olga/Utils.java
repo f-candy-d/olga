@@ -3,6 +3,7 @@ package com.f_candy_d.olga;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 
 /**
@@ -29,5 +30,9 @@ public class Utils {
 
     public static Drawable getDrawable(@DrawableRes int id) {
         return ContextCompat.getDrawable(MyApp.getAppContext(), id);
+    }
+
+    public static String getString(@StringRes int id) {
+        return MyApp.getAppContext().getResources().getString(id);
     }
 }

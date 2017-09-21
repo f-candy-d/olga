@@ -4,6 +4,8 @@ import com.f_candy_d.dutils.InstantDate;
 import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.domain.structure.Task;
 
+import java.util.Calendar;
+
 /**
  * Created by daichi on 9/20/17.
  */
@@ -16,7 +18,7 @@ public class TodoTaskBuilder {
         mTask = new Task();
         // initialization
         mTask.type = TaskTable.TYPE_TODO;
-        mTask.isDone = false;
+        mTask.startDate.set(Calendar.getInstance());
     }
 
     public TodoTaskBuilder(Task initialData) {
@@ -28,21 +30,21 @@ public class TodoTaskBuilder {
         return this;
     }
 
-    public TodoTaskBuilder startDate(long startDateInMillis) {
-        return startDate(new InstantDate(startDateInMillis));
-    }
-
-    public TodoTaskBuilder startDate(InstantDate startDate) {
-        mTask.startDate = startDate;
+    public TodoTaskBuilder description(String description) {
+        mTask.description = description;
         return this;
     }
 
-    public TodoTaskBuilder endDate(long endDateInMillis) {
-        return endDate(new InstantDate(endDateInMillis));
+    public TodoTaskBuilder dueDate(long dueDateInMillis) {
+        return dueDate(new InstantDate(dueDateInMillis));
     }
 
-    public TodoTaskBuilder endDate(InstantDate endDate) {
-        mTask.endDate = endDate;
+    public TodoTaskBuilder dueDate(Calendar dueDate) {
+        return dueDate(new InstantDate(dueDate));
+    }
+
+    public TodoTaskBuilder dueDate(InstantDate dueDate) {
+        mTask.endDate = dueDate;
         return this;
     }
 

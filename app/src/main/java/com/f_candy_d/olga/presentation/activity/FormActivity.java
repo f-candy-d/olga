@@ -37,6 +37,11 @@ abstract public class FormActivity extends AppCompatActivity
     private int mPrevPagePosition;
     private ViewPager mViewPager;
 
+    abstract protected void onInitWithContentId(long contentId);
+    abstract protected void onInit();
+    abstract protected FormFragment[] getFormFragments();
+    abstract protected void onSave();
+
     public static Bundle makeExtras(long contentId) {
         Bundle bundle = new Bundle();
         bundle.putLong(EXTRA_CONTENT_ID, contentId);
@@ -57,11 +62,6 @@ abstract public class FormActivity extends AppCompatActivity
 
         initUI();
     }
-
-    abstract protected void onInitWithContentId(long contentId);
-    abstract protected void onInit();
-    abstract protected FormFragment[] getFormFragments();
-    abstract protected void onSave();
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -191,14 +191,13 @@ abstract public class FormActivity extends AppCompatActivity
         mViewPager.setBackgroundColor(style.colorPrimary);
 
         // # Initial Status
-
+        saveButton.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.GONE);
         if (0 < mFormFragments.length) {
             mPrevPagePosition = 0;
             mViewPager.setCurrentItem(mPrevPagePosition);
             textSwitcher.setText(mFormFragments[mPrevPagePosition].getTitle());
         }
-        saveButton.setVisibility(View.GONE);
-        nextButton.setVisibility(View.VISIBLE);
     }
 
     private void toggleFab(final View oldFab, final View newFab) {
@@ -207,29 +206,24 @@ abstract public class FormActivity extends AppCompatActivity
         oldFab.setVisibility(View.VISIBLE);
         newFab.setVisibility(View.GONE);
         // Scale down animation
-        ScaleAnimation shrink = new ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation shrink = new ScaleAnimation(1f, 0f, 1f, 0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         shrink.setDuration(150);
         shrink.setInterpolator(new DecelerateInterpolator());
         shrink.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
+            @Override public void onAnimationStart(Animation animation) {}
+            @Override public void onAnimationRepeat(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 oldFab.setVisibility(View.GONE);
                 newFab.setVisibility(View.VISIBLE);
                 // Scale up animation
-                ScaleAnimation expand =  new ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                expand.setDuration(100);
+                ScaleAnimation expand =  new ScaleAnimation(0f, 1f, 0f, 1f,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                expand.setDuration(150);
                 expand.setInterpolator(new AccelerateInterpolator());
                 newFab.startAnimation(expand);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
             }
         });
 
