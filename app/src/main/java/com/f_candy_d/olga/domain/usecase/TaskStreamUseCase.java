@@ -71,7 +71,7 @@ final public class TaskStreamUseCase extends SqlStreamUseCase {
 
     @NonNull
     private static Task[] selectTasksForQuery(SqlQuery query) {
-//        SqlEntity[] results = Repository.getSql().select(query);
+//        SqlEntity[] results = Repository.getSqlite().select(query);
 //        ArrayList<Task> tasks = new ArrayList<>(results.length);
 
 //        for (SqlEntity entity : results) {

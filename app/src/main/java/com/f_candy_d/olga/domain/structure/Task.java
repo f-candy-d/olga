@@ -19,6 +19,10 @@ public class Task extends UnmodifiableTask {
         super(entity);
     }
 
+    public void setId(long id) {
+        super.mId = id;
+    }
+
     public void setTitle(String title) {
         super.mTitle = title;
     }

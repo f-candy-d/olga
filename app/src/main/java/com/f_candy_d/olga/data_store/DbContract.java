@@ -2,7 +2,7 @@ package com.f_candy_d.olga.data_store;
 
 import android.support.annotation.NonNull;
 
-import com.f_candy_d.olga.infra.sqlite.SqliteRepository;
+import com.f_candy_d.olga.infra.SqliteRepository;
 import com.f_candy_d.olga.infra.sqlite.SqliteTableUtils;
 
 /**
