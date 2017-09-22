@@ -113,14 +113,14 @@ abstract public class FormActivity extends AppCompatActivity
         /**
          * See {@link https://github.com/pjambo/ToolbarTitleAnimation/blob/master/app/src/main/java/com/jambo/example/toolbartitleanimation/PagerActivity.java}
          *
-         * Set IN an OUT animation for the {@link ToolBar} title
+         * Set IN an OUT animation for the {@link ToolBar} mTitle
          * ({@link TextSwitcher} in this case) when pager is swiped to the left
          */
         final Animation IN_SWIPE_BACKWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_top);
         final Animation OUT_SWIPE_BACKWARD = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
 
         /**
-         * Set IN an OUT animation for the {@link ToolBar} title
+         * Set IN an OUT animation for the {@link ToolBar} mTitle
          * ({@link TextSwitcher} in this case) when pager is swiped to the right
          */
         final Animation IN_SWIPE_FORWARD = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);

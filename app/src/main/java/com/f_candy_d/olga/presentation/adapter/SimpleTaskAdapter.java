@@ -8,8 +8,10 @@ import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -18,15 +20,15 @@ import java.util.Collection;
 
 public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<Task> mTasks;
+    private ArrayList<UnmodifiableTask> mTasks;
     private Callback mCallback;
 
     public SimpleTaskAdapter() {
         mTasks = new ArrayList<>();
     }
 
-    public SimpleTaskAdapter(Collection<Task> tasks) {
-        mTasks = new ArrayList<>(tasks);
+    public SimpleTaskAdapter(UnmodifiableTask[] tasks) {
+        mTasks = new ArrayList<>(Arrays.asList(tasks));
     }
 
     public void setCallback(Callback callback) {
@@ -58,7 +60,7 @@ public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHold
 
         TaskViewHolder vh = (TaskViewHolder) holder;
 
-        // title
+        // mTitle
         vh.title.setText(title.toString());
 
         // time
@@ -78,7 +80,7 @@ public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHold
         }
 
         // done-mask
-        if (mTasks.get(position).isDone) {
+        if (mTasks.get(position).isArchived()) {
             vh.doneMask.setVisibility(View.VISIBLE);
         } else {
             vh.doneMask.setVisibility(View.GONE);
@@ -124,7 +126,7 @@ public class SimpleTaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHold
 
     public interface Callback {
         boolean isItemFullSpan(int position);
-        void onBind(OutVisibility outVisibility, Task task, StringBuffer title, StringBuffer time, StringBuffer location);
+        void onBind(OutVisibility outVisibility, UnmodifiableTask task, StringBuffer title, StringBuffer time, StringBuffer location);
     }
 
     public class OutVisibility {

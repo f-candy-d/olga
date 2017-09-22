@@ -12,7 +12,7 @@ import com.f_candy_d.olga.infra.SqlEntity;
 abstract public class SqlEntityObject {
 
     @NonNull private final String mTableName;
-    public long id;
+    protected long mId;
 
     SqlEntityObject(@NonNull String tableName) {
         mTableName = tableName;
@@ -24,11 +24,7 @@ abstract public class SqlEntityObject {
     }
 
     public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+        return mId;
     }
 
     @NonNull

@@ -33,6 +33,6 @@ public class SqlStreamUseCase {
     }
 
     public static boolean delete(SqlEntityObject entityObject) {
-        return Repository.getSql().delete(entityObject.id, entityObject.getTableName());
+        return Repository.getSql().delete(entityObject.getId(), entityObject.getTableName());
     }
 }

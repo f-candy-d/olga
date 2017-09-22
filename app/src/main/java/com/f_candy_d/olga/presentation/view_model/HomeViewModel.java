@@ -3,6 +3,7 @@ package com.f_candy_d.olga.presentation.view_model;
 import android.content.Context;
 
 import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.domain.usecase.TaskStreamUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
 
@@ -21,7 +22,7 @@ public class HomeViewModel extends ActivityViewModel {
         super(context);
     }
 
-    public ArrayList<Task> getAllTasks() {
+    public Task[] getAllTasks() {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.MONTH, Calendar.APRIL);
         final long s = c.getTimeInMillis();
@@ -33,8 +34,8 @@ public class HomeViewModel extends ActivityViewModel {
     /**
      * Find tasks which already starts and does not finish yet.
      */
-    public ArrayList<Task> getTasksInProcess() {
-        final ArrayList<Task> tasks = TaskStreamUseCase.getTasksInProcess();
+    public Task[] getTasksInProcess() {
+        final Task[] tasks = TaskStreamUseCase.getTasksInProcess();
         sortTasksByDateTermEnd(tasks);
         return tasks;
     }
@@ -42,12 +43,12 @@ public class HomeViewModel extends ActivityViewModel {
     /**
      * Find tasks which starts in 24 hours from now.
      */
-    public ArrayList<Task> getTasksUpcoming() {
+    public Task[] getTasksUpcoming() {
         Calendar date = Calendar.getInstance();
         final long now = date.getTimeInMillis();
         date.add(Calendar.DAY_OF_MONTH, 1);
         final long limit = date.getTimeInMillis();
-        ArrayList<Task> tasks = TaskStreamUseCase.getTasksStartInTerm(now, limit);
+        Task[] tasks = TaskStreamUseCase.getTasksStartInTerm(now, limit);
         sortTasksByDateTermStart(tasks);
         return tasks;
     }
@@ -55,13 +56,13 @@ public class HomeViewModel extends ActivityViewModel {
     /**
      * Find tasks which is scheduled for the next 6 days from now.
      */
-    public ArrayList<Task> getTasksInFeature() {
+    public Task[] getTasksInFeature() {
         Calendar date = Calendar.getInstance();
         date.add(Calendar.DAY_OF_MONTH, 1);
         final long left = date.getTimeInMillis();
         date.add(Calendar.DAY_OF_MONTH, 6);
         final long right = date.getTimeInMillis();
-        ArrayList<Task> tasks = TaskStreamUseCase.getTasksStartInTerm(left, right);
+        Task[] tasks = TaskStreamUseCase.getTasksStartInTerm(left, right);
         sortTasksByDateTermStart(tasks);
         return tasks;
     }
@@ -69,31 +70,31 @@ public class HomeViewModel extends ActivityViewModel {
     /**
      * Find tasks which does expire, but does not finish.
      */
-    public ArrayList<Task> getTasksNeedToBeRescheduled() {
-        ArrayList<Task> tasks = TaskStreamUseCase.getTasksNeedToBeRescheduled();
+    public Task[] getTasksNeedToBeRescheduled() {
+        Task[] tasks = TaskStreamUseCase.getTasksNeedToBeRescheduled();
         sortTasksByDateTermEnd(tasks);
         return tasks;
     }
 
-    private void sortTasksByDateTermEnd(ArrayList<Task> tasks) {
-        Comparator<Task> comparator = new Comparator<Task>() {
-            @Override
-            public int compare(Task t1, Task t2) {
-                return t1.endDate.compareTo(t2.endDate);
-            }
-        };
-
-        Collections.sort(tasks, comparator);
+    private void sortTasksByDateTermEnd(UnmodifiableTask[] tasks) {
+//        Comparator<Task> comparator = new Comparator<Task>() {
+//            @Override
+//            public int compare(Task t1, Task t2) {
+//                return t1.endDate.compareTo(t2.endDate);
+//            }
+//        };
+//
+//        Collections.sort(tasks, comparator);
     }
 
-    private void sortTasksByDateTermStart(ArrayList<Task> tasks) {
-        Comparator<Task> comparator = new Comparator<Task>() {
-            @Override
-            public int compare(Task t1, Task t2) {
-                return t1.startDate.compareTo(t2.startDate);
-            }
-        };
-
-        Collections.sort(tasks, comparator);
+    private void sortTasksByDateTermStart(UnmodifiableTask[] tasks) {
+//        Comparator<Task> comparator = new Comparator<Task>() {
+//            @Override
+//            public int compare(Task t1, Task t2) {
+//                return t1.startDate.compareTo(t2.startDate);
+//            }
+//        };
+//
+//        Collections.sort(tasks, comparator);
     }
 }

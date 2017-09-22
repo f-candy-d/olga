@@ -8,15 +8,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.SimpleTaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
@@ -69,7 +68,7 @@ public class HomeActivity extends ViewActivity {
         LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
 
-        if (mViewModel.getTasksNeedToBeRescheduled().size() != 0) {
+        if (mViewModel.getTasksNeedToBeRescheduled().length != 0) {
             View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
             mAdapter.addAdapter(fullSpanViewAdapter);
@@ -78,8 +77,8 @@ public class HomeActivity extends ViewActivity {
             mAdapter.addAdapter(fullSpanViewAdapter);
         }
 
-        ArrayList<Task> tasks = mViewModel.getTasksInProcess();
-        if (tasks.size() != 0) {
+        UnmodifiableTask[] tasks = mViewModel.getTasksInProcess();
+        if (tasks.length != 0) {
             SimpleTaskAdapter adapter = new SimpleTaskAdapter(tasks);
             adapter.setCallback(new SimpleTaskAdapter.Callback() {
                 @Override
@@ -88,14 +87,14 @@ public class HomeActivity extends ViewActivity {
                 }
 
                 @Override
-                public void onBind(SimpleTaskAdapter.OutVisibility outVisibility, Task task,
+                public void onBind(SimpleTaskAdapter.OutVisibility outVisibility, UnmodifiableTask task,
                                    StringBuffer title, StringBuffer time, StringBuffer location) {
-                    // title
-                    title.append(task.title);
+                    // mTitle
+                    title.append(task.getTitle());
                     // time
                     Calendar now = Calendar.getInstance();
-                    String diff = AppDataDecoration.formatCalendarDiff(now, task.endDate.asCalendar());
-                    time.append(diff.concat(" ago"));
+//                    String diff = AppDataDecoration.formatCalendarDiff(now, task.endDate.asCalendar());
+//                    time.append(diff.concat(" ago"));
                     // location
                     location.append("Shizuoka hamamatsushi 432-8061");
                 }

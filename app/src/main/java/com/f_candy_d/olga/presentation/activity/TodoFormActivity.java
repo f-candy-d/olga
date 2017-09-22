@@ -1,10 +1,7 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
@@ -41,7 +38,7 @@ public class TodoFormActivity extends FormActivity {
     protected FormFragment[] getFormFragments() {
         Task task = mBuilder.build();
         return new FormFragment[] {
-                SummaryFormFragment.newInstance(task.title, task.description, null)
+                SummaryFormFragment.newInstance(task.getTitle(), task.getDescription(), null)
         };
     }
 
