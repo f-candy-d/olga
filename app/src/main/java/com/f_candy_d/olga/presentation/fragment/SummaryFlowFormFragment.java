@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,12 @@ import android.widget.EditText;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
-import com.f_candy_d.olga.presentation.activity.FormActivity;
+import com.f_candy_d.olga.presentation.activity.TaskFlowFormActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SummaryFormFragment extends FormFragment {
+public class SummaryFlowFormFragment extends FlowFormFragment {
 
     private static final String ARGS_TITLE = "args_title";
     private static final String ARGS_DESCRIPTION = "args_description";
@@ -31,12 +30,12 @@ public class SummaryFormFragment extends FormFragment {
 
     private Bundle mDataBuffer;
 
-    public static SummaryFormFragment newInstance(String formTitle) {
+    public static SummaryFlowFormFragment newInstance(String formTitle) {
         return newInstance(null, null, formTitle);
     }
 
-    public static SummaryFormFragment newInstance(String title, String description, String formTitle) {
-        SummaryFormFragment fragment = new SummaryFormFragment();
+    public static SummaryFlowFormFragment newInstance(String title, String description, String formTitle) {
+        SummaryFlowFormFragment fragment = new SummaryFlowFormFragment();
         Bundle args = new Bundle();
         args.putString(ARGS_TITLE, title);
         args.putString(ARGS_DESCRIPTION, description);
@@ -45,7 +44,7 @@ public class SummaryFormFragment extends FormFragment {
         return fragment;
     }
 
-    public SummaryFormFragment() {
+    public SummaryFlowFormFragment() {
         // Required empty public constructor
     }
 
@@ -69,7 +68,7 @@ public class SummaryFormFragment extends FormFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_summary_form, container, false);
-        FormActivity.Style style = getStyle();
+        TaskFlowFormActivity.Style style = getStyle();
 
         // # Title EditText
 

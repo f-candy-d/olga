@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.f_candy_d.olga.presentation.activity.FormActivity">
+    tools:context="com.f_candy_d.olga.presentation.activity.TaskFlowFormActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

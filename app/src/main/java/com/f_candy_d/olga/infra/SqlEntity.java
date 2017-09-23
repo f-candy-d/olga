@@ -49,7 +49,7 @@ final public class SqlEntity {
         return (column != null && mValueMap.containsKey(column));
     }
 
-    public void setTableName(String tableName) {
+    public void setTableName(@Nullable String tableName) {
         mTableName = tableName;
     }
 

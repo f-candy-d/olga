@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -26,21 +25,33 @@ import android.widget.ViewSwitcher;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
-import com.f_candy_d.olga.presentation.fragment.FormFragment;
+import com.f_candy_d.olga.presentation.fragment.FlowFormFragment;
+import com.f_candy_d.vvm.ActivityViewModel;
+import com.f_candy_d.vvm.ViewActivity;
 
-abstract public class FormActivity extends AppCompatActivity
-        implements FormFragment.OnDataInputListener {
+abstract public class TaskFlowFormActivity extends ViewActivity
+        implements FlowFormFragment.OnDataInputListener {
 
     public static final String EXTRA_CONTENT_ID = "contentId";
 
-    private FormFragment[] mFormFragments;
+    private FlowFormFragment[] mFlowFormFragments;
     private int mPrevPagePosition;
     private ViewPager mViewPager;
 
-    abstract protected void onInitWithContentId(long contentId);
-    abstract protected void onInit();
-    abstract protected FormFragment[] getFormFragments();
+    abstract protected FlowFormFragment[] getFlowFormFragments();
     abstract protected void onSave();
+    abstract protected ActivityViewModel onCreateViewModelWithContentId(long contentId);
+    abstract protected ActivityViewModel onCreateViewModelWithNoId();
+
+    @Override
+    final protected ActivityViewModel onCreateViewModel() {
+        final long id = getIntent().getLongExtra(EXTRA_CONTENT_ID, DbContract.NULL_ID);
+        if (id != DbContract.NULL_ID) {
+            return onCreateViewModelWithContentId(id);
+        } else {
+            return onCreateViewModelWithNoId();
+        }
+    }
 
     public static Bundle makeExtras(long contentId) {
         Bundle bundle = new Bundle();
@@ -52,14 +63,7 @@ abstract public class FormActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-
-        final long id = getIntent().getLongExtra(EXTRA_CONTENT_ID, DbContract.NULL_ID);
-        if (id != DbContract.NULL_ID) {
-            onInitWithContentId(id);
-        } else {
-            onInit();
-        }
-
+        onInit();
         initUI();
     }
 
@@ -68,6 +72,8 @@ abstract public class FormActivity extends AppCompatActivity
         onBackPressed();
         return true;
     }
+
+    protected void onInit() {}
 
     private void initUI() {
         final Style style = getStyle();
@@ -93,7 +99,7 @@ abstract public class FormActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 int next = mPrevPagePosition + 1;
-                if (next < mFormFragments.length) {
+                if (next < mFlowFormFragments.length) {
                     mViewPager.setCurrentItem(next);
                 }
             }
@@ -139,16 +145,16 @@ abstract public class FormActivity extends AppCompatActivity
         // # ViewPager
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mFormFragments = getFormFragments();
+        mFlowFormFragments = getFlowFormFragments();
         FragmentPagerAdapter pagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return mFormFragments[position];
+                return mFlowFormFragments[position];
             }
 
             @Override
             public int getCount() {
-                return mFormFragments.length;
+                return mFlowFormFragments.length;
             }
         };
         mViewPager.setAdapter(pagerAdapter);
@@ -159,7 +165,7 @@ abstract public class FormActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int position) {
                 // Toggle FABs if the last page selected
-                final int lastPagePosition = mFormFragments.length - 1;
+                final int lastPagePosition = mFlowFormFragments.length - 1;
                 if (position == lastPagePosition) {
                     toggleFab(nextButton, saveButton);
                 } else if (mPrevPagePosition == lastPagePosition) {
@@ -174,7 +180,7 @@ abstract public class FormActivity extends AppCompatActivity
                     textSwitcher.setInAnimation(IN_SWIPE_BACKWARD);
                     textSwitcher.setOutAnimation(OUT_SWIPE_BACKWARD);
                 }
-                textSwitcher.setText(mFormFragments[position].getTitle());
+                textSwitcher.setText(mFlowFormFragments[position].getTitle());
                 mPrevPagePosition = position;
             }
         });
@@ -193,10 +199,10 @@ abstract public class FormActivity extends AppCompatActivity
         // # Initial Status
         saveButton.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.GONE);
-        if (0 < mFormFragments.length) {
+        if (0 < mFlowFormFragments.length) {
             mPrevPagePosition = 0;
             mViewPager.setCurrentItem(mPrevPagePosition);
-            textSwitcher.setText(mFormFragments[mPrevPagePosition].getTitle());
+            textSwitcher.setText(mFlowFormFragments[mPrevPagePosition].getTitle());
         }
     }
 

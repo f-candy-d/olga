@@ -5,21 +5,14 @@ import android.support.annotation.Nullable;
 
 import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.domain.structure.Task;
-import com.f_candy_d.olga.infra.Repository;
 import com.f_candy_d.olga.infra.SqlEntity;
-import com.f_candy_d.olga.infra.sql_utils.SqlBetweenExpr;
-import com.f_candy_d.olga.infra.sql_utils.SqlCondExpr;
-import com.f_candy_d.olga.infra.sql_utils.SqlLogicExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlQuery;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by daichi on 9/10/17.
  */
 
-final public class TaskStreamUseCase extends SqlStreamUseCase {
+final public class TaskDbUseCase extends SqlDbUseCase {
 
     @Nullable
     public static Task findTaskById(long id) {

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * Created by daichi on 9/15/17.
  */
 
-abstract public class VIewModelFragment extends Fragment {
+abstract public class VIewFragment extends Fragment {
 
     private FragmentViewModel mViewModel;
 

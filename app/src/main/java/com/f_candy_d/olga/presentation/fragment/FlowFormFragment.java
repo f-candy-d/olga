@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.f_candy_d.olga.presentation.activity.FormActivity;
+import com.f_candy_d.olga.presentation.activity.TaskFlowFormActivity;
 
-abstract public class FormFragment extends Fragment {
+abstract public class FlowFormFragment extends Fragment {
 
     private OnDataInputListener mListener;
 
@@ -34,7 +34,7 @@ abstract public class FormFragment extends Fragment {
 
     abstract public String getTitle();
 
-    public FormActivity.Style getStyle() {
+    public TaskFlowFormActivity.Style getStyle() {
         return mListener.getStyle();
     }
 
@@ -50,6 +50,6 @@ abstract public class FormFragment extends Fragment {
      */
     public interface OnDataInputListener {
         void onDataInput(Bundle data, String simpleFragmentClassName);
-        @NonNull FormActivity.Style getStyle();
+        @NonNull TaskFlowFormActivity.Style getStyle();
     }
 }

@@ -170,13 +170,13 @@ public class SqliteRepository {
      * region; Transaction
      */
 
-    public void doTransaction(Transaction transaction) {
+    public boolean doTransaction(Transaction transaction) {
+        boolean isSuccessful = false;
         transaction.setDatabase(mOpenHelper.openReadableDatabase());
-        transaction.setTransactionSuccessful(false);
         transaction.getDatabase().beginTransaction();
         try {
-            transaction.onProcess();
-            if (transaction.isTransactionSuccessful()) {
+             isSuccessful = transaction.onProcess();
+            if (isSuccessful) {
                 transaction.getDatabase().setTransactionSuccessful();
             }
 
@@ -186,14 +186,15 @@ public class SqliteRepository {
 
         transaction.getDatabase().close();
         transaction.setDatabase(null);
+        return isSuccessful;
     }
 
-    abstract public class Transaction {
+    abstract static public class Transaction {
 
         SQLiteDatabase mDatabase;
-        boolean mIsTransactionSuccessful;
 
-        abstract protected void onProcess();
+        // Return true if transaction is successful, false otherwise
+        abstract protected boolean onProcess();
 
         final void setDatabase(SQLiteDatabase database) {
             mDatabase = database;
@@ -201,14 +202,6 @@ public class SqliteRepository {
 
         final SQLiteDatabase getDatabase() {
             return mDatabase;
-        }
-
-        final protected void setTransactionSuccessful(boolean transactionSuccessful) {
-            mIsTransactionSuccessful = transactionSuccessful;
-        }
-
-        public boolean isTransactionSuccessful() {
-            return mIsTransactionSuccessful;
         }
 
         final protected long insert(@NonNull SqlEntity entity) {

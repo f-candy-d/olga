@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="128dp">
+
+    <ImageView
+        android:id="@+id/nav_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@android:color/white"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Cancel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"/>
+
+    <TextView
+        android:id="@+id/label_form_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEW TASK"
+        android:textSize="@dimen/primary_text"
+        android:textColor="@color/primary_text_dark"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>

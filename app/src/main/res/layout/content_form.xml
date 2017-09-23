@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.f_candy_d.olga.presentation.activity.FormActivity"
+    tools:context="com.f_candy_d.olga.presentation.activity.TaskFlowFormActivity"
     tools:showIn="@layout/activity_form"
     android:background="@color/colorPrimary">
 

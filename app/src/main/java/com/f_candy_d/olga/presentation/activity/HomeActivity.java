@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.SimpleTaskAdapter;
@@ -22,7 +21,6 @@ import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
@@ -137,7 +135,7 @@ public class HomeActivity extends ViewActivity {
         sheetView.findViewById(R.id.add_event).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, TodoFormActivity.class);
+                Intent intent = new Intent(HomeActivity.this, TaskFormActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
             }

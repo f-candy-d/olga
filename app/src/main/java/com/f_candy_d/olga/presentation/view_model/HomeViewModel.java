@@ -4,13 +4,10 @@ import android.content.Context;
 
 import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
-import com.f_candy_d.olga.domain.usecase.TaskStreamUseCase;
+import com.f_candy_d.olga.domain.usecase.TaskDbUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by daichi on 9/11/17.
@@ -28,14 +25,14 @@ public class HomeViewModel extends ActivityViewModel {
         final long s = c.getTimeInMillis();
         c.set(Calendar.MONTH, Calendar.NOVEMBER);
         final long e = c.getTimeInMillis();
-        return TaskStreamUseCase.getTasksStartInTerm(s, e);
+        return TaskDbUseCase.getTasksStartInTerm(s, e);
     }
 
     /**
      * Find tasks which already starts and does not finish yet.
      */
     public Task[] getTasksInProcess() {
-        final Task[] tasks = TaskStreamUseCase.getTasksInProcess();
+        final Task[] tasks = TaskDbUseCase.getTasksInProcess();
         sortTasksByDateTermEnd(tasks);
         return tasks;
     }
@@ -48,7 +45,7 @@ public class HomeViewModel extends ActivityViewModel {
         final long now = date.getTimeInMillis();
         date.add(Calendar.DAY_OF_MONTH, 1);
         final long limit = date.getTimeInMillis();
-        Task[] tasks = TaskStreamUseCase.getTasksStartInTerm(now, limit);
+        Task[] tasks = TaskDbUseCase.getTasksStartInTerm(now, limit);
         sortTasksByDateTermStart(tasks);
         return tasks;
     }
@@ -62,7 +59,7 @@ public class HomeViewModel extends ActivityViewModel {
         final long left = date.getTimeInMillis();
         date.add(Calendar.DAY_OF_MONTH, 6);
         final long right = date.getTimeInMillis();
-        Task[] tasks = TaskStreamUseCase.getTasksStartInTerm(left, right);
+        Task[] tasks = TaskDbUseCase.getTasksStartInTerm(left, right);
         sortTasksByDateTermStart(tasks);
         return tasks;
     }
@@ -71,7 +68,7 @@ public class HomeViewModel extends ActivityViewModel {
      * Find tasks which does expire, but does not finish.
      */
     public Task[] getTasksNeedToBeRescheduled() {
-        Task[] tasks = TaskStreamUseCase.getTasksNeedToBeRescheduled();
+        Task[] tasks = TaskDbUseCase.getTasksNeedToBeRescheduled();
         sortTasksByDateTermEnd(tasks);
         return tasks;
     }
