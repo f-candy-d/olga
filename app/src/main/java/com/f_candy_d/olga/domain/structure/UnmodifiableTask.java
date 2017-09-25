@@ -13,7 +13,7 @@ public class UnmodifiableTask extends SqlEntityObject {
 
     protected String mTitle;
     protected String mDescription;
-    protected boolean mIsArchived;
+    protected boolean mIsAchieved;
 
     public String getTitle() {
         return mTitle;
@@ -22,8 +22,8 @@ public class UnmodifiableTask extends SqlEntityObject {
     public String getDescription() {
         return mDescription;
     }
-    public boolean isArchived() {
-        return mIsArchived;
+    public boolean isAchieved() {
+        return mIsAchieved;
     }
 
     public UnmodifiableTask() {
@@ -38,7 +38,7 @@ public class UnmodifiableTask extends SqlEntityObject {
             super.mId = task.mId;
             this.mTitle = task.mTitle;
             this.mDescription = task.mDescription;
-            this.mIsArchived = task.mIsArchived;
+            this.mIsAchieved = task.mIsAchieved;
         }
     }
 
@@ -58,7 +58,7 @@ public class UnmodifiableTask extends SqlEntityObject {
             entity.put(TaskTable._ID, super.mId);
         }
         entity.put(TaskTable._TITLE, this.mTitle);
-        entity.put(TaskTable._IS_ARCHIVED, this.mIsArchived);
+        entity.put(TaskTable._IS_ACHIEVED, this.mIsAchieved);
         entity.put(TaskTable._DESCRIPTION, this.mDescription);
 
         return entity;
@@ -73,13 +73,34 @@ public class UnmodifiableTask extends SqlEntityObject {
         super.mId = entity.getLongOrDefault(TaskTable._ID, super.mId);
         this.mTitle = entity.getStringOrDefault(TaskTable._TITLE, this.mTitle);
         this.mDescription = entity.getStringOrDefault(TaskTable._DESCRIPTION, this.mDescription);
-        this.mIsArchived = entity.getBooleanOrDefault(TaskTable._IS_ARCHIVED, this.mIsArchived);
+        this.mIsAchieved = entity.getBooleanOrDefault(TaskTable._IS_ACHIEVED, this.mIsAchieved);
     }
 
     protected void initWithDefaultValue() {
         super.mId = TaskTable.defaultId();
         this.mTitle = TaskTable.defaultTitle();
         this.mDescription = TaskTable.defaultDescription();
-        this.mIsArchived = TaskTable.defaultIsArchived();
+        this.mIsAchieved = TaskTable.defaultIsAchieved();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UnmodifiableTask that = (UnmodifiableTask) o;
+
+        if (mIsAchieved != that.mIsAchieved) return false;
+        if (mTitle != null ? !mTitle.equals(that.mTitle) : that.mTitle != null) return false;
+        return mDescription != null ? mDescription.equals(that.mDescription) : that.mDescription == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mTitle != null ? mTitle.hashCode() : 0;
+        result = 31 * result + (mDescription != null ? mDescription.hashCode() : 0);
+        result = 31 * result + (mIsAchieved ? 1 : 0);
+        return result;
     }
 }

@@ -31,7 +31,7 @@ public class Task extends UnmodifiableTask {
         super.mDescription = description;
     }
 
-    public void setIsArchived(boolean isArchived) {
-        super.mIsArchived = isArchived;
+    public void setIsAchieved(boolean isArchived) {
+        super.mIsAchieved = isArchived;
     }
 }

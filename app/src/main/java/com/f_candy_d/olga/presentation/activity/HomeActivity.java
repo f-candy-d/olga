@@ -16,16 +16,16 @@ import android.view.View;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
-import com.f_candy_d.olga.presentation.adapter.SimpleTaskAdapter;
+import com.f_candy_d.olga.presentation.adapter.TaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
-import java.util.Calendar;
-
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
 public class HomeActivity extends ViewActivity {
+
+    private static final int REQUEST_CODE_MAKE_NEW_TASK = 1111;
 
     private HomeViewModel mViewModel;
     private RecyclerView mRecyclerView;
@@ -45,27 +45,38 @@ public class HomeActivity extends ViewActivity {
     }
 
     private void initUI() {
+
+        // # Toolbar
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Now");
         }
 
+        // # FAB
+
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAddTaskBottomSheetDialog();
+                Intent intent = new Intent(HomeActivity.this, TaskFormActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_MAKE_NEW_TASK);
             }
         });
 
+        // # RecyclerView
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        mAdapter = new RecyclerViewMergeAdapter();
 
+        // # Adapter
+
+        mAdapter = new RecyclerViewMergeAdapter();
         LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
 
+        // TODO;
         if (mViewModel.getTasksNeedToBeRescheduled().length != 0) {
             View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
@@ -75,28 +86,10 @@ public class HomeActivity extends ViewActivity {
             mAdapter.addAdapter(fullSpanViewAdapter);
         }
 
+        // TODO;
         UnmodifiableTask[] tasks = mViewModel.getTasksInProcess();
         if (tasks.length != 0) {
-            SimpleTaskAdapter adapter = new SimpleTaskAdapter(tasks);
-            adapter.setCallback(new SimpleTaskAdapter.Callback() {
-                @Override
-                public boolean isItemFullSpan(int position) {
-                    return false;
-                }
-
-                @Override
-                public void onBind(SimpleTaskAdapter.OutVisibility outVisibility, UnmodifiableTask task,
-                                   StringBuffer title, StringBuffer time, StringBuffer location) {
-                    // mTitle
-                    title.append(task.getTitle());
-                    // time
-                    Calendar now = Calendar.getInstance();
-//                    String diff = AppDataDecoration.formatCalendarDiff(now, task.endDate.asCalendar());
-//                    time.append(diff.concat(" ago"));
-                    // location
-                    location.append("Shizuoka hamamatsushi 432-8061");
-                }
-            });
+            TaskAdapter adapter = new TaskAdapter(tasks);
             mAdapter.addAdapter(adapter);
 
         } else {
@@ -143,5 +136,15 @@ public class HomeActivity extends ViewActivity {
 
         dialog.setContentView(sheetView);
         dialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_MAKE_NEW_TASK &&
+                resultCode == RESULT_OK && data.getExtras() != null) {
+
+
+        }
     }
 }

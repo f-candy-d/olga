@@ -14,7 +14,6 @@ import com.f_candy_d.olga.infra.sql_utils.SqlWhere;
 import com.f_candy_d.olga.infra.sqlite.SqliteDatabaseOpenHelper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created by daichi on 17/08/30.
@@ -22,7 +21,14 @@ import java.util.Collection;
 
 public class SqliteRepository {
 
+    /**
+     * Constants
+     */
     public static final long NULL_ID = -1;
+    // This site (https://stackoverflow.com/questions/843780/store-boolean-value-in-sqlite) says
+    // SQLite saves a boolean value as an integer value (true=1, false=0) into the database.
+    public static final int BOOL_FALSE = 0;
+    public static final int BOOL_TRUE = 1;
 
     private SqliteDatabaseOpenHelper mOpenHelper;
 

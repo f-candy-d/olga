@@ -97,7 +97,7 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
     }
 
     private void onAddOptionButtonClick() {
-
+        Toast.makeText(this, "Add new option", Toast.LENGTH_SHORT).show();
     }
 
     /**

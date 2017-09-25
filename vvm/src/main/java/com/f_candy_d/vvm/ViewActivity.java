@@ -1,6 +1,5 @@
 package com.f_candy_d.vvm;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -103,30 +102,5 @@ public abstract class ViewActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mViewModel.onSaveInstanceState(outState);
-    }
-
-    /**
-     * Used in ActivityResultReceiver class
-     */
-
-    protected interface OnResultListener {
-        void onResult(int resultCode, @Nullable Bundle data);
-    }
-
-    protected void startActivityForResult(int requestCode, Intent intent, OnResultListener listener) {
-        ActivityResultReceiver.getInstance().registerListener(requestCode, listener);
-        startActivityForResult(intent, requestCode);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            ActivityResultReceiver.getInstance().onResult(requestCode, resultCode, data.getExtras());
-        } else {
-            ActivityResultReceiver.getInstance().onResult(requestCode, resultCode, null);
-        }
-
-        ActivityResultReceiver.getInstance().unregisterListener(requestCode);
     }
 }

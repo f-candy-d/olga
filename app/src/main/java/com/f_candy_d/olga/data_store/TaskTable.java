@@ -16,9 +16,9 @@ public class TaskTable implements BaseColumns {
     /**
      * Columns
      */
-    public static final String _TITLE = "mTitle";
-    public static final String _DESCRIPTION = "mDescription";
-    public static final String _IS_ARCHIVED = "is_archived";
+    public static final String _TITLE = "title";
+    public static final String _DESCRIPTION = "description";
+    public static final String _IS_ACHIEVED = "is_achieved";
 
     /**
      * Table definition
@@ -28,7 +28,7 @@ public class TaskTable implements BaseColumns {
                 .put(_ID, SqliteColumnDataType.INTEGER_PK)
                 .put(_TITLE, SqliteColumnDataType.TEXT)
                 .put(_DESCRIPTION, SqliteColumnDataType.TEXT)
-                .put(_IS_ARCHIVED, SqliteColumnDataType.INTEGER);
+                .put(_IS_ACHIEVED, SqliteColumnDataType.INTEGER);
     }
 
     /**
@@ -47,7 +47,7 @@ public class TaskTable implements BaseColumns {
         return null;
     }
 
-    public static boolean defaultIsArchived() {
+    public static boolean defaultIsAchieved() {
         return false;
     }
 }

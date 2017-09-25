@@ -58,21 +58,18 @@ public class SqlDbUseCase {
                     // Insert
                     if (beforeObj == null && afterObj != null) {
                         resultId = insert(afterObj.toSqlEntity(false));
-                        Log.d("mylog", "INSERT :: result=" + resultId);
 
                     // Delete
                     } else if (beforeObj != null && afterObj == null) {
                         resultId = (delete(beforeObj.getId(), beforeObj.getTableName()))
                                 ? beforeObj.getId()
                                 : Repository.SQLITE_NULL_ID;
-                        Log.d("mylog", "DELETE :: result=" + resultId);
 
                         // Update
                     } else if (beforeObj != null) {
                         resultId = (update(afterObj.toSqlEntity(true)))
                                 ? afterObj.getId()
                                 : Repository.SQLITE_NULL_ID;
-                        Log.d("mylog", "UPDATE :: result=" + resultId);
                     }
 
                     if (resultId == Repository.SQLITE_NULL_ID) {

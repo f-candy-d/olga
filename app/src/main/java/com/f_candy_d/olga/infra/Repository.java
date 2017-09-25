@@ -11,6 +11,9 @@ import com.f_candy_d.olga.infra.sqlite.SqliteDatabaseOpenHelper;
 final public class Repository {
 
     public static final long SQLITE_NULL_ID = SqliteRepository.NULL_ID;
+    public static final int SQLITE_BOOL_FALSE = SqliteRepository.BOOL_FALSE;
+    public static final int SQLITE_BOOL_TRUE = SqliteRepository.BOOL_TRUE;
+
     private static SqliteRepository mSqliteRepository = null;
 
     public static SqliteRepository getSqlite() {

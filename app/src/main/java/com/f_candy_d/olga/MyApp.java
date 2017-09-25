@@ -28,8 +28,8 @@ public class MyApp extends Application {
         mInstance = this;
 
         // TODO : REMOVE THIS CODE
-        SqliteDatabaseOpenHelperImpl openHelper = new SqliteDatabaseOpenHelperImpl(this);
-        SqliteTableUtils.resetTable(openHelper.getWritableDatabase(), DbContract.getTableSources());
+//        SqliteDatabaseOpenHelperImpl openHelper = new SqliteDatabaseOpenHelperImpl(this);
+//        SqliteTableUtils.resetTable(openHelper.getWritableDatabase(), DbContract.getTableSources());
     }
 
     public static Context getAppContext() {

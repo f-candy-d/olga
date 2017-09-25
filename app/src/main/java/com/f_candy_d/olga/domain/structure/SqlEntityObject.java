@@ -27,8 +27,18 @@ abstract public class SqlEntityObject {
         return mId;
     }
 
+    public void setId(long id) {
+        mId = id;
+    }
+
     @NonNull
     abstract public SqlEntity toSqlEntity(boolean includeRowId);
 
     abstract public void constructFromSqlEntity(SqlEntity entity);
+
+    @Override
+    abstract public boolean equals(Object obj);
+
+    @Override
+    abstract public int hashCode();
 }
