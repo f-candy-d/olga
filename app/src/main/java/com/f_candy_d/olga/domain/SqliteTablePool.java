@@ -1,18 +1,15 @@
 package com.f_candy_d.olga.domain;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.util.SortedList;
 
-import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
+import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.infra.Repository;
 import com.f_candy_d.olga.infra.SqlEntity;
-import com.f_candy_d.olga.infra.SqliteRepository;
 import com.f_candy_d.olga.infra.sql_utils.SqlQuery;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by daichi on 9/25/17.
@@ -24,37 +21,84 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
         void onPooled(int index, int count);
         void onReleased(int index, int count);
         void onChanged(int index, int count);
-
+        void onMoved(int fromIndex, int toIndex);
     }
 
     private final String mTableName;
-    private ArrayList<T> mPool;
+    private SortedList<T> mPool;
     private Callback mCallback;
 
-    public SqliteTablePool(String tableName) {
+    public SqliteTablePool(String tableName, Class<T> klass) {
         mTableName = tableName;
-        mPool = new ArrayList<>();
+        mPool = new SortedList<>(klass, new SortedList.Callback<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                return compareEntites(o1, o2);
+            }
+
+            @Override
+            public void onChanged(int position, int count) {
+                if (mCallback != null) {
+                    mCallback.onChanged(position, count);
+                }
+            }
+
+            @Override
+            public boolean areContentsTheSame(T oldItem, T newItem) {
+                return !areColumnsTheSame(oldItem, newItem);
+            }
+
+            @Override
+            public boolean areItemsTheSame(T item1, T item2) {
+                return areEntitesTheSame(item1, item2);
+            }
+
+            @Override
+            public void onInserted(int position, int count) {
+                if (mCallback != null) {
+                    mCallback.onPooled(position, count);
+                }
+            }
+
+            @Override
+            public void onRemoved(int position, int count) {
+                if (mCallback != null) {
+                    mCallback.onReleased(position, count);
+                }
+            }
+
+            @Override
+            public void onMoved(int fromPosition, int toPosition) {
+                if (mCallback != null) {
+                    mCallback.onMoved(fromPosition, toPosition);
+                }
+            }
+        });
     }
 
-    public void setCallback(Callback callback) {
+    protected int compareEntites(T entity1, T entity2) {
+        return 0;
+    }
+
+    final public void setCallback(Callback callback) {
         mCallback = callback;
     }
 
-    public T getAt(int index) {
+    final public T getAt(int index) {
         return mPool.get(index);
     }
 
-    public T getById(long id) {
-        for (T entity : mPool) {
-            if (entity.getId() == id) {
-                return entity;
+    final public T getById(long id) {
+        for (int i = 0; i < mPool.size(); ++i) {
+            if (mPool.get(i).getId() == id) {
+                return mPool.get(i);
             }
         }
         return null;
     }
 
-    public int pool(long id) {
-        SqlEntity entity = Repository.getSqlite().selectRowById(mTableName, id);
+    final public int pool(long id) {
+        SqlEntity entity = SqlTableUseCase.findById(id, mTableName);
         if (entity != null) {
             T entityObject = createEntityObject(entity);
             if (entityObject != null) {
@@ -70,55 +114,28 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
      * DO NOT pool an entity which does not exist in the database.
      */
     private int pool(T entity) {
-        int index = indexOf(entity);
-        if (0 <= index && !areColumnsTheSame(entity, getAt(index))) {
-            mPool.set(index, entity);
-            if (mCallback != null) {
-                mCallback.onChanged(index, 1);
-            }
-            return index;
-        } else {
-            mPool.add(entity);
-            index = mPool.size() - 1;
-            if (mCallback != null) {
-                mCallback.onPooled(index, 1);
-            }
-            return index;
-        }
+        return mPool.add(entity);
     }
 
-    private void poolAll(Collection<T> entites) {
-        Iterator<T> iterator = entites.iterator();
-        while (iterator.hasNext()) {
-            T entity = iterator.next();
-            int index = indexOf(entity);
-            if (0 <= index) {
-                mPool.set(index, entity);
-                if (mCallback != null) {
-                    mCallback.onChanged(index, 1);
-                }
-                iterator.remove();
-            }
-        }
-
-        int start = mPool.size();
+    final public void poolAll(Collection<T> entites) {
         mPool.addAll(entites);
-        if (mCallback != null) {
-            mCallback.onPooled(start, entites.size());
-        }
     }
 
-    public void poolByQuery(SqlQuery query) {
-        SqlEntity[] results = Repository.getSqlite().select(query);
-        ArrayList<T> entites = new ArrayList<>(results.length);
+    @SafeVarargs
+    final public void poolAll(T... entites) {
+        mPool.addAll(entites);
+    }
+
+    final public void poolByQuery(SqlQuery query) {
+        SqlEntity[] results = SqlTableUseCase.query(query);
+        mPool.beginBatchedUpdates();
         for (SqlEntity result : results) {
             T entity = createEntityObject(result);
             if (entity != null) {
-                entites.add(entity);
+                mPool.add(entity);
             }
         }
-
-        poolAll(entites);
+        mPool.endBatchedUpdates();
     }
 
     abstract T createEntityObject(SqlEntity entity);
@@ -128,30 +145,50 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
      * Remove an entity from the pool.
      * This method does not delete it from the database.
      */
-    public T release(int index) {
-        T entity = mPool.remove(index);
-        if (mCallback != null) {
-            mCallback.onReleased(index, 1);
-        }
-        return entity;
+    final public T releaseAt(int index) {
+        return mPool.removeItemAt(index);
     }
 
-    public int release(T entity) {
-        int index = indexOf(entity);
-        mPool.remove(index);
-        if (mCallback != null) {
-            mCallback.onReleased(index, 1);
+    final public boolean release(T entity) {
+        return mPool.remove(entity);
+    }
+
+    final public void clear() {
+        mPool.clear();
+    }
+
+    final public void swapPoolByQuery(SqlQuery query) {
+        SqlEntity[] results = SqlTableUseCase.query(query);
+        ArrayList<T> entites = new ArrayList<>(results.length);
+        for (SqlEntity result : results) {
+            T entity = createEntityObject(result);
+            if (entity != null) {
+                entites.add(entity);
+            }
         }
-        return index;
+
+        for (int i = mPool.size() - 1; 0 <= i; --i) {
+            for (int j = 0; j < entites.size(); ++j) {
+                if (mPool.get(i).getId() == entites.get(j).getId()) {
+                    mPool.updateItemAt(i, entites.get(j));
+                    entites.remove(j);
+                    break;
+
+                } else if (j == entites.size() - 1) {
+                    mPool.removeItemAt(i);
+                }
+            }
+        }
+
+        mPool.addAll(entites);
     }
 
     /**
      * Insert an entity into the database.
      * If it is needs to be pooled, do it.
      */
-    public int insert(T entity) {
-        SqlEntity e = entity.toSqlEntity(false);
-        final long id = Repository.getSqlite().insert(e);
+    final public int insert(T entity) {
+        final long id = SqlTableUseCase.insert(entity);
         if (id != Repository.SQLITE_NULL_ID) {
             entity.setId(id);
             if (isNecessaryToPool(entity)) {
@@ -167,11 +204,17 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
     /**
      * Update an entity in the database.
      */
-    public int update(T entity) {
-        SqlEntity e = entity.toSqlEntity(true);
-        boolean result = Repository.getSqlite().update(e);
-        if (result && isNecessaryToPool(entity)) {
-            return pool(entity);
+    final public int update(T entity) {
+        boolean result = SqlTableUseCase.update(entity);
+        if (result) {
+            int index = indexOf(entity);
+            if (SortedList.INVALID_POSITION != index) {
+                mPool.updateItemAt(index, entity);
+                return index;
+
+            } else if (isNecessaryToPool(entity)) {
+                return pool(entity);
+            }
         }
 
         return -1;
@@ -179,36 +222,30 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
 
     /**
      * Delete an entity from the database.
-     * If it is pooled, remove from the pool using {@link SqliteTablePool#release(int)}.
+     * If it is pooled, remove from the pool using {@link SqliteTablePool#releaseAt(int)}.
      */
-    public int delete(T entity) {
-        boolean result = Repository.getSqlite().delete(entity.toSqlEntity(true));
+    final public int delete(T entity) {
+        boolean result = SqlTableUseCase.delete(entity);
         int index;
-        if (result && 0 <= ((index = indexOf(entity)))) {
-            release(index);
+        if (result && SortedList.INVALID_POSITION != ((index = indexOf(entity)))) {
+            releaseAt(index);
             return index;
         }
 
         return -1;
     }
 
-    public int indexOf(T entity) {
-        for (int i = 0; i < size(); ++i) {
-            if (isEntityTheSame(entity, getAt(i))) {
-                return i;
-            }
-        }
-
-        return -1;
+    final public int indexOf(T entity) {
+        return mPool.indexOf(entity);
     }
 
-    private boolean isEntityTheSame(T entity1, T entity2) {
+    private boolean areEntitesTheSame(T entity1, T entity2) {
         return (entity1 != null &&
                 entity2 != null &&
                 entity1.getId() == entity2.getId());
     }
 
-    public int size() {
+    final public int size() {
         return mPool.size();
     }
 }

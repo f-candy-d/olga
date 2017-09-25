@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.f_candy_d.olga.data_store.TaskTable;
+import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.infra.Repository;
+import com.f_candy_d.olga.infra.SqlEntity;
 import com.f_candy_d.olga.infra.sql_utils.SqlCondExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlLikeExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlLogicExpr;
@@ -126,5 +128,15 @@ public class TaskFilter {
         }
 
         return joined;
+    }
+
+    public boolean isMutch(long id) {
+        SqlQuery query = toQuery();
+        SqlCondExpr idIs = new SqlCondExpr(TaskTable._ID).equalTo(id);
+        idIs.setInBracket(true);
+        SqlLogicExpr where = new SqlLogicExpr(idIs).and(query.getSelection());
+        query.setSelection(where);
+
+        return (SqlTableUseCase.query(query).length != 0);
     }
 }

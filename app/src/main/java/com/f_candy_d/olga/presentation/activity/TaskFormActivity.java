@@ -1,5 +1,6 @@
 package com.f_candy_d.olga.presentation.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,7 @@ import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.SaveResultListener {
 
     private static final String EXTRA_TASK_ID = "task_id";
+    public static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
 
     private TaskFormViewModel mViewModel;
     private RecyclerViewMergeAdapter mFormCardAdapter;
@@ -160,6 +162,9 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
     @Override
     public void onSaveSuccessful(long taskId) {
         Toast.makeText(this, "Save successful! @id=" + taskId, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        intent.putExtra(RESULT_SAVED_TASK_ID, taskId);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

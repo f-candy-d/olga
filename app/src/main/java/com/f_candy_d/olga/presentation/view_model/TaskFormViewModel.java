@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
-import com.f_candy_d.olga.domain.usecase.SqlDbUseCase;
+import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.domain.usecase.TaskDbUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
 
@@ -72,7 +72,7 @@ public class TaskFormViewModel extends ActivityViewModel {
     }
 
     public void onSave() {
-        Map<String, Long> idMap = SqlDbUseCase.applyDiff(mOldFields, mNewFields);
+        Map<String, Long> idMap = SqlTableUseCase.applyDiff(mOldFields, mNewFields);
         if (idMap != null) {
             mSaveResultListener.onSaveSuccessful(idMap.get(FIELD_TASK));
         } else {

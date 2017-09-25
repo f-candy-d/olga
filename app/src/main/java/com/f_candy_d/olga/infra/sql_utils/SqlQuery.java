@@ -115,6 +115,10 @@ final public class SqlQuery {
         mSelection = selection;
     }
 
+    public SqlWhere getSelection() {
+        return mSelection;
+    }
+
     public void clear() {
         mDistinct = false;
         mTables.clear();

@@ -14,7 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.domain.SqliteTablePool;
+import com.f_candy_d.olga.domain.TaskTablePool;
+import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.TaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
@@ -29,7 +31,9 @@ public class HomeActivity extends ViewActivity {
 
     private HomeViewModel mViewModel;
     private RecyclerView mRecyclerView;
-    private RecyclerViewMergeAdapter mAdapter;
+    private RecyclerViewMergeAdapter mRootAdapter;
+    private TaskAdapter mTaskAdapter;
+    private TaskTablePool mTaskPool;
 
     @Override
     protected ActivityViewModel onCreateViewModel() {
@@ -41,6 +45,37 @@ public class HomeActivity extends ViewActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mTaskPool = new TaskTablePool(DefaultFilterFactory.createAllFilter());
+        mTaskPool.setCallback(new SqliteTablePool.Callback() {
+            @Override
+            public void onPooled(int index, int count) {
+                if (mTaskAdapter != null) {
+                    mTaskAdapter.notifyItemRangeInserted(index, count);
+                }
+            }
+
+            @Override
+            public void onReleased(int index, int count) {
+                if (mTaskAdapter != null) {
+                    mTaskAdapter.notifyItemRangeRemoved(index, count);
+                }
+            }
+
+            @Override
+            public void onChanged(int index, int count) {
+                if (mTaskAdapter != null) {
+                    mTaskAdapter.notifyItemRangeChanged(index, count);
+                }
+            }
+
+            @Override
+            public void onMoved(int fromIndex, int toIndex) {
+                if (mTaskAdapter != null) {
+                    mTaskAdapter.notifyItemMoved(fromIndex, toIndex);
+                }
+            }
+        });
+        mTaskPool.applyFilter();
         initUI();
     }
 
@@ -72,7 +107,7 @@ public class HomeActivity extends ViewActivity {
 
         // # Adapter
 
-        mAdapter = new RecyclerViewMergeAdapter();
+        mRootAdapter = new RecyclerViewMergeAdapter();
         LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
 
@@ -80,24 +115,23 @@ public class HomeActivity extends ViewActivity {
         if (mViewModel.getTasksNeedToBeRescheduled().length != 0) {
             View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
-            mAdapter.addAdapter(fullSpanViewAdapter);
+            mRootAdapter.addAdapter(fullSpanViewAdapter);
         } else {
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
-            mAdapter.addAdapter(fullSpanViewAdapter);
+            mRootAdapter.addAdapter(fullSpanViewAdapter);
         }
 
         // TODO;
-        UnmodifiableTask[] tasks = mViewModel.getTasksInProcess();
-        if (tasks.length != 0) {
-            TaskAdapter adapter = new TaskAdapter(tasks);
-            mAdapter.addAdapter(adapter);
+        if (mTaskPool.size() != 0) {
+            mTaskAdapter = new TaskAdapter(mTaskPool);
+            mRootAdapter.addAdapter(mTaskAdapter);
 
         } else {
             View emptyView = inflater.inflate(R.layout.home_no_task_message, mRecyclerView, false);
-            mAdapter.addAdapter(new FullSpanViewAdapter(emptyView));
+            mRootAdapter.addAdapter(new FullSpanViewAdapter(emptyView));
         }
 
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mRootAdapter);
     }
 
     @Override
@@ -144,7 +178,7 @@ public class HomeActivity extends ViewActivity {
         if (requestCode == REQUEST_CODE_MAKE_NEW_TASK &&
                 resultCode == RESULT_OK && data.getExtras() != null) {
 
-
+            mTaskPool.applyFilter();
         }
     }
 }

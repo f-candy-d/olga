@@ -2,13 +2,12 @@ package com.f_candy_d.olga.domain.usecase;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.infra.Repository;
 import com.f_candy_d.olga.infra.SqlEntity;
 import com.f_candy_d.olga.infra.SqliteRepository;
+import com.f_candy_d.olga.infra.sql_utils.SqlQuery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,19 +16,12 @@ import java.util.Map;
  * Created by daichi on 9/10/17.
  */
 
-public class SqlDbUseCase {
+public class SqlTableUseCase {
 
 
     public static long insert(SqlEntityObject entityObject) {
         SqlEntity entity = entityObject.toSqlEntity(false);
-        final long id = Repository.getSqlite().insert(entity);
-
-        return (id != Repository.SQLITE_NULL_ID) ? id : DbContract.NULL_ID;
-    }
-
-    @Nullable
-    public static SqlEntity findById(long id, @NonNull String table) {
-        return Repository.getSqlite().selectRowById(table, id);
+        return Repository.getSqlite().insert(entity);
     }
 
     public static boolean update(SqlEntityObject entityObject) {
@@ -39,6 +31,16 @@ public class SqlDbUseCase {
 
     public static boolean delete(SqlEntityObject entityObject) {
         return Repository.getSqlite().delete(entityObject.getId(), entityObject.getTableName());
+    }
+
+    @Nullable
+    public static SqlEntity findById(long id, @NonNull String table) {
+        return Repository.getSqlite().selectRowById(table, id);
+    }
+
+    @NonNull
+    public static SqlEntity[] query(SqlQuery query) {
+        return Repository.getSqlite().select(query);
     }
 
     public static <T> Map<T, Long> applyDiff(final Map<T, SqlEntityObject> before, final Map<T, SqlEntityObject> after) {
