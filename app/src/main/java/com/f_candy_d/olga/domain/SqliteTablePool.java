@@ -1,6 +1,7 @@
 package com.f_candy_d.olga.domain;
 
 import android.support.v7.util.SortedList;
+import android.util.Log;
 
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
@@ -63,6 +64,7 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
             @Override
             public void onRemoved(int position, int count) {
                 if (mCallback != null) {
+                    Log.d("Mylog", "onRemoved");
                     mCallback.onReleased(position, count);
                 }
             }
@@ -146,10 +148,12 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
      * This method does not delete it from the database.
      */
     final public T releaseAt(int index) {
+        Log.d("mylog", "releaseAt");
         return mPool.removeItemAt(index);
     }
 
     final public boolean release(T entity) {
+        Log.d("mylog", "release");
         return mPool.remove(entity);
     }
 
@@ -168,15 +172,16 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
         }
 
         for (int i = mPool.size() - 1; 0 <= i; --i) {
+            boolean flag = false;
             for (int j = 0; j < entites.size(); ++j) {
                 if (mPool.get(i).getId() == entites.get(j).getId()) {
-                    mPool.updateItemAt(i, entites.get(j));
-                    entites.remove(j);
+                    flag = true;
                     break;
-
-                } else if (j == entites.size() - 1) {
-                    mPool.removeItemAt(i);
                 }
+            }
+
+            if (!flag) {
+                mPool.removeItemAt(i);
             }
         }
 
@@ -224,15 +229,9 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
      * Delete an entity from the database.
      * If it is pooled, remove from the pool using {@link SqliteTablePool#releaseAt(int)}.
      */
-    final public int delete(T entity) {
-        boolean result = SqlTableUseCase.delete(entity);
-        int index;
-        if (result && SortedList.INVALID_POSITION != ((index = indexOf(entity)))) {
-            releaseAt(index);
-            return index;
-        }
-
-        return -1;
+    final public boolean delete(T entity) {
+        release(entity);
+        return SqlTableUseCase.delete(entity);
     }
 
     final public int indexOf(T entity) {

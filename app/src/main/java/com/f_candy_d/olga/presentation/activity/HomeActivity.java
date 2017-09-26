@@ -8,15 +8,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.SqliteTablePool;
 import com.f_candy_d.olga.domain.TaskTablePool;
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
+import com.f_candy_d.olga.presentation.ItemClickHelper;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.TaskAdapter;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
@@ -58,6 +63,7 @@ public class HomeActivity extends ViewActivity {
             public void onReleased(int index, int count) {
                 if (mTaskAdapter != null) {
                     mTaskAdapter.notifyItemRangeRemoved(index, count);
+                    Log.d("mylog", "onReleased");
                 }
             }
 
@@ -132,6 +138,20 @@ public class HomeActivity extends ViewActivity {
         }
 
         mRecyclerView.setAdapter(mRootAdapter);
+
+        ItemClickHelper itemClickHelper = new ItemClickHelper(new ItemClickHelper.Callback() {
+            @Override
+            public void onItemClick(RecyclerView.ViewHolder viewHolder) {
+                Log.d("Mlog", "item clicked at -> " + viewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public void onItemLongClick(RecyclerView.ViewHolder viewHolder) {
+                Log.d("Mlog", "item long clicked at -> " + viewHolder.getAdapterPosition());
+            }
+        });
+
+        itemClickHelper.attachToRecyclerView(mRecyclerView);
     }
 
     @Override

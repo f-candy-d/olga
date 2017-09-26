@@ -29,6 +29,11 @@ public class TaskTablePool extends SqliteTablePool<Task> {
         return oldEntity.equals(newEntity);
     }
 
+    public void changeFilter(TaskFilter filter) {
+        mFilter = filter;
+        applyFilter();
+    }
+
     @Override
     boolean isNecessaryToPool(Task entity) {
         return (mFilter != null && mFilter.isMutch(entity.getId()));
