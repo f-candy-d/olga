@@ -1,13 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".presentation.activity.HomeActivity">
+      tools:context=".presentation.activity.FilterdTaskListActivity">
 
     <item
         android:id="@+id/action_filter"
         android:title="@string/action_filter"
         android:icon="@drawable/ic_filter_list"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_change_item_alignment"
+        android:title="Change View Alignment"
+        android:icon="@drawable/ic_view_stream"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_refresh"
+        android:title="Refresh"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_settings"

@@ -5,14 +5,14 @@
     android:layout_height="72dp">
 
     <TextView
-        android:id="@+id/simple_task_adapter_header_title"
+        android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:text="Morning"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/secondary_text_light"
         android:layout_marginLeft="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginBottom="22dp"

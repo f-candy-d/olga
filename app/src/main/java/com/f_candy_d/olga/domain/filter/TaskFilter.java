@@ -1,5 +1,7 @@
 package com.f_candy_d.olga.domain.filter;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -21,8 +23,9 @@ import java.util.Iterator;
  * Created by daichi on 9/23/17.
  */
 
-public class TaskFilter {
+public class TaskFilter implements Parcelable {
 
+    private String mFilterName;
     @NonNull private ArrayList<String> mKeywordsInTitleOrDescription;
     private int mPickUpAchievementFlag;
 
@@ -41,6 +44,14 @@ public class TaskFilter {
         if (keyword != null) {
             mKeywordsInTitleOrDescription.add(keyword);
         }
+    }
+
+    public String getFilterName() {
+        return mFilterName;
+    }
+
+    public void setFilterName(String filterName) {
+        mFilterName = filterName;
     }
 
     public void removeKeyword(String keyword) {
@@ -139,4 +150,38 @@ public class TaskFilter {
 
         return (SqlTableUseCase.query(query).length != 0);
     }
+
+    /**
+     * Parcelable implementation
+     */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(this.mKeywordsInTitleOrDescription);
+        dest.writeInt(this.mPickUpAchievementFlag);
+        dest.writeString(this.mFilterName);
+    }
+
+    protected TaskFilter(Parcel in) {
+        this.mKeywordsInTitleOrDescription = in.createStringArrayList();
+        this.mPickUpAchievementFlag = in.readInt();
+        this.mFilterName = in.readString();
+    }
+
+    public static final Parcelable.Creator<TaskFilter> CREATOR = new Parcelable.Creator<TaskFilter>() {
+        @Override
+        public TaskFilter createFromParcel(Parcel source) {
+            return new TaskFilter(source);
+        }
+
+        @Override
+        public TaskFilter[] newArray(int size) {
+            return new TaskFilter[size];
+        }
+    };
 }

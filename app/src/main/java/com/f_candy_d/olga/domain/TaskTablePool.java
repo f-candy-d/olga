@@ -1,7 +1,6 @@
 package com.f_candy_d.olga.domain;
 
 import com.f_candy_d.olga.data_store.TaskTable;
-import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
 import com.f_candy_d.olga.domain.filter.TaskFilter;
 import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.infra.SqlEntity;
@@ -32,6 +31,10 @@ public class TaskTablePool extends SqliteTablePool<Task> {
     public void changeFilter(TaskFilter filter) {
         mFilter = filter;
         applyFilter();
+    }
+
+    public TaskFilter getFilter() {
+        return mFilter;
     }
 
     @Override
