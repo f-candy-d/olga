@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -13,14 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.SqliteTablePool;
 import com.f_candy_d.olga.domain.TaskTablePool;
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
+import com.f_candy_d.olga.domain.filter.TaskFilter;
+import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.presentation.ItemClickHelper;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.TaskAdapter;
@@ -50,7 +51,13 @@ public class HomeActivity extends ViewActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mTaskPool = new TaskTablePool(DefaultFilterFactory.createAllFilter());
+
+        onCreateTaskPool(DefaultFilterFactory.createNowFilter());
+        onCreateUI();
+    }
+
+    private void onCreateTaskPool(TaskFilter filter) {
+        mTaskPool = new TaskTablePool(filter);
         mTaskPool.setCallback(new SqliteTablePool.Callback() {
             @Override
             public void onPooled(int index, int count) {
@@ -81,11 +88,11 @@ public class HomeActivity extends ViewActivity {
                 }
             }
         });
+
         mTaskPool.applyFilter();
-        initUI();
     }
 
-    private void initUI() {
+    private void onCreateUI() {
 
         // # Toolbar
 
@@ -114,44 +121,73 @@ public class HomeActivity extends ViewActivity {
         // # Adapter
 
         mRootAdapter = new RecyclerViewMergeAdapter();
-        LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
+        final LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
         View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
-
-        // TODO;
-        if (mViewModel.getTasksNeedToBeRescheduled().length != 0) {
-            View noticeView = getLayoutInflater().inflate(R.layout.notice_overdue_card, mRecyclerView, false);
-            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(noticeView, shortcutView);
-            mRootAdapter.addAdapter(fullSpanViewAdapter);
-        } else {
-            FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
-            mRootAdapter.addAdapter(fullSpanViewAdapter);
-        }
-
-        // TODO;
-        if (mTaskPool.size() != 0) {
-            mTaskAdapter = new TaskAdapter(mTaskPool);
-            mRootAdapter.addAdapter(mTaskAdapter);
-
-        } else {
-            View emptyView = inflater.inflate(R.layout.home_no_task_message, mRecyclerView, false);
-            mRootAdapter.addAdapter(new FullSpanViewAdapter(emptyView));
-        }
-
+        FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
+        mRootAdapter.addAdapter(fullSpanViewAdapter);
+        mTaskAdapter = new TaskAdapter(mTaskPool);
+        mRootAdapter.addAdapter(mTaskAdapter);
         mRecyclerView.setAdapter(mRootAdapter);
+
+        // # ItemClickHelper
 
         ItemClickHelper itemClickHelper = new ItemClickHelper(new ItemClickHelper.Callback() {
             @Override
             public void onItemClick(RecyclerView.ViewHolder viewHolder) {
-                Log.d("Mlog", "item clicked at -> " + viewHolder.getAdapterPosition());
+                RecyclerViewMergeAdapter.PosSubAdapterInfo info = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition());
+                int localPosition = info.posInSubAdapter;
             }
 
             @Override
             public void onItemLongClick(RecyclerView.ViewHolder viewHolder) {
-                Log.d("Mlog", "item long clicked at -> " + viewHolder.getAdapterPosition());
             }
         });
 
         itemClickHelper.attachToRecyclerView(mRecyclerView);
+
+        // # ItemTouchHelper
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (viewHolder instanceof TaskAdapter.TaskViewHolder) {
+                    int localPosition = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition()).posInSubAdapter;
+                    final Task task = mTaskPool.getAt(localPosition);
+                    mTaskPool.release(task);
+                    task.setIsAchieved(true);
+                    mTaskPool.update(task);
+                    Snackbar.make(mRecyclerView, "Achieved!", Snackbar.LENGTH_SHORT)
+                            .setAction("undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    task.setIsAchieved(false);
+                                    mTaskPool.update(task);
+                                    mTaskPool.pool(task.getId());
+                                }
+                            }).show();
+                }
+            }
+
+            @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                // Desable swipe for position in the RecyclerView.
+                // See -> https://stackoverflow.com/questions/30713121/disable-swipe-for-position-in-recyclerview-using-itemtouchhelper-simplecallback
+                if (!(viewHolder instanceof TaskAdapter.TaskViewHolder)) return 0;
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+
+            @Override
+            public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
+                return 0.7f;
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     @Override

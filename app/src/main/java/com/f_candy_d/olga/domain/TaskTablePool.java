@@ -43,7 +43,7 @@ public class TaskTablePool extends SqliteTablePool<Task> {
         if (mFilter != null) {
             swapPoolByQuery(mFilter.toQuery());
         } else {
-            swapPoolByQuery(DefaultFilterFactory.createAllFilter().toQuery());
+            throw new IllegalStateException("Set a filter!");
         }
     }
 

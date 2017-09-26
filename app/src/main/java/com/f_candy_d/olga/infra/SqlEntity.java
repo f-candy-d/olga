@@ -88,7 +88,11 @@ final public class SqlEntity {
     }
 
     public void put(@NonNull String column, boolean value) {
-        mValueMap.put(column, value);
+        if (value) {
+            mValueMap.put(column, Repository.SQLITE_BOOL_TRUE);
+        } else {
+            mValueMap.put(column, Repository.SQLITE_BOOL_FALSE);
+        }
     }
 
     public void put(@NonNull String column, String value) {
@@ -145,8 +149,16 @@ final public class SqlEntity {
 
     public boolean getBooleanOrDefault(@NonNull String column, boolean defult) {
         if (mValueMap.containsKey(column)) {
-            return mValueMap.getAsBoolean(column);
+            int intValue = mValueMap.getAsInteger(column);
+            if (intValue == Repository.SQLITE_BOOL_TRUE) {
+                return true;
+            } else if (intValue == Repository.SQLITE_BOOL_FALSE) {
+                return false;
+            } else {
+                throw new IllegalArgumentException();
+            }
         }
+
         return defult;
     }
 

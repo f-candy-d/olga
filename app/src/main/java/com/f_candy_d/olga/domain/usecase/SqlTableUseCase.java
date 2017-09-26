@@ -2,6 +2,7 @@ package com.f_candy_d.olga.domain.usecase;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.infra.Repository;

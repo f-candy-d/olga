@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.f_candy_d.olga.infra.sql_utils.SqlCondExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlQuery;
@@ -271,7 +272,7 @@ public class SqliteRepository {
             database.endTransaction();
         }
 
-        return isError;
+        return !isError;
     }
 
     private static boolean generalUpdate(SQLiteDatabase database, SqlEntity entity) {
@@ -298,7 +299,6 @@ public class SqliteRepository {
         } finally {
             database.endTransaction();
         }
-
-        return isError;
+        return !isError;
     }
 }

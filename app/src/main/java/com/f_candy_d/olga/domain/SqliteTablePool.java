@@ -64,7 +64,6 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
             @Override
             public void onRemoved(int position, int count) {
                 if (mCallback != null) {
-                    Log.d("Mylog", "onRemoved");
                     mCallback.onReleased(position, count);
                 }
             }
@@ -148,12 +147,10 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
      * This method does not delete it from the database.
      */
     final public T releaseAt(int index) {
-        Log.d("mylog", "releaseAt");
         return mPool.removeItemAt(index);
     }
 
     final public boolean release(T entity) {
-        Log.d("mylog", "release");
         return mPool.remove(entity);
     }
 
@@ -216,9 +213,6 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
             if (SortedList.INVALID_POSITION != index) {
                 mPool.updateItemAt(index, entity);
                 return index;
-
-            } else if (isNecessaryToPool(entity)) {
-                return pool(entity);
             }
         }
 

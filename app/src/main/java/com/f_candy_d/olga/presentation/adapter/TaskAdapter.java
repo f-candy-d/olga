@@ -79,7 +79,7 @@ public class TaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
      * region; ViewHolder
      */
 
-    private static class TaskViewHolder extends RecyclerView.ViewHolder {
+    public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
         TextView title;
         TextView description;

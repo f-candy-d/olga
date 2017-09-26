@@ -18,7 +18,6 @@ public class UnmodifiableTask extends SqlEntityObject {
     public String getTitle() {
         return mTitle;
     }
-
     public String getDescription() {
         return mDescription;
     }

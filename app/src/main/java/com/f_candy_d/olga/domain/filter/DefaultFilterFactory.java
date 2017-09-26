@@ -8,6 +8,10 @@ public class DefaultFilterFactory {
 
     private DefaultFilterFactory() {}
 
+    public static TaskFilter createNowFilter() {
+        return createNotAchievedFilter();
+    }
+
     public static TaskFilter createAllFilter() {
         return new TaskFilter();
     }
