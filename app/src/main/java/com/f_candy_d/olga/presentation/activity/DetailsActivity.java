@@ -1,9 +1,9 @@
 package com.f_candy_d.olga.presentation.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -12,7 +12,12 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
@@ -21,7 +26,6 @@ import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
 import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -32,6 +36,7 @@ public class DetailsActivity extends AppCompatActivity {
     private ViewAdapter mAdapter;
     private FloatingActionButton mFab;
     private RecyclerView mRecyclerView;
+    private ImageView mToggleHeaderButton;
     private long mTaskId;
 
     public static Bundle makeExtra(long taskId) {
@@ -80,6 +85,16 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
+        // # Header Toggle Button
+
+        mToggleHeaderButton = (ImageView) findViewById(R.id.toggle_header_button);
+        mToggleHeaderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleHeaderSize();
+            }
+        });
+
         // # RecyclerView
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -119,7 +134,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     /**
-     * This is only used in {@link DetailsActivity#invalidate(UnmodifiableTask, RecyclerView, ViewAdapter, FloatingActionButton)}.
+     * Only used inside {@link DetailsActivity#invalidate(UnmodifiableTask, RecyclerView, ViewAdapter, FloatingActionButton)}.
      */
     private boolean mIsEmptyListMode = false;
 
@@ -180,5 +195,55 @@ public class DetailsActivity extends AppCompatActivity {
             fab.setVisibility(View.GONE);
             mIsEmptyListMode = true;
         }
+    }
+
+    /**
+     * Only used inside {@link DetailsActivity#toggleHeaderSize()}.
+     */
+    private boolean mIsMinimumHeaderMode = false;
+    private static final long HEADER_TOGGLE_ANIM_DURATION = 200;
+
+    /**
+     * Use up-arrow icon as a button
+     */
+    private void toggleHeaderSize() {
+        float fromRotation;
+        float toRotation;
+
+        if (mIsMinimumHeaderMode) {
+            mIsMinimumHeaderMode = false;
+            fromRotation = 180f;
+            toRotation = 360f;
+
+            // Title
+            TextView textView = (TextView) findViewById(R.id.task_title);
+            textView.setSingleLine(false);
+            // Description
+            textView = (TextView) findViewById(R.id.task_description);
+            textView.setSingleLine(false);
+
+        } else {
+            mIsMinimumHeaderMode = true;
+            fromRotation = 0f;
+            toRotation = 180f;
+
+            // Title
+            TextView textView = (TextView) findViewById(R.id.task_title);
+            textView.setSingleLine(true);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            // Description
+            textView = (TextView) findViewById(R.id.task_description);
+            textView.setSingleLine(true);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+        }
+
+        // Rotate Arrow icon
+        RotateAnimation rotateAnimation = new RotateAnimation(fromRotation, toRotation,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setInterpolator(new DecelerateInterpolator());
+        rotateAnimation.setRepeatCount(0);
+        rotateAnimation.setDuration(HEADER_TOGGLE_ANIM_DURATION);
+        rotateAnimation.setFillAfter(true);
+        mToggleHeaderButton.startAnimation(rotateAnimation);
     }
 }
