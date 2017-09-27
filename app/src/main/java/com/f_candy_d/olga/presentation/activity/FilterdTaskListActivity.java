@@ -12,14 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.domain.SqliteTablePool;
 import com.f_candy_d.olga.domain.TaskTablePool;
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
@@ -171,7 +169,7 @@ public class FilterdTaskListActivity extends ViewActivity
         // Create option view items for the certain filters
         if (mTaskPool.getFilter().getFilterName().equals(DefaultFilterFactory.FILTER_NAME_NOW)) {
             final LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
-            View shortcutView = inflater.inflate(R.layout.shortcut_card, mRecyclerView, false);
+            View shortcutView = inflater.inflate(R.layout.item_suggest_filters_card, mRecyclerView, false);
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
             mRootAdapter.addAdapter(fullSpanViewAdapter);
         }
