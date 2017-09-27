@@ -206,28 +206,13 @@ public class FilterdTaskListActivity extends ViewActivity
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 if (viewHolder instanceof TaskAdapter.TaskViewHolder) {
-                    int localPosition = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition()).posInSubAdapter;
-                    final Task task = mTaskPool.getAt(localPosition);
-                    mTaskPool.release(task);
-                    task.setIsAchieved(true);
-                    mTaskPool.update(task);
-                    Snackbar.make(mRecyclerView, "Achieved!", Snackbar.LENGTH_SHORT)
-                            .setAction("undo", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    task.setIsAchieved(false);
-                                    mTaskPool.update(task);
-                                    mTaskPool.pool(task.getId());
-                                }
-                            }).show();
+                    onTaskItemSwiped((TaskAdapter.TaskViewHolder) viewHolder, direction);
                 }
             }
 
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                // Desable swipe for position in the RecyclerView.
-                // See -> https://stackoverflow.com/questions/30713121/disable-swipe-for-position-in-recyclerview-using-itemtouchhelper-simplecallback
-                if (!(viewHolder instanceof TaskAdapter.TaskViewHolder)) return 0;
+                if (!canItemSwipe(recyclerView, viewHolder)) return 0;
                 return super.getSwipeDirs(recyclerView, viewHolder);
             }
 
@@ -360,6 +345,56 @@ public class FilterdTaskListActivity extends ViewActivity
         }
 
         mCurrentSpanCount = mLayoutManager.getSpanCount();
+    }
+
+    private boolean canItemSwipe(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        // Desable swipe for position in the RecyclerView.
+        // See -> https://stackoverflow.com/questions/30713121/disable-swipe-for-position-in-recyclerview-using-itemtouchhelper-simplecallback
+        return  (viewHolder instanceof TaskAdapter.TaskViewHolder);
+    }
+
+    private void onTaskItemSwiped(TaskAdapter.TaskViewHolder viewHolder, int direction) {
+        int localPosition = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition()).posInSubAdapter;
+        final Task task = mTaskPool.getAt(localPosition);
+        mTaskPool.release(task);
+        final int pickupFlag = mTaskPool.getFilter().getPickUpAchievementFlag();
+
+        if (pickupFlag == TaskFilter.FLAG_PICKUP_ONLY_NOT_ACHIEVED) {
+            // 'task.isAchieved' should be false
+            task.setIsAchieved(true);
+            mTaskPool.update(task);
+            Snackbar.make(mRecyclerView, R.string.item_achieved_message, Snackbar.LENGTH_SHORT)
+                    .setAction(R.string.snackbar_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            task.setIsAchieved(false);
+                            mTaskPool.update(task);
+                            mTaskPool.pool(task.getId());
+                        }
+                    }).show();
+
+        } else if (pickupFlag == TaskFilter.FLAG_PICKUP_ONLY_ACHIEVED) {
+            // 'task.isAchieved' should be true
+            task.setIsAchieved(false);
+            mTaskPool.update(task);
+            Snackbar.make(mRecyclerView, R.string.item_unachieved_message, Snackbar.LENGTH_SHORT)
+                    .setAction(R.string.snackbar_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            task.setIsAchieved(true);
+                            mTaskPool.update(task);
+                            mTaskPool.pool(task.getId());
+                        }
+                    }).show();
+
+        } else {
+            // pickupFlag should be 'TaskFilter.FLAG_PICKUP_BOTH'
+            task.setIsAchieved(!task.isAchieved());
+            mTaskPool.update(task);
+            mTaskPool.pool(task.getId());
+            int title = (task.isAchieved()) ? R.string.item_achieved_message : R.string.item_unachieved_message;
+            Snackbar.make(mRecyclerView, title, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     /**

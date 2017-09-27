@@ -62,6 +62,10 @@ public class TaskFilter implements Parcelable {
         mPickUpAchievementFlag = flag;
     }
 
+    public int getPickUpAchievementFlag() {
+        return mPickUpAchievementFlag;
+    }
+
     @NonNull
     public SqlQuery toQuery() {
         SqlQuery query = new SqlQuery();

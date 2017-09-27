@@ -9,6 +9,10 @@
     <string name="summary_form_default_form_title">What are you up to?</string>
     <string name="empty_task_title">( NO TITLE )</string>
 
+    <string name="item_achieved_message">Achieved</string>
+    <string name="item_unachieved_message">UnAchieved</string>
+    <string name="snackbar_undo">Undo</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_form_todo">TodoFormActivity</string>

@@ -4,15 +4,21 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 /**
  * Created by daichi on 9/21/17.
  */
 
-public class Utils {
+final public class Utils {
 
     private Utils() {}
+
+    /**
+     * Resource
+     */
 
     // A method to find height of the status bar
     public static int getStatusBarHeight() {
