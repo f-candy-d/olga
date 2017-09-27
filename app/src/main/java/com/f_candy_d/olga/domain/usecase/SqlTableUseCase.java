@@ -34,6 +34,10 @@ public class SqlTableUseCase {
         return Repository.getSqlite().delete(entityObject.getId(), entityObject.getTableName());
     }
 
+    public static boolean delete(long id, @NonNull String table) {
+        return Repository.getSqlite().delete(id, table);
+    }
+
     @Nullable
     public static SqlEntity findById(long id, @NonNull String table) {
         return Repository.getSqlite().selectRowById(table, id);

@@ -28,7 +28,7 @@ import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.SaveResultListener {
 
     private static final String EXTRA_TASK_ID = "task_id";
-    public static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
+    private static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
 
     private TaskFormViewModel mViewModel;
     private RecyclerViewMergeAdapter mFormCardAdapter;
@@ -37,6 +37,14 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
         Bundle extras = new Bundle();
         extras.putLong(EXTRA_TASK_ID, taskId);
         return extras;
+    }
+
+    public static long getResultSavedTaskId(Intent intent) {
+        if (intent.getExtras() != null) {
+            return intent.getExtras().getLong(RESULT_SAVED_TASK_ID, DbContract.NULL_ID);
+        } else {
+            return DbContract.NULL_ID;
+        }
     }
 
     @Override

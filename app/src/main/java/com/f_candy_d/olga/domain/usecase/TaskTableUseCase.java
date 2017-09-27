@@ -24,6 +24,10 @@ final public class TaskTableUseCase extends SqlTableUseCase {
         return null;
     }
 
+    public static boolean delete(long id) {
+        return delete(id, TaskTable.TABLE_NAME);
+    }
+
     @NonNull
     public static Task[] findTasksByFilter(TaskFilter filter) {
         SqlEntity[] results = Repository.getSqlite().select(filter.toQuery());

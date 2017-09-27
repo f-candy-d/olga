@@ -13,15 +13,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.f_candy_d.olga.MyApp;
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
 import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
 
@@ -33,6 +39,8 @@ public class DetailsActivity extends AppCompatActivity {
 
     private static final String EXTRA_TASK_ID = "task_id";
 
+    private static final String RESULT_IS_MODIFIRED = "is_modifired";
+
     private ViewAdapter mAdapter;
     private FloatingActionButton mFab;
     private RecyclerView mRecyclerView;
@@ -43,6 +51,10 @@ public class DetailsActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putLong(EXTRA_TASK_ID, taskId);
         return bundle;
+    }
+
+    public static boolean getResultIsModifired(Intent intent) {
+        return (intent.getExtras() != null && intent.getExtras().getBoolean(RESULT_IS_MODIFIRED, false));
     }
 
     @Override
@@ -245,5 +257,39 @@ public class DetailsActivity extends AppCompatActivity {
         rotateAnimation.setDuration(HEADER_TOGGLE_ANIM_DURATION);
         rotateAnimation.setFillAfter(true);
         mToggleHeaderButton.startAnimation(rotateAnimation);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+        if (id == R.id.action_delete) {
+            deleteTask();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteTask() {
+        // Delete task from the database
+        boolean result = TaskTableUseCase.delete(mTaskId);
+        if (!result) {
+            // TODO; If failed...
+            Toast.makeText(MyApp.getAppContext(), "Falied to delete task...", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(MyApp.getAppContext(), "Task was deleted", Toast.LENGTH_SHORT).show();
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(RESULT_IS_MODIFIRED, result);
+        int resultCode = (result) ? RESULT_OK : RESULT_CANCELED;
+        setResult(resultCode, intent);
+        finish();
     }
 }

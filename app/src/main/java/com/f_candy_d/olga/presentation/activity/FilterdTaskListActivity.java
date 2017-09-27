@@ -38,6 +38,7 @@ public class FilterdTaskListActivity extends ViewActivity
         implements FilterPickerDialogFragment.OnFilterSelectListener {
 
     private static final int REQUEST_CODE_MAKE_NEW_TASK = 1111;
+    private static final int REQUEST_CODE_SHOW_DETAILS = 2222;
 
     private static final int SINGLE_SPAN_COUNT = 1;
     private static final int MULTIPLE_SPAN_COUNT = 2;
@@ -287,9 +288,13 @@ public class FilterdTaskListActivity extends ViewActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_MAKE_NEW_TASK &&
-                resultCode == RESULT_OK && data.getExtras() != null) {
+        if (requestCode == REQUEST_CODE_MAKE_NEW_TASK && resultCode == RESULT_OK) {
+            long id = TaskFormActivity.getResultSavedTaskId(data);
+            mTaskPool.pool(id);
 
+        } else if (requestCode == REQUEST_CODE_SHOW_DETAILS &&
+                resultCode == RESULT_OK &&
+                DetailsActivity.getResultIsModifired(data)) {
             refreshData();
         }
     }
@@ -311,7 +316,7 @@ public class FilterdTaskListActivity extends ViewActivity
     private void launchTaskDetailsScreen(UnmodifiableTask task) {
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtras(DetailsActivity.makeExtra(task.getId()));
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_SHOW_DETAILS);
     }
 
     private void launchAnotherFilterdTaskListScreen(TaskFilter filter) {
