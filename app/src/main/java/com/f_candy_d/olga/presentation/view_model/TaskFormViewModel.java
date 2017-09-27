@@ -7,7 +7,7 @@ import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
-import com.f_candy_d.olga.domain.usecase.TaskDbUseCase;
+import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
 
 import java.util.HashMap;
@@ -45,14 +45,14 @@ public class TaskFormViewModel extends ActivityViewModel {
     private void init() {
         mOldFields = new HashMap<>();
         mOldFields.put(FIELD_TASK, null);
-
         mNewFields = new HashMap<>();
         mNewFields.put(FIELD_TASK, new Task());
     }
 
     private void initWithTaskId(long taskId) {
-        Task task = TaskDbUseCase.findTaskById(taskId);
+        Task task = TaskTableUseCase.findTaskById(taskId);
         if (task != null) {
+            mOldFields = new HashMap<>();
             mOldFields.put(FIELD_TASK, task);
 
             mNewFields = new HashMap<>(mOldFields);

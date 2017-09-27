@@ -309,7 +309,9 @@ public class FilterdTaskListActivity extends ViewActivity
     }
 
     private void launchTaskDetailsScreen(UnmodifiableTask task) {
-
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtras(DetailsActivity.makeExtra(task.getId()));
+        startActivity(intent);
     }
 
     private void launchAnotherFilterdTaskListScreen(TaskFilter filter) {

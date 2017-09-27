@@ -13,7 +13,7 @@ import com.f_candy_d.olga.infra.SqlEntity;
  * Created by daichi on 9/10/17.
  */
 
-final public class TaskDbUseCase extends SqlTableUseCase {
+final public class TaskTableUseCase extends SqlTableUseCase {
 
     @Nullable
     public static Task findTaskById(long id) {

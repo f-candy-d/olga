@@ -13,8 +13,15 @@
     <string name="item_unachieved_message">UnAchieved</string>
     <string name="snackbar_undo">Undo</string>
 
+    <string name="achieved_cap">ACHIEVED</string>
+    <string name="not_achieved_cap">NOT ACHIEVED</string>
+
+    <string name="task_details_empty_view_message">
+        No options.\nEdit your task to add options!</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_form_todo">TodoFormActivity</string>
     <string name="title_activity_task_form">TaskFormActivity</string>
+    <string name="title_activity_details">DetailsActivity</string>
 </resources>
