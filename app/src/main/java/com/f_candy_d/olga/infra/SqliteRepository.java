@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.f_candy_d.olga.infra.sql_utils.SqlCondExpr;
+import com.f_candy_d.olga.infra.sql_utils.SqlObserver;
 import com.f_candy_d.olga.infra.sql_utils.SqlQuery;
 import com.f_candy_d.olga.infra.sql_utils.SqlWhere;
 import com.f_candy_d.olga.infra.sqlite.SqliteDatabaseOpenHelper;
@@ -46,6 +46,11 @@ public class SqliteRepository {
         SQLiteDatabase sqLiteDatabase = mOpenHelper.openWritableDatabase();
         long result = generalInsert(sqLiteDatabase, entity);
         sqLiteDatabase.close();
+
+        if (result != NULL_ID) {
+            SqlObserver.getInstance().notifyRowInserted(entity.getTableName(), result);
+        }
+
         return result;
     }
 
@@ -62,6 +67,11 @@ public class SqliteRepository {
         SQLiteDatabase sqLiteDatabase = mOpenHelper.openWritableDatabase();
         boolean result = generalUpdate(sqLiteDatabase, entity);
         sqLiteDatabase.close();
+
+        if (result) {
+            SqlObserver.getInstance().notifyRowUpdated(entity.getTableName(), entity.getLong(BaseColumns._ID));
+        }
+
         return result;
     }
 
@@ -75,6 +85,10 @@ public class SqliteRepository {
         SQLiteDatabase sqLiteDatabase = mOpenHelper.openWritableDatabase();
         final int affected = sqLiteDatabase.update(table, entity.getValueMap(), where.formalize(), null);
         sqLiteDatabase.close();
+
+        if (0 < affected) {
+            SqlObserver.getInstance().notifySomeRowsUpdated(table, affected);
+        }
 
         return affected;
     }
@@ -92,6 +106,11 @@ public class SqliteRepository {
         SQLiteDatabase sqLiteDatabase = mOpenHelper.openWritableDatabase();
         boolean result = generalDelete(sqLiteDatabase, entity);
         sqLiteDatabase.close();
+
+        if (result) {
+            SqlObserver.getInstance().notifyRowDeleted(entity.getTableName(), entity.getLong(BaseColumns._ID));
+        }
+
         return result;
     }
 
@@ -99,6 +118,11 @@ public class SqliteRepository {
         SQLiteDatabase sqLiteDatabase = mOpenHelper.openWritableDatabase();
         boolean result = generalDelete(sqLiteDatabase, id, table);
         sqLiteDatabase.close();
+
+        if (result) {
+            SqlObserver.getInstance().notifyRowDeleted(table, id);
+        }
+
         return result;
     }
 
@@ -111,6 +135,10 @@ public class SqliteRepository {
         SQLiteDatabase sqLiteDatabase = mOpenHelper.openWritableDatabase();
         final int affected = sqLiteDatabase.delete(table, where.formalize(), null);
         sqLiteDatabase.close();
+
+        if (0 < affected) {
+            SqlObserver.getInstance().notifySomeRowsDeleted(table, affected);
+        }
 
         return affected;
     }
@@ -180,6 +208,7 @@ public class SqliteRepository {
     public boolean doTransaction(Transaction transaction) {
         boolean isSuccessful = false;
         transaction.setDatabase(mOpenHelper.openReadableDatabase());
+        transaction.resetHistory();
         transaction.getDatabase().beginTransaction();
         try {
              isSuccessful = transaction.onProcess();
@@ -189,19 +218,55 @@ public class SqliteRepository {
 
         } finally {
             transaction.getDatabase().endTransaction();
+            transaction.getDatabase().close();
+            transaction.setDatabase(null);
         }
 
-        transaction.getDatabase().close();
-        transaction.setDatabase(null);
+        if (isSuccessful) {
+            SqlObserver observer = SqlObserver.getInstance();
+            for (TransactionHistory history : transaction.getHistory()) {
+                switch (history.historyFlag) {
+                    case TransactionHistory.HISTORY_INSERT:
+                        observer.notifyRowInserted(history.table, history.id);
+                        break;
+
+                    case TransactionHistory.HISTORY_DELETE:
+                        observer.notifyRowDeleted(history.table, history.id);
+                        break;
+
+                    case TransactionHistory.HISTORY_UPDATE:
+                        observer.notifyRowUpdated(history.table, history.id);
+                        break;
+                }
+            }
+        }
+
         return isSuccessful;
     }
 
     abstract static public class Transaction {
 
-        SQLiteDatabase mDatabase;
+        private SQLiteDatabase mDatabase;
+        private ArrayList<TransactionHistory> mHistory = new ArrayList<>();
 
         // Return true if transaction is successful, false otherwise
         abstract protected boolean onProcess();
+
+        final void resetHistory() {
+            mHistory.clear();
+        }
+
+        final ArrayList<TransactionHistory> getHistory() {
+            return mHistory;
+        }
+
+        private void addHistory(String table, long id, int historyFlag) {
+            TransactionHistory history = new TransactionHistory();
+            history.table = table;
+            history.id = id;
+            history.historyFlag = historyFlag;
+            mHistory.add(history);
+        }
 
         final void setDatabase(SQLiteDatabase database) {
             mDatabase = database;
@@ -212,20 +277,51 @@ public class SqliteRepository {
         }
 
         final protected long insert(@NonNull SqlEntity entity) {
-            return generalInsert(mDatabase, entity);
+            long id = generalInsert(mDatabase, entity);
+            if (id != NULL_ID) {
+                addHistory(entity.getTableName(), id, TransactionHistory.HISTORY_INSERT);
+            }
+
+            return id;
         }
 
         final protected boolean update(@NonNull SqlEntity entity) {
-            return generalUpdate(mDatabase, entity);
+            boolean result = generalUpdate(mDatabase, entity);
+            if (result) {
+                addHistory(entity.getTableName(), entity.getLong(BaseColumns._ID), TransactionHistory.HISTORY_UPDATE);
+            }
+
+            return result;
         }
 
         final protected boolean delete(@NonNull SqlEntity entity) {
-            return generalDelete(mDatabase, entity);
+            boolean result = generalDelete(mDatabase, entity);
+            if (result) {
+                addHistory(entity.getTableName(), entity.getLong(BaseColumns._ID), TransactionHistory.HISTORY_DELETE);
+            }
+
+            return result;
         }
 
         final protected boolean delete(long id, @NonNull String table) {
-            return generalDelete(mDatabase, id, table);
+            boolean result = generalDelete(mDatabase, id, table);
+            if (result) {
+                addHistory(table, id, TransactionHistory.HISTORY_DELETE);
+            }
+
+            return result;
         }
+    }
+
+    private static class TransactionHistory {
+
+        static final int HISTORY_INSERT = 0;
+        static final int HISTORY_DELETE = 1;
+        static final int HISTORY_UPDATE = 2;
+
+        String table;
+        long id;
+        int historyFlag;
     }
 
     /**
@@ -299,6 +395,7 @@ public class SqliteRepository {
         } finally {
             database.endTransaction();
         }
+
         return !isError;
     }
 }

@@ -12,12 +12,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.domain.SqliteTablePool;
 import com.f_candy_d.olga.domain.TaskTablePool;
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
@@ -90,6 +92,7 @@ public class FilterdTaskListActivity extends ViewActivity
 
     private void onCreateTaskPool(TaskFilter filter) {
         mTaskPool = new TaskTablePool(filter);
+        mTaskPool.enableAutoFilter();
         mTaskPool.setCallback(new SqliteTablePool.Callback() {
             @Override
             public void onPooled(int index, int count) {
@@ -119,7 +122,6 @@ public class FilterdTaskListActivity extends ViewActivity
                 }
             }
         });
-
         mTaskPool.applyFilter();
     }
 
@@ -286,20 +288,6 @@ public class FilterdTaskListActivity extends ViewActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_MAKE_NEW_TASK && resultCode == RESULT_OK) {
-            long id = TaskFormActivity.getResultSavedTaskId(data);
-            mTaskPool.pool(id);
-
-        } else if (requestCode == REQUEST_CODE_SHOW_DETAILS &&
-                resultCode == RESULT_OK &&
-                DetailsActivity.getResultIsModifired(data)) {
-            refreshData();
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mTaskPool.getFilter() == null) {
@@ -376,7 +364,6 @@ public class FilterdTaskListActivity extends ViewActivity
                         public void onClick(View view) {
                             task.setIsAchieved(false);
                             mTaskPool.update(task);
-                            mTaskPool.pool(task.getId());
                         }
                     }).show();
 
@@ -390,7 +377,6 @@ public class FilterdTaskListActivity extends ViewActivity
                         public void onClick(View view) {
                             task.setIsAchieved(true);
                             mTaskPool.update(task);
-                            mTaskPool.pool(task.getId());
                         }
                     }).show();
 
@@ -398,10 +384,15 @@ public class FilterdTaskListActivity extends ViewActivity
             // pickupFlag should be 'TaskFilter.FLAG_PICKUP_BOTH'
             task.setIsAchieved(!task.isAchieved());
             mTaskPool.update(task);
-            mTaskPool.pool(task.getId());
             int title = (task.isAchieved()) ? R.string.item_achieved_message : R.string.item_unachieved_message;
             Snackbar.make(mRecyclerView, title, Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTaskPool.disableAutoFilter();
     }
 
     /**

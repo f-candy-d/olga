@@ -149,8 +149,11 @@ public class TaskFilter implements Parcelable {
         SqlQuery query = toQuery();
         SqlCondExpr idIs = new SqlCondExpr(TaskTable._ID).equalTo(id);
         idIs.setInBracket(true);
-        SqlLogicExpr where = new SqlLogicExpr(idIs).and(query.getSelection());
-        query.setSelection(where);
+        if (query.getSelection() != null) {
+            query.setSelection(new SqlLogicExpr(idIs).and(query.getSelection()));
+        } else {
+            query.setSelection(idIs);
+        }
 
         return (SqlTableUseCase.query(query).length != 0);
     }

@@ -112,6 +112,34 @@ final public class SqlEntity {
      * region; Getter
      */
 
+    public int getInt(@NonNull String column) {
+        return mValueMap.getAsInteger(column);
+    }
+
+    public long getLong(@NonNull String column) {
+        return mValueMap.getAsLong(column);
+    }
+
+    public short getShort(@NonNull String column) {
+        return mValueMap.getAsShort(column);
+    }
+
+    public float getFloat(@NonNull String column) {
+        return mValueMap.getAsFloat(column);
+    }
+
+    public double getDouble(@NonNull String column) {
+        return mValueMap.getAsDouble(column);
+    }
+
+    public boolean getBoolean(@NonNull String column) {
+        return mValueMap.getAsBoolean(column);
+    }
+
+    public String getString(@NonNull String column) {
+        return mValueMap.getAsString(column);
+    }
+
     public int getIntOrDefault(@NonNull String column, int defult) {
         if (mValueMap.containsKey(column)) {
             return mValueMap.getAsInteger(column);

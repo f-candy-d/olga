@@ -25,6 +25,8 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
         void onMoved(int fromIndex, int toIndex);
     }
 
+    public static final int INVALID_POSITION = SortedList.INVALID_POSITION;
+
     private final String mTableName;
     private SortedList<T> mPool;
     private Callback mCallback;
@@ -210,7 +212,7 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
         boolean result = SqlTableUseCase.update(entity);
         if (result) {
             int index = indexOf(entity);
-            if (SortedList.INVALID_POSITION != index) {
+            if (INVALID_POSITION != index) {
                 mPool.updateItemAt(index, entity);
                 return index;
             }
@@ -229,7 +231,18 @@ abstract public class SqliteTablePool<T extends SqlEntityObject> {
     }
 
     final public int indexOf(T entity) {
-        return mPool.indexOf(entity);
+        int index = mPool.indexOf(entity);
+        return (index != SortedList.INVALID_POSITION) ? index : INVALID_POSITION;
+    }
+
+    final public int indexOf(long id) {
+        for (int i = 0; i < mPool.size(); ++i) {
+            if (mPool.get(i).getId() == id) {
+                return i;
+            }
+        }
+
+        return INVALID_POSITION;
     }
 
     private boolean areEntitesTheSame(T entity1, T entity2) {
