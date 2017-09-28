@@ -419,33 +419,33 @@ public class FilterdListActivity extends AppCompatActivity
 
         if (pickupFlag == NoteFilter.FLAG_PICKUP_ONLY_NOT_ACHIEVED) {
             // 'note.isAchieved' should be false
-            note.setIsAchieved(true);
+            note.setAchieved(true);
             mTaskPool.update(note);
             Snackbar.make(mRecyclerView, R.string.item_achieved_message, Snackbar.LENGTH_SHORT)
                     .setAction(R.string.snackbar_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            note.setIsAchieved(false);
+                            note.setAchieved(false);
                             mTaskPool.update(note);
                         }
                     }).show();
 
         } else if (pickupFlag == NoteFilter.FLAG_PICKUP_ONLY_ACHIEVED) {
             // 'note.isAchieved' should be true
-            note.setIsAchieved(false);
+            note.setAchieved(false);
             mTaskPool.update(note);
             Snackbar.make(mRecyclerView, R.string.item_unachieved_message, Snackbar.LENGTH_SHORT)
                     .setAction(R.string.snackbar_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            note.setIsAchieved(true);
+                            note.setAchieved(true);
                             mTaskPool.update(note);
                         }
                     }).show();
 
         } else {
             // pickupFlag should be 'NoteFilter.FLAG_PICKUP_BOTH'
-            note.setIsAchieved(!note.isAchieved());
+            note.setAchieved(!note.isAchieved());
             mTaskPool.update(note);
             int title = (note.isAchieved()) ? R.string.item_achieved_message : R.string.item_unachieved_message;
             Snackbar.make(mRecyclerView, title, Snackbar.LENGTH_SHORT).show();

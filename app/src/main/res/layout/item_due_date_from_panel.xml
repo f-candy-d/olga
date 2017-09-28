@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/label_due_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DUE DATE"
+            android:layout_margin="24dp"/>
+
+        <Button
+            android:id="@+id/select_due_date_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/label_due_date"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            style="?attr/borderlessButtonStyle"
+            android:text="Sep. 20, 2017"/>
+
+        <Button
+            android:id="@+id/select_due_time_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/select_due_date_button"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            style="?attr/borderlessButtonStyle"
+            android:text="12:30 pm"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

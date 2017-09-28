@@ -11,31 +11,45 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.colorpicker.ColorPickerDialog;
 import com.android.colorpicker.ColorPickerSwatch;
 import com.f_candy_d.dutils.view.ToggleColorBackground;
+import com.f_candy_d.olga.AppDataDecoration;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
+import com.f_candy_d.olga.domain.structure.DueDateOption;
 import com.f_candy_d.olga.domain.structure.Note;
+import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
+import com.f_candy_d.olga.presentation.dialog.DatePickerDialog;
 import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
 import com.f_candy_d.olga.domain.NoteFormManager;
+import com.f_candy_d.olga.presentation.dialog.TimePickerDialog;
+
+import java.util.Calendar;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
 public class NoteFormActivity extends AppCompatActivity
         implements NoteFormManager.SaveResultListener,
-        SimpleAlertDialog.ButtonClickListener {
+        SimpleAlertDialog.ButtonClickListener,
+        DatePickerDialog.NoticeDateSetListener,
+        TimePickerDialog.NoticeTimeSetListener {
+
+    private static final int DUE_DATE_PICKER_DIALOG = 0;
+    private static final int DUE_TIME_PICKER_DIALOG = 0;
 
     private static final String EXTRA_TASK_ID = "task_id";
     private static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
 
     private NoteFormManager mFormManager;
-    private RecyclerViewMergeAdapter mFormCardAdapter;
+    private ViewAdapter mFormCardAdapter;
     private ToggleColorBackground mToggleColorBg;
+    private RecyclerView mRecyclerView;
 
     public static Bundle makeExtra(long taskId) {
         Bundle extras = new Bundle();
@@ -84,30 +98,36 @@ public class NoteFormActivity extends AppCompatActivity
 
         // # RecyclerView
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Set top padding to match the status bar height
-        recyclerView.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
+        mRecyclerView.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
 
         // # Adapter
 
-        mFormCardAdapter = new RecyclerViewMergeAdapter();
-        LayoutInflater inflater = LayoutInflater.from(recyclerView.getContext());
+        mFormCardAdapter = new ViewAdapter();
+        LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
 
         // Header
-        View itemView = inflater.inflate(R.layout.item_form_header_with_navigation_back_button, recyclerView, false);
+        View itemView = inflater.inflate(R.layout.item_form_header_with_navigation_back_button, mRecyclerView, false);
         setupHeaderItemView(itemView);
         mFormCardAdapter.addView(itemView);
-        // Core fields
-        itemView = inflater.inflate(R.layout.item_task_form_panel, recyclerView, false);
+        // Note
+        itemView = inflater.inflate(R.layout.item_task_form_panel, mRecyclerView, false);
         setupTaskFormItemView(itemView);
         mFormCardAdapter.addView(itemView);
+        // DueDateOption
+        if (mFormManager.hasDueDateOption()) {
+            itemView = inflater.inflate(R.layout.item_due_date_from_panel, mRecyclerView, false);
+            setupDueDateFormItemView(itemView);
+            mFormCardAdapter.addView(itemView);
+        }
         // Footer
-        itemView = inflater.inflate(R.layout.item_add_option_button, recyclerView, false);
+        itemView = inflater.inflate(R.layout.item_add_option_button, mRecyclerView, false);
         setupFooterItemView(itemView);
         mFormCardAdapter.addView(itemView);
 
-        recyclerView.setAdapter(mFormCardAdapter);
+        mRecyclerView.setAdapter(mFormCardAdapter);
     }
 
     private void onDiscardButtonClick() {
@@ -120,7 +140,13 @@ public class NoteFormActivity extends AppCompatActivity
     }
 
     private void onAddOptionButtonClick() {
-        Toast.makeText(this, "Add new option", Toast.LENGTH_SHORT).show();
+        if (!mFormManager.hasDueDateOption()) {
+            mFormManager.attachDueDateOption();
+            View itemView = LayoutInflater.from(mRecyclerView.getContext())
+                    .inflate(R.layout.item_due_date_from_panel, mRecyclerView, false);
+            setupDueDateFormItemView(itemView);
+            mFormCardAdapter.changeView(mFormCardAdapter.getItemCount() - 1, itemView);
+        }
     }
 
     /**
@@ -201,9 +227,41 @@ public class NoteFormActivity extends AppCompatActivity
         });
     }
 
+    private void setupDueDateFormItemView(View itemView) {
+        DueDateOption dueDateOption = mFormManager.getDueDateOptionData();
+
+        // Select due date button
+        Button button = itemView.findViewById(R.id.select_due_date_button);
+        button.setText(AppDataDecoration.formatDate(dueDateOption.getDueDate()));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DueDateOption option = mFormManager.getDueDateOptionData();
+                DatePickerDialog picker = DatePickerDialog
+                        .newInstance(DUE_DATE_PICKER_DIALOG, option.getDueDate());
+                picker.show(getSupportFragmentManager(), null);
+            }
+        });
+
+
+        // Select due time button
+        button = itemView.findViewById(R.id.select_due_time_button);
+        button.setText(AppDataDecoration.formatTime(dueDateOption.getDueDate(), false));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DueDateOption option = mFormManager.getDueDateOptionData();
+                TimePickerDialog picker = TimePickerDialog
+                        .newInstance(DUE_TIME_PICKER_DIALOG, option.getDueDate(), false);
+                picker.show(getSupportFragmentManager(), null);
+            }
+        });
+
+    }
+
     /**
-     * region; NoteFormManager.SaveResultListener interface
-     */
+     * NoteFormManager.SaveResultListener implementation
+     * ----------------------------------------------------------------------------- */
 
     @Override
     public void onSaveSuccessful(long taskId) {
@@ -235,4 +293,37 @@ public class NoteFormActivity extends AppCompatActivity
         setResult(RESULT_CANCELED);
         finish();
     }
+
+    /**
+     * DatePickerDialog.NoticeDateSetListener implementation
+     * ------------------------------------------------------------------------- */
+    @Override
+    public void onDateSet(int year, int month, int dayOfMonth, int tag) {
+        switch (tag) {
+            case DUE_DATE_PICKER_DIALOG:
+                Calendar dueDate = mFormManager.getDueDateOptionData().getDueDate();
+                dueDate.set(Calendar.YEAR, year);
+                dueDate.set(Calendar.MONTH, month);
+                dueDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                mFormManager.onInputDueDateOptionDueDate(dueDate);
+                break;
+        }
+    }
+
+    /**
+     * TimePickerDialog.NoticeTimeSetListener implementation
+     * ------------------------------------------------------------------------- */
+
+    @Override
+    public void onTimeSet(int hourOfDay, int minute, int tag) {
+        switch (tag) {
+            case DUE_TIME_PICKER_DIALOG:
+                Calendar dueDate = mFormManager.getDueDateOptionData().getDueDate();
+                dueDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                dueDate.set(Calendar.MINUTE, minute);
+                mFormManager.onInputDueDateOptionDueDate(dueDate);
+                break;
+        }
+    }
+
 }

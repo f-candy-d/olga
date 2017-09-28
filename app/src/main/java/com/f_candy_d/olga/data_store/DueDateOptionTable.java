@@ -35,8 +35,12 @@ public class DueDateOptionTable implements BaseColumns {
      * Default values
      */
 
-    public static long defaultDueDate() {
+    public static long defaultId() {
+        return DbContract.NULL_ID;
+    }
+
+    public static Calendar defaultDueDate() {
         // Return the current datetime
-        return Calendar.getInstance().getTimeInMillis();
+        return Calendar.getInstance();
     }
 }

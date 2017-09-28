@@ -12,10 +12,18 @@ import com.f_candy_d.olga.infra.SqlEntity;
 abstract public class SqlEntityObject {
 
     @NonNull private final String mTableName;
-    protected long mId;
+    long mId;
 
     SqlEntityObject(@NonNull String tableName) {
         mTableName = tableName;
+        onInitWithDefaultValues();
+    }
+
+    SqlEntityObject(@NonNull String tableName, SqlEntity entity) {
+        this(tableName);
+        if (entity != null) {
+            constructFromSqlEntity(entity);
+        }
     }
 
     @NonNull
@@ -34,7 +42,9 @@ abstract public class SqlEntityObject {
     @NonNull
     abstract public SqlEntity toSqlEntity(boolean includeRowId);
 
-    abstract public void constructFromSqlEntity(SqlEntity entity);
+    abstract public void constructFromSqlEntity(@NonNull SqlEntity entity);
+
+    abstract protected void onInitWithDefaultValues();
 
     @Override
     abstract public boolean equals(Object obj);

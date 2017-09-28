@@ -188,6 +188,10 @@ public class SqliteRepository {
      */
     @Nullable
     public SqlEntity selectRowById(@NonNull String table, long id) {
+        if (id == NULL_ID) {
+            return null;
+        }
+
         SqlCondExpr idIs = new SqlCondExpr(BaseColumns._ID).equalTo(id);
         SqlQuery query = new SqlQuery();
         query.putTables(table);

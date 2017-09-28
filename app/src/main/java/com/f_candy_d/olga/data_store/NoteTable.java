@@ -24,6 +24,7 @@ public class NoteTable implements BaseColumns {
     public static final String _DESCRIPTION = "description";
     public static final String _IS_ACHIEVED = "is_achieved";
     public static final String _THEME_COLOR = "theme_color";
+    public static final String _DUE_DATE_OPTION_ID = "due_date_option_id";
 
     /**
      * Table definition
@@ -34,7 +35,8 @@ public class NoteTable implements BaseColumns {
                 .put(_TITLE, SqliteColumnDataType.TEXT)
                 .put(_DESCRIPTION, SqliteColumnDataType.TEXT)
                 .put(_IS_ACHIEVED, SqliteColumnDataType.INTEGER)
-                .put(_THEME_COLOR, SqliteColumnDataType.INTEGER);
+                .put(_THEME_COLOR, SqliteColumnDataType.INTEGER)
+                .put(_DUE_DATE_OPTION_ID, SqliteColumnDataType.INTEGER);
     }
 
     /**
@@ -59,5 +61,9 @@ public class NoteTable implements BaseColumns {
 
     public static int defaultThemeColor() {
         return ContextCompat.getColor(MyApp.getAppContext(), R.color.default_task_theme_color);
+    }
+
+    public static long defaultDueDateOptionId() {
+        return DbContract.NULL_ID;
     }
 }
