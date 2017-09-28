@@ -1,5 +1,6 @@
 package com.f_candy_d.olga.data_store;
 
+import android.graphics.Color;
 import android.provider.BaseColumns;
 
 import com.f_candy_d.olga.infra.sqlite.SqliteColumnDataType;
@@ -19,6 +20,7 @@ public class TaskTable implements BaseColumns {
     public static final String _TITLE = "title";
     public static final String _DESCRIPTION = "description";
     public static final String _IS_ACHIEVED = "is_achieved";
+    public static final String _THEME_COLOR = "theme_color";
 
     /**
      * Table definition
@@ -28,7 +30,8 @@ public class TaskTable implements BaseColumns {
                 .put(_ID, SqliteColumnDataType.INTEGER_PK)
                 .put(_TITLE, SqliteColumnDataType.TEXT)
                 .put(_DESCRIPTION, SqliteColumnDataType.TEXT)
-                .put(_IS_ACHIEVED, SqliteColumnDataType.INTEGER);
+                .put(_IS_ACHIEVED, SqliteColumnDataType.INTEGER)
+                .put(_THEME_COLOR, SqliteColumnDataType.INTEGER);
     }
 
     /**
@@ -49,5 +52,9 @@ public class TaskTable implements BaseColumns {
 
     public static boolean defaultIsAchieved() {
         return false;
+    }
+
+    public static int defaultThemeColor() {
+        return Color.parseColor("#4F86C6");
     }
 }

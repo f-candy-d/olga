@@ -34,4 +34,8 @@ public class Task extends UnmodifiableTask {
     public void setIsAchieved(boolean isArchived) {
         super.mIsAchieved = isArchived;
     }
+
+    public void setThemeColor(int themeColor) {
+        super.mThemeColor = themeColor;
+    }
 }

@@ -14,6 +14,7 @@ public class UnmodifiableTask extends SqlEntityObject {
     protected String mTitle;
     protected String mDescription;
     protected boolean mIsAchieved;
+    protected int mThemeColor;
 
     public String getTitle() {
         return mTitle;
@@ -25,6 +26,10 @@ public class UnmodifiableTask extends SqlEntityObject {
         return mIsAchieved;
     }
 
+    public int getThemeColor() {
+        return mThemeColor;
+    }
+
     public UnmodifiableTask() {
         super(TaskTable.TABLE_NAME);
         initWithDefaultValue();
@@ -34,10 +39,11 @@ public class UnmodifiableTask extends SqlEntityObject {
         super(TaskTable.TABLE_NAME);
 
         if (task != null) {
-            super.mId = task.mId;
-            this.mTitle = task.mTitle;
-            this.mDescription = task.mDescription;
-            this.mIsAchieved = task.mIsAchieved;
+            super.mId = task.getId();
+            this.mTitle = task.getTitle();
+            this.mDescription = task.getDescription();
+            this.mIsAchieved = task.isAchieved();
+            this.mThemeColor = task.getThemeColor();
         }
     }
 
@@ -59,6 +65,7 @@ public class UnmodifiableTask extends SqlEntityObject {
         entity.put(TaskTable._TITLE, this.mTitle);
         entity.put(TaskTable._IS_ACHIEVED, this.mIsAchieved);
         entity.put(TaskTable._DESCRIPTION, this.mDescription);
+        entity.put(TaskTable._THEME_COLOR, this.mThemeColor);
 
         return entity;
     }
@@ -73,6 +80,7 @@ public class UnmodifiableTask extends SqlEntityObject {
         this.mTitle = entity.getStringOrDefault(TaskTable._TITLE, this.mTitle);
         this.mDescription = entity.getStringOrDefault(TaskTable._DESCRIPTION, this.mDescription);
         this.mIsAchieved = entity.getBooleanOrDefault(TaskTable._IS_ACHIEVED, this.mIsAchieved);
+        this.mThemeColor = entity.getIntOrDefault(TaskTable._THEME_COLOR, this.mThemeColor);
     }
 
     protected void initWithDefaultValue() {
@@ -80,6 +88,7 @@ public class UnmodifiableTask extends SqlEntityObject {
         this.mTitle = TaskTable.defaultTitle();
         this.mDescription = TaskTable.defaultDescription();
         this.mIsAchieved = TaskTable.defaultIsAchieved();
+        this.mThemeColor = TaskTable.defaultThemeColor();
     }
 
     @Override
@@ -87,11 +96,12 @@ public class UnmodifiableTask extends SqlEntityObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UnmodifiableTask that = (UnmodifiableTask) o;
+        UnmodifiableTask task = (UnmodifiableTask) o;
 
-        if (mIsAchieved != that.mIsAchieved) return false;
-        if (mTitle != null ? !mTitle.equals(that.mTitle) : that.mTitle != null) return false;
-        return mDescription != null ? mDescription.equals(that.mDescription) : that.mDescription == null;
+        if (mIsAchieved != task.mIsAchieved) return false;
+        if (mThemeColor != task.mThemeColor) return false;
+        if (mTitle != null ? !mTitle.equals(task.mTitle) : task.mTitle != null) return false;
+        return mDescription != null ? mDescription.equals(task.mDescription) : task.mDescription == null;
 
     }
 
@@ -100,6 +110,7 @@ public class UnmodifiableTask extends SqlEntityObject {
         int result = mTitle != null ? mTitle.hashCode() : 0;
         result = 31 * result + (mDescription != null ? mDescription.hashCode() : 0);
         result = 31 * result + (mIsAchieved ? 1 : 0);
+        result = 31 * result + mThemeColor;
         return result;
     }
 }
