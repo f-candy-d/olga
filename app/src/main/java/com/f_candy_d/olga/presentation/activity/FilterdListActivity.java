@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -33,15 +34,12 @@ import com.f_candy_d.olga.presentation.ItemClickHelper;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.NoteAdapter;
 import com.f_candy_d.olga.presentation.dialog.FilterPickerDialog;
-import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
-import com.f_candy_d.vvm.ActivityViewModel;
-import com.f_candy_d.vvm.ViewActivity;
 
 import java.util.ArrayList;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
-public class FilterdListActivity extends ViewActivity
+public class FilterdListActivity extends AppCompatActivity
         implements FilterPickerDialog.OnFilterSelectListener {
 
     private static final int REQUEST_CODE_MAKE_NEW_TASK = 1111;
@@ -60,19 +58,12 @@ public class FilterdListActivity extends ViewActivity
 
     private static final String STATE_FILTER = "state_filter";
 
-    private HomeViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private RecyclerViewMergeAdapter mRootAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
     private NoteAdapter mNoteAdapter;
     private NoteTablePool mTaskPool;
     private int mCurrentSpanCount;
-
-    @Override
-    protected ActivityViewModel onCreateViewModel() {
-        mViewModel = new HomeViewModel(this);
-        return mViewModel;
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

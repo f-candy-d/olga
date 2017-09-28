@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.presentation.view_model;
+package com.f_candy_d.olga.domain;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,7 +8,6 @@ import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.domain.usecase.NoteTableUseCase;
-import com.f_candy_d.vvm.ActivityViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ import java.util.Map;
  * Created by daichi on 9/22/17.
  */
 
-public class NoteFormViewModel extends ActivityViewModel {
+public class NoteFormManager {
 
     public interface SaveResultListener {
         void onSaveSuccessful(long taskId);
@@ -30,14 +29,12 @@ public class NoteFormViewModel extends ActivityViewModel {
     private Map<String, SqlEntityObject> mNewFields;
     private SaveResultListener mSaveResultListener;
 
-    public NoteFormViewModel(Context context) {
-        super(context);
+    public NoteFormManager(Context context) {
         init();
         attachListener(context);
     }
 
-    public NoteFormViewModel(Context context, long taskId) {
-        super(context);
+    public NoteFormManager(Context context, long taskId) {
         initWithTaskId(taskId);
         attachListener(context);
     }
@@ -67,7 +64,7 @@ public class NoteFormViewModel extends ActivityViewModel {
             mSaveResultListener = (SaveResultListener) context;
         } catch (ClassCastException e) {
             throw new RuntimeException(context.getClass().getName()
-                    + "must implement NoteFormViewModel.SaveResultListener interface");
+                    + "must implement NoteFormManager.SaveResultListener interface");
         }
     }
 

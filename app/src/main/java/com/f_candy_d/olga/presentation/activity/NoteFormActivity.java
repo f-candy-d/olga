@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,20 +22,18 @@ import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
-import com.f_candy_d.olga.presentation.view_model.NoteFormViewModel;
-import com.f_candy_d.vvm.ActivityViewModel;
-import com.f_candy_d.vvm.ViewActivity;
+import com.f_candy_d.olga.domain.NoteFormManager;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
-public class NoteFormActivity extends ViewActivity
-        implements NoteFormViewModel.SaveResultListener,
+public class NoteFormActivity extends AppCompatActivity
+        implements NoteFormManager.SaveResultListener,
         SimpleAlertDialog.ButtonClickListener {
 
     private static final String EXTRA_TASK_ID = "task_id";
     private static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
 
-    private NoteFormViewModel mViewModel;
+    private NoteFormManager mFormManager;
     private RecyclerViewMergeAdapter mFormCardAdapter;
     private ToggleColorBackground mToggleColorBg;
 
@@ -53,36 +52,35 @@ public class NoteFormActivity extends ViewActivity
     }
 
     @Override
-    protected ActivityViewModel onCreateViewModel() {
-        long id = getIntent().getLongExtra(EXTRA_TASK_ID, DbContract.NULL_ID);
-        if (id == DbContract.NULL_ID) {
-            mViewModel = new NoteFormViewModel(this);
-        } else {
-            mViewModel = new NoteFormViewModel(this, id);
-        }
-
-        return mViewModel;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_form);
 
+        long id = getIntent().getLongExtra(EXTRA_TASK_ID, DbContract.NULL_ID);
+        if (id == DbContract.NULL_ID) {
+            mFormManager = new NoteFormManager(this);
+        } else {
+            mFormManager = new NoteFormManager(this, id);
+        }
+
+        onCreateUI();
+    }
+
+    private void onCreateUI() {
         // # FAB
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mViewModel.onSave();
+                mFormManager.onSave();
             }
         });
 
         // # ToggleColorBg
 
         mToggleColorBg = (ToggleColorBackground) findViewById(R.id.toggle_color_bg);
-        mToggleColorBg.setCurrentColor(mViewModel.getTaskData().getThemeColor());
+        mToggleColorBg.setCurrentColor(mFormManager.getTaskData().getThemeColor());
 
         // # RecyclerView
 
@@ -140,7 +138,7 @@ public class NoteFormActivity extends ViewActivity
     }
 
     private void setupTaskFormItemView(View itemView) {
-        final UnmodifiableNote taskData = mViewModel.getTaskData();
+        final UnmodifiableNote taskData = mFormManager.getTaskData();
         // EditText for the Note's title
         EditText editText = itemView.findViewById(R.id.edit_text_title);
         editText.setText(taskData.getTitle());
@@ -150,7 +148,7 @@ public class NoteFormActivity extends ViewActivity
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mViewModel.onInputTaskTitle(editable.toString());
+                mFormManager.onInputTaskTitle(editable.toString());
             }
         });
 
@@ -163,7 +161,7 @@ public class NoteFormActivity extends ViewActivity
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mViewModel.onInputTaskDescription(editable.toString());
+                mFormManager.onInputTaskDescription(editable.toString());
             }
         });
 
@@ -184,7 +182,7 @@ public class NoteFormActivity extends ViewActivity
                 picker.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int color) {
-                        mViewModel.onInputTaskThemeColor(color);
+                        mFormManager.onInputTaskThemeColor(color);
                         mToggleColorBg.toggleColor(color);
                     }
                 });
@@ -204,7 +202,7 @@ public class NoteFormActivity extends ViewActivity
     }
 
     /**
-     * region; NoteFormViewModel.SaveResultListener interface
+     * region; NoteFormManager.SaveResultListener interface
      */
 
     @Override

@@ -25,7 +25,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile project(':d_utils')
-    compile project(':vvm')
     compile project(':colorpicker')
     compile 'me.mvdw.recyclerviewmergeadapter:recyclerviewmergeadapter:2.0.0'
     compile 'com.android.support:appcompat-v7:26.+'
