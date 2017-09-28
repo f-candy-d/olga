@@ -1,7 +1,6 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -15,7 +14,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +32,7 @@ import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.presentation.ItemClickHelper;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.TaskAdapter;
-import com.f_candy_d.olga.presentation.dialog.FilterPickerDialogFragment;
+import com.f_candy_d.olga.presentation.dialog.FilterPickerDialog;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
@@ -44,7 +42,7 @@ import java.util.ArrayList;
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
 public class FilterdTaskListActivity extends ViewActivity
-        implements FilterPickerDialogFragment.OnFilterSelectListener {
+        implements FilterPickerDialog.OnFilterSelectListener {
 
     private static final int REQUEST_CODE_MAKE_NEW_TASK = 1111;
     private static final int REQUEST_CODE_SHOW_DETAILS = 2222;
@@ -408,7 +406,7 @@ public class FilterdTaskListActivity extends ViewActivity
     }
 
     private void launchFilterPickerDialog() {
-        FilterPickerDialogFragment picker = FilterPickerDialogFragment.newInstance();
+        FilterPickerDialog picker = FilterPickerDialog.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         // Show as a full screen dialog
@@ -493,7 +491,7 @@ public class FilterdTaskListActivity extends ViewActivity
     }
 
     /**
-     * FilterPickerDialogFragment.OnFilterSelectListener implementation
+     * FilterPickerDialog.OnFilterSelectListener implementation
      */
 
     @Override

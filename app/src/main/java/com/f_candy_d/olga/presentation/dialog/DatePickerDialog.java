@@ -1,6 +1,5 @@
 package com.f_candy_d.olga.presentation.dialog;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,8 +15,8 @@ import java.util.Calendar;
  * Created by daichi on 9/11/17.
  */
 
-public class DatePickerDialogFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener {
+public class DatePickerDialog extends DialogFragment
+        implements android.app.DatePickerDialog.OnDateSetListener {
 
     private static final String ARG_YEAR = "year";
     private static final String ARG_MONTH = "month";
@@ -29,11 +28,11 @@ public class DatePickerDialogFragment extends DialogFragment
     private NoticeDateSetListener mListener;
     private int mDialogTag;
 
-    public static DatePickerDialogFragment newInstance() {
+    public static DatePickerDialog newInstance() {
         return newInstance(DEFAULT_DIALOG_TAG, Calendar.getInstance());
     }
 
-    public static DatePickerDialogFragment newInstance(Calendar date) {
+    public static DatePickerDialog newInstance(Calendar date) {
         return newInstance(
                 DEFAULT_DIALOG_TAG,
                 date.get(Calendar.YEAR),
@@ -41,15 +40,15 @@ public class DatePickerDialogFragment extends DialogFragment
                 date.get(Calendar.DAY_OF_MONTH));
     }
 
-    public static DatePickerDialogFragment newInstance(int year, int month, int dayOfMonth) {
+    public static DatePickerDialog newInstance(int year, int month, int dayOfMonth) {
         return newInstance(DEFAULT_DIALOG_TAG, year, month, dayOfMonth);
     }
 
-    public static DatePickerDialogFragment newInstance(int tag) {
+    public static DatePickerDialog newInstance(int tag) {
         return newInstance(tag, Calendar.getInstance());
     }
 
-    public static DatePickerDialogFragment newInstance(int tag, Calendar date) {
+    public static DatePickerDialog newInstance(int tag, Calendar date) {
         return newInstance(
                 tag,
                 date.get(Calendar.YEAR),
@@ -57,14 +56,14 @@ public class DatePickerDialogFragment extends DialogFragment
                 date.get(Calendar.DAY_OF_MONTH));
     }
 
-    public static DatePickerDialogFragment newInstance(int tag, int year, int month, int dayOfMonth) {
+    public static DatePickerDialog newInstance(int tag, int year, int month, int dayOfMonth) {
         Bundle args = new Bundle();
         args.putInt(ARG_YEAR, year);
         args.putInt(ARG_MONTH, month);
         args.putInt(ARG_DAY_OF_MONTH, dayOfMonth);
         args.putInt(ARG_DIALOG_TAG, tag);
 
-        DatePickerDialogFragment fragment = new DatePickerDialogFragment();
+        DatePickerDialog fragment = new DatePickerDialog();
         fragment.setArguments(args);
 
         return fragment;
@@ -97,7 +96,7 @@ public class DatePickerDialogFragment extends DialogFragment
             d = now.get(Calendar.DAY_OF_MONTH);
         }
 
-        return new DatePickerDialog(getActivity(), this, y, m, d);
+        return new android.app.DatePickerDialog(getActivity(), this, y, m, d);
     }
 
     @Override

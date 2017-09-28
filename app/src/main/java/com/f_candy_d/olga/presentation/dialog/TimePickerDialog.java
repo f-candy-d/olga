@@ -1,7 +1,6 @@
 package com.f_candy_d.olga.presentation.dialog;
 
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,8 +15,8 @@ import java.util.Calendar;
  * Created by daichi on 9/11/17.
  */
 
-public class TimePickerDialogFragment extends DialogFragment
-        implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerDialog extends DialogFragment
+        implements android.app.TimePickerDialog.OnTimeSetListener {
 
     private static final String ARG_HOUR_OF_DAY = "hourOfDay";
     private static final String ARG_MINUTE = "minute";
@@ -30,11 +29,11 @@ public class TimePickerDialogFragment extends DialogFragment
     private NoticeTimeSetListener mListener;
     private int mDialogTag;
 
-    public static TimePickerDialogFragment newInstance(boolean is24HourFormat) {
+    public static TimePickerDialog newInstance(boolean is24HourFormat) {
         return newInstance(DEFAULT_DIALOG_TAG, Calendar.getInstance(), is24HourFormat);
     }
 
-    public static TimePickerDialogFragment newInstance(Calendar date, boolean is24HourFormat) {
+    public static TimePickerDialog newInstance(Calendar date, boolean is24HourFormat) {
         return newInstance(
                 DEFAULT_DIALOG_TAG,
                 date.get(Calendar.HOUR_OF_DAY),
@@ -42,15 +41,15 @@ public class TimePickerDialogFragment extends DialogFragment
                 is24HourFormat);
     }
 
-    public static TimePickerDialogFragment newInstance(int hourOfDay, int minute, boolean is24HourFormat) {
+    public static TimePickerDialog newInstance(int hourOfDay, int minute, boolean is24HourFormat) {
         return newInstance(DEFAULT_DIALOG_TAG, hourOfDay, minute, is24HourFormat);
     }
 
-    public static TimePickerDialogFragment newInstance(int tag, boolean is24HourFormat) {
+    public static TimePickerDialog newInstance(int tag, boolean is24HourFormat) {
         return newInstance(tag, Calendar.getInstance(), is24HourFormat);
     }
 
-    public static TimePickerDialogFragment newInstance(int tag, Calendar date, boolean is24HourFormat) {
+    public static TimePickerDialog newInstance(int tag, Calendar date, boolean is24HourFormat) {
         return newInstance(
                 tag,
                 date.get(Calendar.HOUR_OF_DAY),
@@ -58,14 +57,14 @@ public class TimePickerDialogFragment extends DialogFragment
                 is24HourFormat);
     }
 
-    public static TimePickerDialogFragment newInstance(int tag, int hourOfDay, int minute, boolean is24HourFormat) {
+    public static TimePickerDialog newInstance(int tag, int hourOfDay, int minute, boolean is24HourFormat) {
         Bundle args = new Bundle();
         args.putInt(ARG_HOUR_OF_DAY, hourOfDay);
         args.putInt(ARG_MINUTE, minute);
         args.putInt(ARG_DIALOG_TAG, tag);
         args.putBoolean(ARG_IS_24_HOUR_FORMAT, is24HourFormat);
 
-        TimePickerDialogFragment fragment = new TimePickerDialogFragment();
+        TimePickerDialog fragment = new TimePickerDialog();
         fragment.setArguments(args);
 
         return fragment;
@@ -99,7 +98,7 @@ public class TimePickerDialogFragment extends DialogFragment
             is24h = DEFAULT_IS_24_HOUR_FORMAT;
         }
 
-        return new TimePickerDialog(getActivity(), this, h, m, is24h);
+        return new android.app.TimePickerDialog(getActivity(), this, h, m, is24h);
     }
 
     @Override

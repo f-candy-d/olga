@@ -24,13 +24,16 @@ import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
 import com.f_candy_d.olga.presentation.view_model.TaskFormViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
-public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.SaveResultListener {
+public class TaskFormActivity extends ViewActivity
+        implements TaskFormViewModel.SaveResultListener,
+        SimpleAlertDialog.ButtonClickListener {
 
     private static final String EXTRA_TASK_ID = "task_id";
     private static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
@@ -114,7 +117,12 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
     }
 
     private void onDiscardButtonClick() {
-        onBackPressed();
+        new SimpleAlertDialog.Builder()
+                .message("Are you sure want to discard this task?")
+                .positiveButton("KEEP EDITING")
+                .negativeButton("DISCARD")
+                .create()
+                .show(getSupportFragmentManager(), null);
     }
 
     private void onAddOptionButtonClick() {
@@ -215,6 +223,22 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
     @Override
     public void onSaveFailed() {
         Toast.makeText(this, "Save failed...", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    /**
+     * SimpleAlertDialog.ButtonClickListener implementation
+     * ------------------------------------------------------------------------ */
+
+    @Override
+    public void onPositiveButtonClick(int tag) {
+        // Nothing to do...
+    }
+
+    @Override
+    public void onNegativeButtonClick(int tag) {
+        setResult(RESULT_CANCELED);
         finish();
     }
 }

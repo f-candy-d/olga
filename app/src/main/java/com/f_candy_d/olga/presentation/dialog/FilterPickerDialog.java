@@ -3,9 +3,6 @@ package com.f_candy_d.olga.presentation.dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.f_candy_d.dutils.MergeAdapter;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.filter.TaskFilter;
 import com.f_candy_d.olga.presentation.ItemClickHelper;
@@ -22,11 +18,11 @@ import com.f_candy_d.olga.presentation.adapter.DefaultTaskFilterAdapter;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
-public class FilterPickerDialogFragment extends DialogFragment {
+public class FilterPickerDialog extends DialogFragment {
 
     private OnFilterSelectListener mListener;
 
-    public FilterPickerDialogFragment() {
+    public FilterPickerDialog() {
         // Required empty public constructor
     }
 
@@ -34,10 +30,10 @@ public class FilterPickerDialogFragment extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment FilterPickerDialogFragment.
+     * @return A new instance of fragment FilterPickerDialog.
      */
-    public static FilterPickerDialogFragment newInstance() {
-        FilterPickerDialogFragment fragment = new FilterPickerDialogFragment();
+    public static FilterPickerDialog newInstance() {
+        FilterPickerDialog fragment = new FilterPickerDialog();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

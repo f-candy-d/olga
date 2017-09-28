@@ -31,12 +31,17 @@ import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
 import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
+import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
 
 import java.util.ArrayList;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity
+        implements SimpleAlertDialog.ButtonClickListener {
 
     private static final int REQUEST_CODE_EDIT_TASK = 1111;
+
+    private static final int TAG_ERROR_MESSAGE_DIALOG = 0;
+    private static final int TAG_CONFIRM_DELETE_DIALOG = 1;
 
     private static final String EXTRA_TASK_ID = "task_id";
 
@@ -279,7 +284,13 @@ public class DetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         if (id == R.id.action_delete) {
-            deleteTask();
+            new SimpleAlertDialog.Builder()
+                    .message("Delete this task?")
+                    .positiveButton("DELETE")
+                    .negativeButton("CANCEL")
+                    .tag(TAG_CONFIRM_DELETE_DIALOG)
+                    .create()
+                    .show(getSupportFragmentManager(), null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -289,11 +300,14 @@ public class DetailsActivity extends AppCompatActivity {
         // Delete task from the database
         boolean result = TaskTableUseCase.delete(mTaskId);
         if (!result) {
-            // TODO; If failed...
-            Toast.makeText(MyApp.getAppContext(), "Falied to delete task...", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(MyApp.getAppContext(), "Task was deleted", Toast.LENGTH_SHORT).show();
+            // Show error message
+            new SimpleAlertDialog.Builder()
+                    .title("!!ERROR!!")
+                    .message("Sorry, failed to delete this task...")
+                    .positiveButton("OK")
+                    .tag(TAG_ERROR_MESSAGE_DIALOG)
+                    .create()
+                    .show(getSupportFragmentManager(), null);
         }
 
         Intent intent = new Intent();
@@ -301,5 +315,21 @@ public class DetailsActivity extends AppCompatActivity {
         int resultCode = (result) ? RESULT_OK : RESULT_CANCELED;
         setResult(resultCode, intent);
         finish();
+    }
+
+    /**
+     * SimpleAlertDialog.ButtonClickListener implementation
+     * --------------------------------------------------------------------------------------------- */
+
+    @Override
+    public void onPositiveButtonClick(int tag) {
+        if (tag == TAG_CONFIRM_DELETE_DIALOG) {
+            deleteTask();
+        }
+    }
+
+    @Override
+    public void onNegativeButtonClick(int tag) {
+        // Nothing to do...
     }
 }
