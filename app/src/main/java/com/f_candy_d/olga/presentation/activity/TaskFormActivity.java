@@ -1,6 +1,7 @@
 package com.f_candy_d.olga.presentation.activity;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -163,21 +164,19 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
         });
 
         // # Select Theme Color Button
-        final int[] colors = new int[] {
-                ContextCompat.getColor(this, R.color.color_blue),
-                ContextCompat.getColor(this, R.color.color_cream_red),
-                ContextCompat.getColor(this, R.color.color_blue_gray),
-                ContextCompat.getColor(this, R.color.color_cream_green),
-                ContextCompat.getColor(this, R.color.color_yellow),
-                ContextCompat.getColor(this, R.color.color_teal),
-                ContextCompat.getColor(this, R.color.color_cream_orange_light)
-        };
+        TypedArray a = getResources().obtainTypedArray(R.array.task_theme_colors);
+        final int[] colors = new int[a.length()];
+        for (int i = 0; i < a.length(); ++i) {
+            colors[i] = a.getColor(i, 0);
+        }
+        a.recycle();
 
         itemView.findViewById(R.id.select_theme_color_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int paletteColumnCount = 4;
                 ColorPickerDialog picker = new ColorPickerDialog();
-                picker.initialize(R.string.color_picker_title, colors, taskData.getThemeColor(), 4, colors.length);
+                picker.initialize(R.string.color_picker_title, colors, taskData.getThemeColor(), paletteColumnCount, colors.length);
                 picker.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int color) {

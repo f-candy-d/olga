@@ -67,4 +67,36 @@
     <!-- Black 20% -->
     <color name="form_transparent_divider">#33000000</color>
 
+    <!-- Task Theme Color  -->
+
+    <color name="task_theme_color_red">#F44336</color>
+    <color name="task_theme_color_pink">#E91E63</color>
+    <color name="task_theme_color_purple">#9C27B0</color>
+    <color name="task_theme_color_deep_purple">#673AB7</color>
+    <color name="task_theme_color_indigo">#3F51B5</color>
+    <color name="task_theme_color_blue">#1E88E5</color>
+    <color name="task_theme_color_teal">#009688</color>
+    <color name="task_theme_color_green">#388E3C</color>
+    <color name="task_theme_color_light_green">#33691E</color>
+    <color name="task_theme_color_lime">#827717</color>
+    <color name="task_theme_color_amber">#FFC107</color>
+    <color name="task_theme_color_orange">#E65100</color>
+
+    <color name="default_task_theme_color">@color/task_theme_color_teal</color>
+
+    <array name="task_theme_colors">
+        <item>@color/task_theme_color_red</item>
+        <item>@color/task_theme_color_pink</item>
+        <item>@color/task_theme_color_purple</item>
+        <item>@color/task_theme_color_deep_purple</item>
+        <item>@color/task_theme_color_indigo</item>
+        <item>@color/task_theme_color_blue</item>
+        <item>@color/task_theme_color_teal</item>
+        <item>@color/task_theme_color_green</item>
+        <item>@color/task_theme_color_light_green</item>
+        <item>@color/task_theme_color_lime</item>
+        <item>@color/task_theme_color_amber</item>
+        <item>@color/task_theme_color_orange</item>
+    </array>
+
 </resources>

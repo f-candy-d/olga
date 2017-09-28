@@ -2,7 +2,10 @@ package com.f_candy_d.olga.data_store;
 
 import android.graphics.Color;
 import android.provider.BaseColumns;
+import android.support.v4.content.ContextCompat;
 
+import com.f_candy_d.olga.MyApp;
+import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.infra.sqlite.SqliteColumnDataType;
 import com.f_candy_d.olga.infra.sqlite.SqliteTableUtils;
 
@@ -55,6 +58,6 @@ public class TaskTable implements BaseColumns {
     }
 
     public static int defaultThemeColor() {
-        return Color.parseColor("#4F86C6");
+        return ContextCompat.getColor(MyApp.getAppContext(), R.color.default_task_theme_color);
     }
 }
