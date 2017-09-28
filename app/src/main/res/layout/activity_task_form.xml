@@ -5,8 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.f_candy_d.olga.presentation.activity.TaskFormActivity"
-    android:background="@color/color_teal_2">
+    tools:context="com.f_candy_d.olga.presentation.activity.TaskFormActivity">
+
+    <com.f_candy_d.dutils.view.ToggleColorBackground
+        android:id="@+id/toggle_color_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultColor="@color/color_teal"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
