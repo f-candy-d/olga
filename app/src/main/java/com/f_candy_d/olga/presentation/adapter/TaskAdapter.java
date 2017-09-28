@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.TaskTablePool;
+import com.f_candy_d.olga.domain.table_pool.TaskTablePool;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 
 

@@ -1,7 +1,6 @@
-package com.f_candy_d.olga.domain;
+package com.f_candy_d.olga.domain.table_pool;
 
 import android.support.v7.util.SortedList;
-import android.util.Log;
 
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
 import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;

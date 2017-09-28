@@ -2,12 +2,15 @@
 <resources>
     <color name="colorPrimary">#607D8B</color>
     <color name="colorPrimaryDark">#455A64</color>
-    <color name="colorAccent">#FFC400</color>
+    <color name="colorAccent">#607D8B</color>
 
     <color name="google_material_icon_gray">#707070</color>
     <color name="system_light_bg">#fffafafa</color>
     <color name="status_bar_transparent_dark">#4c000000</color>
     <color name="event_theme_color">#388E3C</color>
+
+    <color name="google_settings_app_color_primary">#293238</color>
+    <color name="google_settings_app_color_primary_dark">#23272b</color>
 
     <!--<color name="color_set_1_primary">#8acfa3</color>-->
     <!--<color name="color_set_1_dark">#66c196</color>-->

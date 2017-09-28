@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/shourtcut_item_bg"
-    android:layout_width="@dimen/shortcut_item_size"
-    android:layout_height="@dimen/shortcut_item_size"
-    android:layout_margin="@dimen/shortcut_item_margin"
-    android:padding="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:clickable="true"
-    android:layout_gravity="center"
-    android:background="?attr/selectableItemBackgroundBorderless">
+    android:gravity="center">
 
-    <ImageView
-        android:id="@+id/shortcut_item_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_dashboard"
-        android:tint="@color/google_material_icon_gray"/>
+    <LinearLayout
+        android:id="@+id/shourtcut_item_bg"
+        android:layout_width="@dimen/shortcut_item_size"
+        android:layout_height="@dimen/shortcut_item_size"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/shortcut_item_margin"
+        android:padding="4dp"
+        android:gravity="center"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/shourtcut_item_title"
-        android:layout_marginTop="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textAlignment="center"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="Shourtcut"/>
+        <ImageView
+            android:id="@+id/shortcut_item_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_dashboard"
+            android:tint="@color/google_material_icon_gray"/>
+
+        <TextView
+            android:id="@+id/shourtcut_item_title"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textAlignment="center"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Shourtcut"/>
+
+    </LinearLayout>
 
 </LinearLayout>

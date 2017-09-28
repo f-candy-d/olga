@@ -1,4 +1,4 @@
-package com.f_candy_d.olga.domain;
+package com.f_candy_d.olga.domain.table_pool;
 
 import com.f_candy_d.olga.data_store.TaskTable;
 import com.f_candy_d.olga.domain.filter.TaskFilter;
