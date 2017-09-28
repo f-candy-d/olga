@@ -68,7 +68,7 @@ public class FilterdListActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filterd_task_list);
+        setContentView(R.layout.activity_filterd_list);
 
         if (savedInstanceState != null) {
             NoteFilter filter = savedInstanceState.getParcelable(STATE_FILTER);
@@ -241,7 +241,7 @@ public class FilterdListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_filterd_task_list, menu);
+        getMenuInflater().inflate(R.menu.menu_filterd_list, menu);
         return true;
     }
 
@@ -267,23 +267,6 @@ public class FilterdListActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showAddTaskBottomSheetDialog() {
-        final BottomSheetDialog dialog = new BottomSheetDialog(this);
-        View sheetView = getLayoutInflater().inflate(R.layout.what_add_dialog, null);
-
-        sheetView.findViewById(R.id.add_event).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(FilterdListActivity.this, NoteFormActivity.class);
-                startActivity(intent);
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setContentView(sheetView);
-        dialog.show();
     }
 
     private View createShourtcutView(RecyclerView parent) {

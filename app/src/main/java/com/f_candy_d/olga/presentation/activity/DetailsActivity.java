@@ -199,7 +199,7 @@ public class DetailsActivity extends AppCompatActivity
         } else if (!mIsEmptyListMode) {
             // Set empty view if the task has no options, and hide fab instead
             viewAdapter.clearViews();
-            View itemView = ViewAdapter.inflateView(R.layout.no_task_options_empty_view, recyclerView);
+            View itemView = ViewAdapter.inflateView(R.layout.no_options_empty_view, recyclerView);
             itemView.findViewById(R.id.edit_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -35,7 +35,7 @@ public class DefaultFilterAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_task_filter_summary, parent, false);
+                .inflate(R.layout.item_filter_summary, parent, false);
 
         return new ItemViewHolder(view);
     }

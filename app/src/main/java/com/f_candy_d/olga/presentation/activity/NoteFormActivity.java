@@ -54,7 +54,7 @@ public class NoteFormActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_form);
+        setContentView(R.layout.activity_note_form);
 
         long id = getIntent().getLongExtra(EXTRA_TASK_ID, DbContract.NULL_ID);
         if (id == DbContract.NULL_ID) {
@@ -99,11 +99,11 @@ public class NoteFormActivity extends AppCompatActivity
         setupHeaderItemView(itemView);
         mFormCardAdapter.addView(itemView);
         // Core fields
-        itemView = inflater.inflate(R.layout.item_task_form, recyclerView, false);
+        itemView = inflater.inflate(R.layout.item_task_form_panel, recyclerView, false);
         setupTaskFormItemView(itemView);
         mFormCardAdapter.addView(itemView);
         // Footer
-        itemView = inflater.inflate(R.layout.item_footer_with_add_option_button, recyclerView, false);
+        itemView = inflater.inflate(R.layout.item_add_option_button, recyclerView, false);
         setupFooterItemView(itemView);
         mFormCardAdapter.addView(itemView);
 

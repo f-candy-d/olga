@@ -48,7 +48,7 @@ public class FilterPickerDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_filter_picker_dialog, container, false);
+        final View view = inflater.inflate(R.layout.filter_picker_dialog, container, false);
 
         // # Toolbar
 
