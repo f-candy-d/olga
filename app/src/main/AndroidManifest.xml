@@ -21,11 +21,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.activity.TodoNoteFlowFormActivity"
-            android:label="@string/title_activity_form_todo"
-            android:theme="@style/FormTheme.NoActionBar">
-        </activity>
-        <activity
             android:name=".presentation.activity.NoteFormActivity"
             android:label="@string/title_activity_task_form"
             android:theme="@style/FormTheme.NoActionBar">
