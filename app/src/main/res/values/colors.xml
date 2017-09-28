@@ -70,7 +70,7 @@
     <!-- Black 20% -->
     <color name="form_transparent_divider">#33000000</color>
 
-    <!-- Task Theme Color  -->
+    <!-- Note Theme Color  -->
 
     <color name="task_theme_color_red">#F44336</color>
     <color name="task_theme_color_pink">#E91E63</color>

@@ -20,7 +20,7 @@
     <string name="color_picker_title">Select A Theme Color</string>
 
     <string name="task_details_empty_view_message">
-        No options.\nEdit your task to add options!</string>
+        No options.\nEdit your note to add options!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

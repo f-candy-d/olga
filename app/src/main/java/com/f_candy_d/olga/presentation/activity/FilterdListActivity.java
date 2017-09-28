@@ -23,15 +23,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
+import com.f_candy_d.olga.domain.filter.NoteFilter;
 import com.f_candy_d.olga.domain.table_pool.SqliteTablePool;
-import com.f_candy_d.olga.domain.table_pool.TaskTablePool;
+import com.f_candy_d.olga.domain.table_pool.NoteTablePool;
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
-import com.f_candy_d.olga.domain.filter.TaskFilter;
-import com.f_candy_d.olga.domain.structure.Task;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.domain.structure.Note;
+import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 import com.f_candy_d.olga.presentation.ItemClickHelper;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
-import com.f_candy_d.olga.presentation.adapter.TaskAdapter;
+import com.f_candy_d.olga.presentation.adapter.NoteAdapter;
 import com.f_candy_d.olga.presentation.dialog.FilterPickerDialog;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
-public class FilterdTaskListActivity extends ViewActivity
+public class FilterdListActivity extends ViewActivity
         implements FilterPickerDialog.OnFilterSelectListener {
 
     private static final int REQUEST_CODE_MAKE_NEW_TASK = 1111;
@@ -64,8 +64,8 @@ public class FilterdTaskListActivity extends ViewActivity
     private RecyclerView mRecyclerView;
     private RecyclerViewMergeAdapter mRootAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
-    private TaskAdapter mTaskAdapter;
-    private TaskTablePool mTaskPool;
+    private NoteAdapter mNoteAdapter;
+    private NoteTablePool mTaskPool;
     private int mCurrentSpanCount;
 
     @Override
@@ -80,11 +80,11 @@ public class FilterdTaskListActivity extends ViewActivity
         setContentView(R.layout.activity_filterd_task_list);
 
         if (savedInstanceState != null) {
-            TaskFilter filter = savedInstanceState.getParcelable(STATE_FILTER);
+            NoteFilter filter = savedInstanceState.getParcelable(STATE_FILTER);
             onCreateTaskPool(filter);
         } else {
             if (getIntent().hasExtra(EXTRA_FILTER)) {
-                TaskFilter filter = getIntent().getParcelableExtra(EXTRA_FILTER);
+                NoteFilter filter = getIntent().getParcelableExtra(EXTRA_FILTER);
                 onCreateTaskPool(filter);
             } else {
                 // Default
@@ -95,35 +95,35 @@ public class FilterdTaskListActivity extends ViewActivity
         onCreateUI();
     }
 
-    private void onCreateTaskPool(TaskFilter filter) {
-        mTaskPool = new TaskTablePool(filter);
+    private void onCreateTaskPool(NoteFilter filter) {
+        mTaskPool = new NoteTablePool(filter);
         mTaskPool.enableAutoFilter();
         mTaskPool.setCallback(new SqliteTablePool.Callback() {
             @Override
             public void onPooled(int index, int count) {
-                if (mTaskAdapter != null) {
-                    mTaskAdapter.notifyItemRangeInserted(index, count);
+                if (mNoteAdapter != null) {
+                    mNoteAdapter.notifyItemRangeInserted(index, count);
                 }
             }
 
             @Override
             public void onReleased(int index, int count) {
-                if (mTaskAdapter != null) {
-                    mTaskAdapter.notifyItemRangeRemoved(index, count);
+                if (mNoteAdapter != null) {
+                    mNoteAdapter.notifyItemRangeRemoved(index, count);
                 }
             }
 
             @Override
             public void onChanged(int index, int count) {
-                if (mTaskAdapter != null) {
-                    mTaskAdapter.notifyItemRangeChanged(index, count);
+                if (mNoteAdapter != null) {
+                    mNoteAdapter.notifyItemRangeChanged(index, count);
                 }
             }
 
             @Override
             public void onMoved(int fromIndex, int toIndex) {
-                if (mTaskAdapter != null) {
-                    mTaskAdapter.notifyItemMoved(fromIndex, toIndex);
+                if (mNoteAdapter != null) {
+                    mNoteAdapter.notifyItemMoved(fromIndex, toIndex);
                 }
             }
         });
@@ -133,7 +133,7 @@ public class FilterdTaskListActivity extends ViewActivity
     private void onCreateUI() {
 
         if (mTaskPool.getFilter() == null) {
-            throw new IllegalStateException("Set a filter to the task pool");
+            throw new IllegalStateException("Set a filter to the note pool");
         }
 
         // # Toolbar
@@ -157,7 +157,7 @@ public class FilterdTaskListActivity extends ViewActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FilterdTaskListActivity.this, TaskFormActivity.class);
+                Intent intent = new Intent(FilterdListActivity.this, NoteFormActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_MAKE_NEW_TASK);
             }
         });
@@ -182,8 +182,8 @@ public class FilterdTaskListActivity extends ViewActivity
             mRootAdapter.addAdapter(fullSpanViewAdapter);
         }
 
-        mTaskAdapter = new TaskAdapter(mTaskPool);
-        mRootAdapter.addAdapter(mTaskAdapter);
+        mNoteAdapter = new NoteAdapter(mTaskPool);
+        mRootAdapter.addAdapter(mNoteAdapter);
         mRecyclerView.setAdapter(mRootAdapter);
 
         // # ItemClickHelper
@@ -216,8 +216,8 @@ public class FilterdTaskListActivity extends ViewActivity
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                if (viewHolder instanceof TaskAdapter.TaskViewHolder) {
-                    onTaskItemSwiped((TaskAdapter.TaskViewHolder) viewHolder, direction);
+                if (viewHolder instanceof NoteAdapter.TaskViewHolder) {
+                    onTaskItemSwiped((NoteAdapter.TaskViewHolder) viewHolder, direction);
                 }
             }
 
@@ -285,7 +285,7 @@ public class FilterdTaskListActivity extends ViewActivity
         sheetView.findViewById(R.id.add_event).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FilterdTaskListActivity.this, TaskFormActivity.class);
+                Intent intent = new Intent(FilterdListActivity.this, NoteFormActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
             }
@@ -392,14 +392,14 @@ public class FilterdTaskListActivity extends ViewActivity
         mTaskPool.applyFilter();
     }
 
-    private void launchTaskDetailsScreen(UnmodifiableTask task) {
+    private void launchTaskDetailsScreen(UnmodifiableNote note) {
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtras(DetailsActivity.makeExtra(task.getId()));
+        intent.putExtras(DetailsActivity.makeExtra(note.getId()));
         startActivityForResult(intent, REQUEST_CODE_SHOW_DETAILS);
     }
 
-    private void launchAnotherFilterdTaskListScreen(TaskFilter filter) {
-        Intent intent = new Intent(this, FilterdTaskListActivity.class);
+    private void launchAnotherFilterdTaskListScreen(NoteFilter filter) {
+        Intent intent = new Intent(this, FilterdListActivity.class);
         intent.putExtra(EXTRA_FILTER, filter);
         intent.putExtra(EXTRA_IS_STACKED, true);
         startActivity(intent);
@@ -436,46 +436,46 @@ public class FilterdTaskListActivity extends ViewActivity
     private boolean canItemSwipe(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         // Desable swipe for position in the RecyclerView.
         // See -> https://stackoverflow.com/questions/30713121/disable-swipe-for-position-in-recyclerview-using-itemtouchhelper-simplecallback
-        return  (viewHolder instanceof TaskAdapter.TaskViewHolder);
+        return  (viewHolder instanceof NoteAdapter.TaskViewHolder);
     }
 
-    private void onTaskItemSwiped(TaskAdapter.TaskViewHolder viewHolder, int direction) {
+    private void onTaskItemSwiped(NoteAdapter.TaskViewHolder viewHolder, int direction) {
         int localPosition = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition()).posInSubAdapter;
-        final Task task = mTaskPool.getAt(localPosition);
-        mTaskPool.release(task);
+        final Note note = mTaskPool.getAt(localPosition);
+        mTaskPool.release(note);
         final int pickupFlag = mTaskPool.getFilter().getPickUpAchievementFlag();
 
-        if (pickupFlag == TaskFilter.FLAG_PICKUP_ONLY_NOT_ACHIEVED) {
-            // 'task.isAchieved' should be false
-            task.setIsAchieved(true);
-            mTaskPool.update(task);
+        if (pickupFlag == NoteFilter.FLAG_PICKUP_ONLY_NOT_ACHIEVED) {
+            // 'note.isAchieved' should be false
+            note.setIsAchieved(true);
+            mTaskPool.update(note);
             Snackbar.make(mRecyclerView, R.string.item_achieved_message, Snackbar.LENGTH_SHORT)
                     .setAction(R.string.snackbar_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            task.setIsAchieved(false);
-                            mTaskPool.update(task);
+                            note.setIsAchieved(false);
+                            mTaskPool.update(note);
                         }
                     }).show();
 
-        } else if (pickupFlag == TaskFilter.FLAG_PICKUP_ONLY_ACHIEVED) {
-            // 'task.isAchieved' should be true
-            task.setIsAchieved(false);
-            mTaskPool.update(task);
+        } else if (pickupFlag == NoteFilter.FLAG_PICKUP_ONLY_ACHIEVED) {
+            // 'note.isAchieved' should be true
+            note.setIsAchieved(false);
+            mTaskPool.update(note);
             Snackbar.make(mRecyclerView, R.string.item_unachieved_message, Snackbar.LENGTH_SHORT)
                     .setAction(R.string.snackbar_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            task.setIsAchieved(true);
-                            mTaskPool.update(task);
+                            note.setIsAchieved(true);
+                            mTaskPool.update(note);
                         }
                     }).show();
 
         } else {
-            // pickupFlag should be 'TaskFilter.FLAG_PICKUP_BOTH'
-            task.setIsAchieved(!task.isAchieved());
-            mTaskPool.update(task);
-            int title = (task.isAchieved()) ? R.string.item_achieved_message : R.string.item_unachieved_message;
+            // pickupFlag should be 'NoteFilter.FLAG_PICKUP_BOTH'
+            note.setIsAchieved(!note.isAchieved());
+            mTaskPool.update(note);
+            int title = (note.isAchieved()) ? R.string.item_achieved_message : R.string.item_unachieved_message;
             Snackbar.make(mRecyclerView, title, Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -487,7 +487,7 @@ public class FilterdTaskListActivity extends ViewActivity
     }
 
     private boolean isItemClickable(RecyclerView.ViewHolder viewHolder) {
-        return (viewHolder instanceof TaskAdapter.TaskViewHolder);
+        return (viewHolder instanceof NoteAdapter.TaskViewHolder);
     }
 
     /**
@@ -495,7 +495,7 @@ public class FilterdTaskListActivity extends ViewActivity
      */
 
     @Override
-    public void onFilterSelected(TaskFilter filter) {
+    public void onFilterSelected(NoteFilter filter) {
         launchAnotherFilterdTaskListScreen(filter);
     }
 }

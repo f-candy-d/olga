@@ -7,15 +7,15 @@ import com.f_candy_d.olga.infra.SqlEntity;
  * Created by daichi on 17/09/03.
  */
 
-public class Task extends UnmodifiableTask {
+public class Note extends UnmodifiableNote {
 
-    public Task() {}
+    public Note() {}
 
-    public Task(UnmodifiableTask task) {
+    public Note(UnmodifiableNote task) {
         super(task);
     }
 
-    public Task(SqlEntity entity) {
+    public Note(SqlEntity entity) {
         super(entity);
     }
 

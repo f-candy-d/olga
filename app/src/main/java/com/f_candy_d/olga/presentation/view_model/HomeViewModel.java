@@ -3,8 +3,8 @@ package com.f_candy_d.olga.presentation.view_model;
 import android.content.Context;
 
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
-import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
+import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
+import com.f_candy_d.olga.domain.usecase.NoteTableUseCase;
 import com.f_candy_d.vvm.ActivityViewModel;
 
 /**
@@ -17,12 +17,12 @@ public class HomeViewModel extends ActivityViewModel {
         super(context);
     }
 
-    public UnmodifiableTask[] getTasksInProcess() {
-        return TaskTableUseCase.findTasksByFilter(DefaultFilterFactory.createNotAchievedFilter());
+    public UnmodifiableNote[] getTasksInProcess() {
+        return NoteTableUseCase.findTasksByFilter(DefaultFilterFactory.createNotAchievedFilter());
     }
 
-    public UnmodifiableTask[] getTasksNeedToBeRescheduled() {
-        return new UnmodifiableTask[] {};
+    public UnmodifiableNote[] getTasksNeedToBeRescheduled() {
+        return new UnmodifiableNote[] {};
     }
 
 }

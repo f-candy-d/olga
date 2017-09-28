@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
-import com.f_candy_d.olga.presentation.activity.TaskFlowFormActivity;
+import com.f_candy_d.olga.presentation.activity.NoteFlowFormActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,7 +68,7 @@ public class SummaryFlowFormFragment extends FlowFormFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_summary_form, container, false);
-        TaskFlowFormActivity.Style style = getStyle();
+        NoteFlowFormActivity.Style style = getStyle();
 
         // # Title EditText
 

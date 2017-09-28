@@ -13,9 +13,9 @@ import com.f_candy_d.olga.infra.sqlite.SqliteTableUtils;
  * Created by daichi on 17/09/03.
  */
 
-public class TaskTable implements BaseColumns {
+public class NoteTable implements BaseColumns {
 
-    public static final String TABLE_NAME = "task";
+    public static final String TABLE_NAME = "note";
 
     /**
      * Columns

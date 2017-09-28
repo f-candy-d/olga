@@ -16,28 +16,28 @@ public class DefaultFilterFactory {
 
     private DefaultFilterFactory() {}
 
-    public static TaskFilter createNowFilter() {
-        TaskFilter filter = createNotAchievedFilter();
+    public static NoteFilter createNowFilter() {
+        NoteFilter filter = createNotAchievedFilter();
         filter.setFilterName(FILTER_NAME_NOW);
         return filter;
     }
 
-    public static TaskFilter createAllFilter() {
-        TaskFilter filter = new TaskFilter();
+    public static NoteFilter createAllFilter() {
+        NoteFilter filter = new NoteFilter();
         filter.setFilterName(FILTER_NAME_ALL);
         return filter;
     }
 
-    public static TaskFilter createAchievedFilter() {
-        TaskFilter filter = createAllFilter();
-        filter.setPickUpAchievementFlag(TaskFilter.FLAG_PICKUP_ONLY_ACHIEVED);
+    public static NoteFilter createAchievedFilter() {
+        NoteFilter filter = createAllFilter();
+        filter.setPickUpAchievementFlag(NoteFilter.FLAG_PICKUP_ONLY_ACHIEVED);
         filter.setFilterName(FILTER_NAME_ACHIEVED);
         return filter;
     }
 
-    public static TaskFilter createNotAchievedFilter() {
-        TaskFilter filter = createAllFilter();
-        filter.setPickUpAchievementFlag(TaskFilter.FLAG_PICKUP_ONLY_NOT_ACHIEVED);
+    public static NoteFilter createNotAchievedFilter() {
+        NoteFilter filter = createAllFilter();
+        filter.setPickUpAchievementFlag(NoteFilter.FLAG_PICKUP_ONLY_NOT_ACHIEVED);
         filter.setFilterName(FILTER_NAME_NOT_ACHIEVED);
         return filter;
     }

@@ -5,10 +5,9 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.f_candy_d.olga.data_store.TaskTable;
+import com.f_candy_d.olga.data_store.NoteTable;
 import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.infra.Repository;
-import com.f_candy_d.olga.infra.SqlEntity;
 import com.f_candy_d.olga.infra.sql_utils.SqlCondExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlLikeExpr;
 import com.f_candy_d.olga.infra.sql_utils.SqlLogicExpr;
@@ -23,7 +22,7 @@ import java.util.Iterator;
  * Created by daichi on 9/23/17.
  */
 
-public class TaskFilter implements Parcelable {
+public class NoteFilter implements Parcelable {
 
     private String mFilterName;
     @NonNull private ArrayList<String> mKeywordsInTitleOrDescription;
@@ -34,7 +33,7 @@ public class TaskFilter implements Parcelable {
     public static final int FLAG_PICKUP_BOTH = 0;
     public static final int FLAG_PICKUP_ONLY_ACHIEVED = 1;
 
-    public TaskFilter() {
+    public NoteFilter() {
         mKeywordsInTitleOrDescription = new ArrayList<>();
         mPickUpAchievementFlag = FLAG_PICKUP_BOTH;
     }
@@ -69,7 +68,7 @@ public class TaskFilter implements Parcelable {
     @NonNull
     public SqlQuery toQuery() {
         SqlQuery query = new SqlQuery();
-        query.putTables(TaskTable.TABLE_NAME);
+        query.putTables(NoteTable.TABLE_NAME);
         ArrayList<SqlWhere> conditions = new ArrayList<>();
         SqlWhere condition;
 
@@ -78,7 +77,7 @@ public class TaskFilter implements Parcelable {
             conditions.add(condition);
         }
 
-        condition = makeKeywordCondition(mKeywordsInTitleOrDescription, TaskTable._TITLE, TaskTable._DESCRIPTION);
+        condition = makeKeywordCondition(mKeywordsInTitleOrDescription, NoteTable._TITLE, NoteTable._DESCRIPTION);
         if (condition != null) {
             conditions.add(condition);
         }
@@ -95,9 +94,9 @@ public class TaskFilter implements Parcelable {
     private SqlWhere makeAchievementFlagCondition(int pickUpachievementFlag) {
         switch (pickUpachievementFlag) {
             case FLAG_PICKUP_ONLY_ACHIEVED:
-                return new SqlCondExpr(TaskTable._IS_ACHIEVED).equalTo(Repository.SQLITE_BOOL_TRUE);
+                return new SqlCondExpr(NoteTable._IS_ACHIEVED).equalTo(Repository.SQLITE_BOOL_TRUE);
             case FLAG_PICKUP_ONLY_NOT_ACHIEVED:
-                return new SqlCondExpr(TaskTable._IS_ACHIEVED).equalTo(Repository.SQLITE_BOOL_FALSE);
+                return new SqlCondExpr(NoteTable._IS_ACHIEVED).equalTo(Repository.SQLITE_BOOL_FALSE);
             default:
                 return null;
         }
@@ -147,7 +146,7 @@ public class TaskFilter implements Parcelable {
 
     public boolean isMutch(long id) {
         SqlQuery query = toQuery();
-        SqlCondExpr idIs = new SqlCondExpr(TaskTable._ID).equalTo(id);
+        SqlCondExpr idIs = new SqlCondExpr(NoteTable._ID).equalTo(id);
         idIs.setInBracket(true);
         if (query.getSelection() != null) {
             query.setSelection(new SqlLogicExpr(idIs).and(query.getSelection()));
@@ -174,21 +173,21 @@ public class TaskFilter implements Parcelable {
         dest.writeString(this.mFilterName);
     }
 
-    protected TaskFilter(Parcel in) {
+    protected NoteFilter(Parcel in) {
         this.mKeywordsInTitleOrDescription = in.createStringArrayList();
         this.mPickUpAchievementFlag = in.readInt();
         this.mFilterName = in.readString();
     }
 
-    public static final Parcelable.Creator<TaskFilter> CREATOR = new Parcelable.Creator<TaskFilter>() {
+    public static final Parcelable.Creator<NoteFilter> CREATOR = new Parcelable.Creator<NoteFilter>() {
         @Override
-        public TaskFilter createFromParcel(Parcel source) {
-            return new TaskFilter(source);
+        public NoteFilter createFromParcel(Parcel source) {
+            return new NoteFilter(source);
         }
 
         @Override
-        public TaskFilter[] newArray(int size) {
-            return new TaskFilter[size];
+        public NoteFilter[] newArray(int size) {
+            return new NoteFilter[size];
         }
     };
 }

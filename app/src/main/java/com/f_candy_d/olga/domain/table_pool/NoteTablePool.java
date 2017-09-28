@@ -1,8 +1,8 @@
 package com.f_candy_d.olga.domain.table_pool;
 
-import com.f_candy_d.olga.data_store.TaskTable;
-import com.f_candy_d.olga.domain.filter.TaskFilter;
-import com.f_candy_d.olga.domain.structure.Task;
+import com.f_candy_d.olga.data_store.NoteTable;
+import com.f_candy_d.olga.domain.filter.NoteFilter;
+import com.f_candy_d.olga.domain.structure.Note;
 import com.f_candy_d.olga.infra.SqlEntity;
 import com.f_candy_d.olga.infra.sql_utils.SqlObserver;
 
@@ -10,9 +10,9 @@ import com.f_candy_d.olga.infra.sql_utils.SqlObserver;
  * Created by daichi on 9/26/17.
  */
 
-public class TaskTablePool extends SqliteTablePool<Task> {
+public class NoteTablePool extends SqliteTablePool<Note> {
 
-    private TaskFilter mFilter;
+    private NoteFilter mFilter;
     private boolean mIsAutoFilterEnabled = false;
 
     private final SqlObserver.ChangeListener mChangeListener = new SqlObserver.ChangeListener() {
@@ -44,14 +44,14 @@ public class TaskTablePool extends SqliteTablePool<Task> {
         }
     };
 
-    public TaskTablePool(TaskFilter filter) {
-        super(TaskTable.TABLE_NAME, Task.class);
+    public NoteTablePool(NoteFilter filter) {
+        super(NoteTable.TABLE_NAME, Note.class);
         mFilter = filter;
     }
 
     public void enableAutoFilter() {
         if (!mIsAutoFilterEnabled) {
-            SqlObserver.getInstance().registerChangeListener(mChangeListener, TaskTable.TABLE_NAME);
+            SqlObserver.getInstance().registerChangeListener(mChangeListener, NoteTable.TABLE_NAME);
             mIsAutoFilterEnabled = true;
         }
     }
@@ -63,26 +63,26 @@ public class TaskTablePool extends SqliteTablePool<Task> {
     }
 
     @Override
-    Task createEntityObject(SqlEntity entity) {
-        return new Task(entity);
+    Note createEntityObject(SqlEntity entity) {
+        return new Note(entity);
     }
 
     @Override
-    boolean areColumnsTheSame(Task oldEntity, Task newEntity) {
+    boolean areColumnsTheSame(Note oldEntity, Note newEntity) {
         return oldEntity.equals(newEntity);
     }
 
-    public void changeFilter(TaskFilter filter) {
+    public void changeFilter(NoteFilter filter) {
         mFilter = filter;
         applyFilter();
     }
 
-    public TaskFilter getFilter() {
+    public NoteFilter getFilter() {
         return mFilter;
     }
 
     @Override
-    boolean isNecessaryToPool(Task entity) {
+    boolean isNecessaryToPool(Note entity) {
         return (mFilter != null && mFilter.isMutch(entity.getId()));
     }
 
@@ -95,7 +95,7 @@ public class TaskTablePool extends SqliteTablePool<Task> {
     }
 
     @Override
-    protected int compareEntites(Task entity1, Task entity2) {
+    protected int compareEntites(Note entity1, Note entity2) {
         return -1 * Long.valueOf(entity1.getId()).compareTo(entity2.getId());
     }
 }

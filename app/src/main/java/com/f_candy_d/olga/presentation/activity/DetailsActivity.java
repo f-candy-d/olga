@@ -23,13 +23,11 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.f_candy_d.dutils.ColorUtils;
-import com.f_candy_d.olga.MyApp;
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
-import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
+import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
+import com.f_candy_d.olga.domain.usecase.NoteTableUseCase;
 import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
 import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
 
@@ -74,9 +72,9 @@ public class DetailsActivity extends AppCompatActivity
         }
 
         mTaskId = getIntent().getExtras().getLong(EXTRA_TASK_ID);
-        UnmodifiableTask task = TaskTableUseCase.findTaskById(mTaskId);
+        UnmodifiableNote task = NoteTableUseCase.findTaskById(mTaskId);
         if (task == null) {
-            task = new UnmodifiableTask();
+            task = new UnmodifiableNote();
         }
         invalidate(task, mRecyclerView, mAdapter, mFab);
     }
@@ -121,7 +119,7 @@ public class DetailsActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private ViewAdapter createAdapter(RecyclerView recyclerView, UnmodifiableTask task) {
+    private ViewAdapter createAdapter(RecyclerView recyclerView, UnmodifiableNote task) {
         ArrayList<View> itemViews = new ArrayList<>();
         return new ViewAdapter(itemViews);
     }
@@ -133,8 +131,8 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     private void onEditButtonClick() {
-        Intent intent = new Intent(this, TaskFormActivity.class);
-        intent.putExtras(TaskFormActivity.makeExtra(mTaskId));
+        Intent intent = new Intent(this, NoteFormActivity.class);
+        intent.putExtras(NoteFormActivity.makeExtra(mTaskId));
         startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
     }
 
@@ -142,9 +140,9 @@ public class DetailsActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_EDIT_TASK && resultCode == RESULT_OK) {
-            UnmodifiableTask task = TaskTableUseCase.findTaskById(mTaskId);
+            UnmodifiableNote task = NoteTableUseCase.findTaskById(mTaskId);
             if (task == null) {
-                task = new UnmodifiableTask();
+                task = new UnmodifiableNote();
             }
 
             invalidate(task, mRecyclerView, mAdapter, mFab);
@@ -152,11 +150,11 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     /**
-     * Only used inside {@link DetailsActivity#invalidate(UnmodifiableTask, RecyclerView, ViewAdapter, FloatingActionButton)}.
+     * Only used inside {@link DetailsActivity#invalidate(UnmodifiableNote, RecyclerView, ViewAdapter, FloatingActionButton)}.
      */
     private boolean mIsEmptyListMode = false;
 
-    private void invalidate(@NonNull UnmodifiableTask task,
+    private void invalidate(@NonNull UnmodifiableNote task,
                             @NonNull RecyclerView recyclerView,
                             @NonNull ViewAdapter viewAdapter,
                             @NonNull FloatingActionButton fab) {
@@ -298,7 +296,7 @@ public class DetailsActivity extends AppCompatActivity
 
     private void deleteTask() {
         // Delete task from the database
-        boolean result = TaskTableUseCase.delete(mTaskId);
+        boolean result = NoteTableUseCase.delete(mTaskId);
         if (!result) {
             // Show error message
             new SimpleAlertDialog.Builder()

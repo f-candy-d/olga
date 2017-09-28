@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.f_candy_d.olga.presentation.activity.TaskFlowFormActivity;
+import com.f_candy_d.olga.presentation.activity.NoteFlowFormActivity;
 
 abstract public class FlowFormFragment extends Fragment {
 
@@ -34,7 +34,7 @@ abstract public class FlowFormFragment extends Fragment {
 
     abstract public String getTitle();
 
-    public TaskFlowFormActivity.Style getStyle() {
+    public NoteFlowFormActivity.Style getStyle() {
         return mListener.getStyle();
     }
 
@@ -50,6 +50,6 @@ abstract public class FlowFormFragment extends Fragment {
      */
     public interface OnDataInputListener {
         void onDataInput(Bundle data, String simpleFragmentClassName);
-        @NonNull TaskFlowFormActivity.Style getStyle();
+        @NonNull NoteFlowFormActivity.Style getStyle();
     }
 }

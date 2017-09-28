@@ -2,14 +2,14 @@ package com.f_candy_d.olga.domain.structure;
 
 import android.support.annotation.NonNull;
 
-import com.f_candy_d.olga.data_store.TaskTable;
+import com.f_candy_d.olga.data_store.NoteTable;
 import com.f_candy_d.olga.infra.SqlEntity;
 
 /**
  * Created by daichi on 9/22/17.
  */
 
-public class UnmodifiableTask extends SqlEntityObject {
+public class UnmodifiableNote extends SqlEntityObject {
 
     protected String mTitle;
     protected String mDescription;
@@ -30,13 +30,13 @@ public class UnmodifiableTask extends SqlEntityObject {
         return mThemeColor;
     }
 
-    public UnmodifiableTask() {
-        super(TaskTable.TABLE_NAME);
+    public UnmodifiableNote() {
+        super(NoteTable.TABLE_NAME);
         initWithDefaultValue();
     }
 
-    public UnmodifiableTask(UnmodifiableTask task) {
-        super(TaskTable.TABLE_NAME);
+    public UnmodifiableNote(UnmodifiableNote task) {
+        super(NoteTable.TABLE_NAME);
 
         if (task != null) {
             super.mId = task.getId();
@@ -47,8 +47,8 @@ public class UnmodifiableTask extends SqlEntityObject {
         }
     }
 
-    public UnmodifiableTask(SqlEntity entity) {
-        super(TaskTable.TABLE_NAME);
+    public UnmodifiableNote(SqlEntity entity) {
+        super(NoteTable.TABLE_NAME);
         if (entity != null) {
             constructFromSqlEntity(entity);
         }
@@ -57,15 +57,15 @@ public class UnmodifiableTask extends SqlEntityObject {
     @NonNull
     @Override
     public SqlEntity toSqlEntity(boolean includeRowId) {
-        SqlEntity entity = new SqlEntity(TaskTable.TABLE_NAME);
+        SqlEntity entity = new SqlEntity(NoteTable.TABLE_NAME);
 
         if (includeRowId) {
-            entity.put(TaskTable._ID, super.mId);
+            entity.put(NoteTable._ID, super.mId);
         }
-        entity.put(TaskTable._TITLE, this.mTitle);
-        entity.put(TaskTable._IS_ACHIEVED, this.mIsAchieved);
-        entity.put(TaskTable._DESCRIPTION, this.mDescription);
-        entity.put(TaskTable._THEME_COLOR, this.mThemeColor);
+        entity.put(NoteTable._TITLE, this.mTitle);
+        entity.put(NoteTable._IS_ACHIEVED, this.mIsAchieved);
+        entity.put(NoteTable._DESCRIPTION, this.mDescription);
+        entity.put(NoteTable._THEME_COLOR, this.mThemeColor);
 
         return entity;
     }
@@ -76,19 +76,19 @@ public class UnmodifiableTask extends SqlEntityObject {
             return;
         }
 
-        super.mId = entity.getLongOrDefault(TaskTable._ID, super.mId);
-        this.mTitle = entity.getStringOrDefault(TaskTable._TITLE, this.mTitle);
-        this.mDescription = entity.getStringOrDefault(TaskTable._DESCRIPTION, this.mDescription);
-        this.mIsAchieved = entity.getBooleanOrDefault(TaskTable._IS_ACHIEVED, this.mIsAchieved);
-        this.mThemeColor = entity.getIntOrDefault(TaskTable._THEME_COLOR, this.mThemeColor);
+        super.mId = entity.getLongOrDefault(NoteTable._ID, super.mId);
+        this.mTitle = entity.getStringOrDefault(NoteTable._TITLE, this.mTitle);
+        this.mDescription = entity.getStringOrDefault(NoteTable._DESCRIPTION, this.mDescription);
+        this.mIsAchieved = entity.getBooleanOrDefault(NoteTable._IS_ACHIEVED, this.mIsAchieved);
+        this.mThemeColor = entity.getIntOrDefault(NoteTable._THEME_COLOR, this.mThemeColor);
     }
 
     protected void initWithDefaultValue() {
-        super.mId = TaskTable.defaultId();
-        this.mTitle = TaskTable.defaultTitle();
-        this.mDescription = TaskTable.defaultDescription();
-        this.mIsAchieved = TaskTable.defaultIsAchieved();
-        this.mThemeColor = TaskTable.defaultThemeColor();
+        super.mId = NoteTable.defaultId();
+        this.mTitle = NoteTable.defaultTitle();
+        this.mDescription = NoteTable.defaultDescription();
+        this.mIsAchieved = NoteTable.defaultIsAchieved();
+        this.mThemeColor = NoteTable.defaultThemeColor();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class UnmodifiableTask extends SqlEntityObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UnmodifiableTask task = (UnmodifiableTask) o;
+        UnmodifiableNote task = (UnmodifiableNote) o;
 
         if (mIsAchieved != task.mIsAchieved) return false;
         if (mThemeColor != task.mThemeColor) return false;

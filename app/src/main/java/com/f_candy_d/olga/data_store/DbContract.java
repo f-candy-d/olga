@@ -18,7 +18,7 @@ final public class DbContract {
     @NonNull
     public static SqliteTableUtils.TableSource[] getTableSources() {
         return new SqliteTableUtils.TableSource[] {
-                TaskTable.getTableSource()
+                NoteTable.getTableSource()
         };
 
     }

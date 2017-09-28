@@ -8,19 +8,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.table_pool.TaskTablePool;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.domain.table_pool.NoteTablePool;
+import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 
 
 /**
  * Created by daichi on 9/23/17.
  */
 
-public class TaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
+public class NoteAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
 
-    private TaskTablePool mTaskPool;
+    private NoteTablePool mTaskPool;
 
-    public TaskAdapter(TaskTablePool taskPool) {
+    public NoteAdapter(NoteTablePool taskPool) {
         mTaskPool = taskPool;
     }
 
@@ -45,28 +45,28 @@ public class TaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         TaskViewHolder vh = (TaskViewHolder) holder;
-        UnmodifiableTask task = mTaskPool.getAt(position);
+        UnmodifiableNote note = mTaskPool.getAt(position);
 
         // # Title
 
-        if (task.getTitle() == null) {
+        if (note.getTitle() == null) {
             vh.title.setText(R.string.empty_task_title);
         } else {
-            vh.title.setText(task.getTitle());
+            vh.title.setText(note.getTitle());
         }
 
         // # Description
 
-        if (task.getDescription() == null) {
+        if (note.getDescription() == null) {
             vh.description.setVisibility(View.GONE);
         } else {
             vh.description.setVisibility(View.VISIBLE);
-            vh.description.setText(task.getDescription());
+            vh.description.setText(note.getDescription());
         }
 
         // # Achieved Masc
 
-        if (task.isAchieved()) {
+        if (note.isAchieved()) {
             vh.achievedMask.setVisibility(View.VISIBLE);
         } else {
             vh.achievedMask.setVisibility(View.GONE);
@@ -74,7 +74,7 @@ public class TaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
 
         // # Theme Color
 
-        vh.background.setCardBackgroundColor(task.getThemeColor());
+        vh.background.setCardBackgroundColor(note.getThemeColor());
     }
 
     /**

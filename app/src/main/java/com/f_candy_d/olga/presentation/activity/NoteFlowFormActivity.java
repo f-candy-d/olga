@@ -29,7 +29,7 @@ import com.f_candy_d.olga.presentation.fragment.FlowFormFragment;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
-abstract public class TaskFlowFormActivity extends ViewActivity
+abstract public class NoteFlowFormActivity extends ViewActivity
         implements FlowFormFragment.OnDataInputListener {
 
     public static final String EXTRA_CONTENT_ID = "contentId";

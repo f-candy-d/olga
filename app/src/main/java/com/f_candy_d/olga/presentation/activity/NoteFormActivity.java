@@ -4,12 +4,8 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,22 +19,22 @@ import com.f_candy_d.dutils.view.ToggleColorBackground;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
-import com.f_candy_d.olga.presentation.view_model.TaskFormViewModel;
+import com.f_candy_d.olga.presentation.view_model.NoteFormViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
-public class TaskFormActivity extends ViewActivity
-        implements TaskFormViewModel.SaveResultListener,
+public class NoteFormActivity extends ViewActivity
+        implements NoteFormViewModel.SaveResultListener,
         SimpleAlertDialog.ButtonClickListener {
 
     private static final String EXTRA_TASK_ID = "task_id";
     private static final String RESULT_SAVED_TASK_ID = EXTRA_TASK_ID;
 
-    private TaskFormViewModel mViewModel;
+    private NoteFormViewModel mViewModel;
     private RecyclerViewMergeAdapter mFormCardAdapter;
     private ToggleColorBackground mToggleColorBg;
 
@@ -60,9 +56,9 @@ public class TaskFormActivity extends ViewActivity
     protected ActivityViewModel onCreateViewModel() {
         long id = getIntent().getLongExtra(EXTRA_TASK_ID, DbContract.NULL_ID);
         if (id == DbContract.NULL_ID) {
-            mViewModel = new TaskFormViewModel(this);
+            mViewModel = new NoteFormViewModel(this);
         } else {
-            mViewModel = new TaskFormViewModel(this, id);
+            mViewModel = new NoteFormViewModel(this, id);
         }
 
         return mViewModel;
@@ -118,7 +114,7 @@ public class TaskFormActivity extends ViewActivity
 
     private void onDiscardButtonClick() {
         new SimpleAlertDialog.Builder()
-                .message("Are you sure want to discard this task?")
+                .message("Are you sure want to discard this note?")
                 .positiveButton("KEEP EDITING")
                 .negativeButton("DISCARD")
                 .create()
@@ -144,8 +140,8 @@ public class TaskFormActivity extends ViewActivity
     }
 
     private void setupTaskFormItemView(View itemView) {
-        final UnmodifiableTask taskData = mViewModel.getTaskData();
-        // EditText for the Task's title
+        final UnmodifiableNote taskData = mViewModel.getTaskData();
+        // EditText for the Note's title
         EditText editText = itemView.findViewById(R.id.edit_text_title);
         editText.setText(taskData.getTitle());
         editText.addTextChangedListener(new TextWatcher() {
@@ -158,7 +154,7 @@ public class TaskFormActivity extends ViewActivity
             }
         });
 
-        // EditText for the Task's description
+        // EditText for the Note's description
         editText = itemView.findViewById(R.id.edit_text_description);
         editText.setText(taskData.getDescription());
         editText.addTextChangedListener(new TextWatcher() {
@@ -208,7 +204,7 @@ public class TaskFormActivity extends ViewActivity
     }
 
     /**
-     * region; TaskFormViewModel.SaveResultListener interface
+     * region; NoteFormViewModel.SaveResultListener interface
      */
 
     @Override

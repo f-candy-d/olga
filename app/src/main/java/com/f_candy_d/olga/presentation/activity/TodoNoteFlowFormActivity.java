@@ -5,37 +5,37 @@ import android.support.annotation.NonNull;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
-import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
+import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 import com.f_candy_d.olga.presentation.fragment.FlowFormFragment;
 import com.f_candy_d.olga.presentation.fragment.SummaryFlowFormFragment;
-import com.f_candy_d.olga.presentation.view_model.TaskFormViewModel;
+import com.f_candy_d.olga.presentation.view_model.NoteFormViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 
 /**
  * Created by daichi on 9/20/17.
  */
 
-public class TodoTaskFlowFormActivity extends TaskFlowFormActivity implements TaskFormViewModel.SaveResultListener {
+public class TodoNoteFlowFormActivity extends NoteFlowFormActivity implements NoteFormViewModel.SaveResultListener {
 
-    TaskFormViewModel mViewModel;
+    NoteFormViewModel mViewModel;
 
     @Override
     protected ActivityViewModel onCreateViewModelWithContentId(long contentId) {
-        mViewModel = new TaskFormViewModel(this, contentId);
+        mViewModel = new NoteFormViewModel(this, contentId);
         return mViewModel;
     }
 
     @Override
     protected ActivityViewModel onCreateViewModelWithNoId() {
-        mViewModel = new TaskFormViewModel(this);
+        mViewModel = new NoteFormViewModel(this);
         return mViewModel;
     }
 
     @Override
     protected FlowFormFragment[] getFlowFormFragments() {
-        UnmodifiableTask task = mViewModel.getTaskData();
+        UnmodifiableNote note = mViewModel.getTaskData();
         return new FlowFormFragment[] {
-                SummaryFlowFormFragment.newInstance(task.getTitle(), task.getDescription(), null)
+                SummaryFlowFormFragment.newInstance(note.getTitle(), note.getDescription(), null)
         };
     }
 

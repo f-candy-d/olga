@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.filter.TaskFilter;
+import com.f_candy_d.olga.domain.filter.NoteFilter;
 import com.f_candy_d.olga.presentation.ItemClickHelper;
-import com.f_candy_d.olga.presentation.adapter.DefaultTaskFilterAdapter;
+import com.f_candy_d.olga.presentation.adapter.DefaultFilterAdapter;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
@@ -78,8 +78,8 @@ public class FilterPickerDialog extends DialogFragment {
         adapter.addView(header);
 
         // Default filters
-        final DefaultTaskFilterAdapter defaultTaskFilterAdapter = new DefaultTaskFilterAdapter();
-        adapter.addAdapter(defaultTaskFilterAdapter);
+        final DefaultFilterAdapter defaultFilterAdapter = new DefaultFilterAdapter();
+        adapter.addAdapter(defaultFilterAdapter);
 
         recyclerView.setAdapter(adapter);
 
@@ -88,9 +88,9 @@ public class FilterPickerDialog extends DialogFragment {
         ItemClickHelper itemClickHelper = new ItemClickHelper(new ItemClickHelper.Callback() {
             @Override
             public void onItemClick(RecyclerView.ViewHolder viewHolder) {
-                if (viewHolder instanceof DefaultTaskFilterAdapter.ItemViewHolder) {
+                if (viewHolder instanceof DefaultFilterAdapter.ItemViewHolder) {
                     int localPosition = adapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition()).posInSubAdapter;
-                    mListener.onFilterSelected(defaultTaskFilterAdapter.getAt(localPosition));
+                    mListener.onFilterSelected(defaultFilterAdapter.getAt(localPosition));
                     closeSelf();
                 }
             }
@@ -134,6 +134,6 @@ public class FilterPickerDialog extends DialogFragment {
      * activity.
      */
     public interface OnFilterSelectListener {
-        void onFilterSelected(TaskFilter filter);
+        void onFilterSelected(NoteFilter filter);
     }
 }
