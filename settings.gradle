@@ -1,1 +1,1 @@
-include ':app', ':d_utils', ':vvm'
+include ':app', ':d_utils', ':vvm', ':colorpicker'

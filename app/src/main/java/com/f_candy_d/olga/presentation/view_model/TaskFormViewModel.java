@@ -96,4 +96,8 @@ public class TaskFormViewModel extends ActivityViewModel {
     public void onInputTaskDescription(String description) {
         ((Task) mNewFields.get(FIELD_TASK)).setDescription(description);
     }
+
+    public void onInputTaskThemeColor(int color) {
+        ((Task) mNewFields.get(FIELD_TASK)).setThemeColor(color);
+    }
 }

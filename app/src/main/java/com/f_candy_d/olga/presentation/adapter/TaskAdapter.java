@@ -1,6 +1,6 @@
 package com.f_candy_d.olga.presentation.adapter;
 
-import android.support.v7.util.SortedList;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.SqliteTablePool;
 import com.f_candy_d.olga.domain.TaskTablePool;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
 
-import java.util.Collection;
 
 /**
  * Created by daichi on 9/23/17.
@@ -73,6 +71,10 @@ public class TaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
         } else {
             vh.achievedMask.setVisibility(View.GONE);
         }
+
+        // # Theme Color
+
+        vh.background.setCardBackgroundColor(task.getThemeColor());
     }
 
     /**
@@ -84,12 +86,14 @@ public class TaskAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
         TextView title;
         TextView description;
         View achievedMask;
+        CardView background;
 
         TaskViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.task_card_task_title);
             description = view.findViewById(R.id.task_card_task_description);
             achievedMask = view.findViewById(R.id.achieved_mask);
+            background = view.findViewById(R.id.task_card_bg);
         }
     }
 }

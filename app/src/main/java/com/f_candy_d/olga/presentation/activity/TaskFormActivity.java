@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.colorpicker.ColorPickerDialog;
+import com.android.colorpicker.ColorPickerSwatch;
+import com.f_candy_d.dutils.view.ToggleColorBackground;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
@@ -32,6 +36,7 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
 
     private TaskFormViewModel mViewModel;
     private RecyclerViewMergeAdapter mFormCardAdapter;
+    private ToggleColorBackground mToggleColorBg;
 
     public static Bundle makeExtra(long taskId) {
         Bundle extras = new Bundle();
@@ -73,6 +78,11 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
                 mViewModel.onSave();
             }
         });
+
+        // # ToggleColorBg
+
+        mToggleColorBg = (ToggleColorBackground) findViewById(R.id.toggle_color_bg);
+        mToggleColorBg.setCurrentColor(mViewModel.getTaskData().getThemeColor());
 
         // # RecyclerView
 
@@ -125,7 +135,7 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
     }
 
     private void setupTaskFormItemView(View itemView) {
-        UnmodifiableTask taskData = mViewModel.getTaskData();
+        final UnmodifiableTask taskData = mViewModel.getTaskData();
         // EditText for the Task's title
         EditText editText = itemView.findViewById(R.id.edit_text_title);
         editText.setText(taskData.getTitle());
@@ -149,6 +159,33 @@ public class TaskFormActivity extends ViewActivity implements TaskFormViewModel.
             @Override
             public void afterTextChanged(Editable editable) {
                 mViewModel.onInputTaskDescription(editable.toString());
+            }
+        });
+
+        // # Select Theme Color Button
+        final int[] colors = new int[] {
+                ContextCompat.getColor(this, R.color.color_blue),
+                ContextCompat.getColor(this, R.color.color_cream_red),
+                ContextCompat.getColor(this, R.color.color_blue_gray),
+                ContextCompat.getColor(this, R.color.color_cream_green),
+                ContextCompat.getColor(this, R.color.color_yellow),
+                ContextCompat.getColor(this, R.color.color_teal),
+                ContextCompat.getColor(this, R.color.color_cream_orange_light)
+        };
+
+        itemView.findViewById(R.id.select_theme_color_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ColorPickerDialog picker = new ColorPickerDialog();
+                picker.initialize(R.string.color_picker_title, colors, taskData.getThemeColor(), 4, colors.length);
+                picker.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int color) {
+                        mViewModel.onInputTaskThemeColor(color);
+                        mToggleColorBg.toggleColor(color);
+                    }
+                });
+                picker.show(getFragmentManager(), null);
             }
         });
     }

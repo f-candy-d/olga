@@ -1,7 +1,7 @@
 package com.f_candy_d.olga.presentation.activity;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
@@ -23,11 +25,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.f_candy_d.dutils.ColorUtils;
 import com.f_candy_d.olga.MyApp;
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.structure.Task;
 import com.f_candy_d.olga.domain.structure.UnmodifiableTask;
-import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.domain.usecase.TaskTableUseCase;
 import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
 
@@ -206,6 +207,15 @@ public class DetailsActivity extends AppCompatActivity {
 
             fab.setVisibility(View.GONE);
             mIsEmptyListMode = true;
+        }
+
+        // # Theme Color
+
+        findViewById(R.id.app_bar).setBackgroundColor(task.getThemeColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ColorUtils.manipulateBrightness(task.getThemeColor(), 0.7f));
         }
     }
 

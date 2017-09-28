@@ -17,6 +17,8 @@
     <string name="achieved_cap">ACHIEVED</string>
     <string name="not_achieved_cap">NOT ACHIEVED</string>
 
+    <string name="color_picker_title">Select A Theme Color</string>
+
     <string name="task_details_empty_view_message">
         No options.\nEdit your task to add options!</string>
 
