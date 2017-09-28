@@ -3,9 +3,8 @@ package com.f_candy_d.olga.domain;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.f_candy_d.olga.domain.structure.Note;
 import com.f_candy_d.olga.domain.structure.SqlEntityObject;
-import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
+import com.f_candy_d.olga.domain.structure.Note;
 import com.f_candy_d.olga.domain.usecase.SqlTableUseCase;
 import com.f_candy_d.olga.domain.usecase.NoteTableUseCase;
 
@@ -47,7 +46,7 @@ public class NoteFormManager {
     }
 
     private void initWithTaskId(long taskId) {
-        Note note = NoteTableUseCase.findTaskById(taskId);
+        Note note = NoteTableUseCase.findNoteById(taskId);
         if (note != null) {
             mOldFields = new HashMap<>();
             mOldFields.put(FIELD_TASK, note);
@@ -82,8 +81,8 @@ public class NoteFormManager {
      */
 
     @NonNull
-    public UnmodifiableNote getTaskData() {
-        return (UnmodifiableNote) mNewFields.get(FIELD_TASK);
+    public Note getTaskData() {
+        return (Note) mNewFields.get(FIELD_TASK);
     }
 
     public void onInputTaskTitle(String title) {

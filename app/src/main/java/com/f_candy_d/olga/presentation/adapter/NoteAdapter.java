@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.table_pool.NoteTablePool;
-import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
+import com.f_candy_d.olga.domain.structure.Note;
 
 
 /**
@@ -45,7 +45,7 @@ public class NoteAdapter extends FullSpanItemAdapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         TaskViewHolder vh = (TaskViewHolder) holder;
-        UnmodifiableNote note = mTaskPool.getAt(position);
+        Note note = mTaskPool.getAt(position);
 
         // # Title
 

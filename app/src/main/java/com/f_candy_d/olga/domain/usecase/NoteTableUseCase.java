@@ -16,7 +16,7 @@ import com.f_candy_d.olga.infra.SqlEntity;
 final public class NoteTableUseCase extends SqlTableUseCase {
 
     @Nullable
-    public static Note findTaskById(long id) {
+    public static Note findNoteById(long id) {
         SqlEntity entity = findById(id, NoteTable.TABLE_NAME);
         if (entity != null) {
             return new Note(entity);
@@ -29,7 +29,7 @@ final public class NoteTableUseCase extends SqlTableUseCase {
     }
 
     @NonNull
-    public static Note[] findTasksByFilter(NoteFilter filter) {
+    public static Note[] findNotesByFilter(NoteFilter filter) {
         SqlEntity[] results = Repository.getSqlite().select(filter.toQuery());
         Note[] notes = new Note[results.length];
         for (int i = 0; i < results.length; ++i) {

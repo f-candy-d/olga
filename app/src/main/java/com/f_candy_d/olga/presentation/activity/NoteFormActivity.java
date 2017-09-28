@@ -20,7 +20,7 @@ import com.f_candy_d.dutils.view.ToggleColorBackground;
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.Utils;
 import com.f_candy_d.olga.data_store.DbContract;
-import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
+import com.f_candy_d.olga.domain.structure.Note;
 import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
 import com.f_candy_d.olga.domain.NoteFormManager;
 
@@ -138,7 +138,7 @@ public class NoteFormActivity extends AppCompatActivity
     }
 
     private void setupTaskFormItemView(View itemView) {
-        final UnmodifiableNote taskData = mFormManager.getTaskData();
+        final Note taskData = mFormManager.getTaskData();
         // EditText for the Note's title
         EditText editText = itemView.findViewById(R.id.edit_text_title);
         editText.setText(taskData.getTitle());

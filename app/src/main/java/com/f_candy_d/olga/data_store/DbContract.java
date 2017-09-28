@@ -18,8 +18,8 @@ final public class DbContract {
     @NonNull
     public static SqliteTableUtils.TableSource[] getTableSources() {
         return new SqliteTableUtils.TableSource[] {
-                NoteTable.getTableSource()
+                NoteTable.getTableSource(),
+                DueDateOptionTable.getTableSource()
         };
-
     }
 }

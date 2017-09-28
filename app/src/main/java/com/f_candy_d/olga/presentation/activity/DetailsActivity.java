@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.f_candy_d.dutils.ColorUtils;
 import com.f_candy_d.olga.R;
-import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
+import com.f_candy_d.olga.domain.structure.Note;
 import com.f_candy_d.olga.domain.usecase.NoteTableUseCase;
 import com.f_candy_d.olga.presentation.adapter.ViewAdapter;
 import com.f_candy_d.olga.presentation.dialog.SimpleAlertDialog;
@@ -72,9 +72,9 @@ public class DetailsActivity extends AppCompatActivity
         }
 
         mTaskId = getIntent().getExtras().getLong(EXTRA_TASK_ID);
-        UnmodifiableNote task = NoteTableUseCase.findTaskById(mTaskId);
+        Note task = NoteTableUseCase.findNoteById(mTaskId);
         if (task == null) {
-            task = new UnmodifiableNote();
+            task = new Note();
         }
         invalidate(task, mRecyclerView, mAdapter, mFab);
     }
@@ -119,7 +119,7 @@ public class DetailsActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private ViewAdapter createAdapter(RecyclerView recyclerView, UnmodifiableNote task) {
+    private ViewAdapter createAdapter(RecyclerView recyclerView, Note task) {
         ArrayList<View> itemViews = new ArrayList<>();
         return new ViewAdapter(itemViews);
     }
@@ -140,9 +140,9 @@ public class DetailsActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_EDIT_TASK && resultCode == RESULT_OK) {
-            UnmodifiableNote task = NoteTableUseCase.findTaskById(mTaskId);
+            Note task = NoteTableUseCase.findNoteById(mTaskId);
             if (task == null) {
-                task = new UnmodifiableNote();
+                task = new Note();
             }
 
             invalidate(task, mRecyclerView, mAdapter, mFab);
@@ -150,11 +150,11 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     /**
-     * Only used inside {@link DetailsActivity#invalidate(UnmodifiableNote, RecyclerView, ViewAdapter, FloatingActionButton)}.
+     * Only used inside {@link DetailsActivity#invalidate(Note, RecyclerView, ViewAdapter, FloatingActionButton)}.
      */
     private boolean mIsEmptyListMode = false;
 
-    private void invalidate(@NonNull UnmodifiableNote task,
+    private void invalidate(@NonNull Note task,
                             @NonNull RecyclerView recyclerView,
                             @NonNull ViewAdapter viewAdapter,
                             @NonNull FloatingActionButton fab) {

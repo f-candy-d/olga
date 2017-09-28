@@ -3,7 +3,6 @@ package com.f_candy_d.olga.presentation.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -29,7 +28,6 @@ import com.f_candy_d.olga.domain.table_pool.SqliteTablePool;
 import com.f_candy_d.olga.domain.table_pool.NoteTablePool;
 import com.f_candy_d.olga.domain.filter.DefaultFilterFactory;
 import com.f_candy_d.olga.domain.structure.Note;
-import com.f_candy_d.olga.domain.structure.UnmodifiableNote;
 import com.f_candy_d.olga.presentation.ItemClickHelper;
 import com.f_candy_d.olga.presentation.adapter.FullSpanViewAdapter;
 import com.f_candy_d.olga.presentation.adapter.NoteAdapter;
@@ -366,7 +364,7 @@ public class FilterdListActivity extends AppCompatActivity
         mTaskPool.applyFilter();
     }
 
-    private void launchTaskDetailsScreen(UnmodifiableNote note) {
+    private void launchTaskDetailsScreen(Note note) {
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtras(DetailsActivity.makeExtra(note.getId()));
         startActivityForResult(intent, REQUEST_CODE_SHOW_DETAILS);
