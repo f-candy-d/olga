@@ -11,4 +11,9 @@
     <dimen name="secondary_text">14sp</dimen>
 
     <dimen name="shortcut_card_text">14dp</dimen>
+
+    <dimen name="shortcut_item_size">64dp</dimen>
+    <dimen name="shortcut_item_margin">8dp</dimen>
+    <dimen name="shortcut_card_layout_margin">24dp</dimen>
+    <dimen name="shortcut_card_margin">4dp</dimen>
 </resources>

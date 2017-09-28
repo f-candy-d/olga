@@ -8,14 +8,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.f_candy_d.olga.R;
 import com.f_candy_d.olga.domain.SqliteTablePool;
@@ -31,6 +37,8 @@ import com.f_candy_d.olga.presentation.dialog.FilterPickerDialogFragment;
 import com.f_candy_d.olga.presentation.view_model.HomeViewModel;
 import com.f_candy_d.vvm.ActivityViewModel;
 import com.f_candy_d.vvm.ViewActivity;
+
+import java.util.ArrayList;
 
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter;
 
@@ -168,8 +176,9 @@ public class FilterdTaskListActivity extends ViewActivity
 
         // Create option view items for the certain filters
         if (mTaskPool.getFilter().getFilterName().equals(DefaultFilterFactory.FILTER_NAME_NOW)) {
-            final LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
-            View shortcutView = inflater.inflate(R.layout.item_suggest_filters_card, mRecyclerView, false);
+//            final LayoutInflater inflater = LayoutInflater.from(mRecyclerView.getContext());
+//            View shortcutView = inflater.inflate(R.layout.item_shourtcuts_grid_card, mRecyclerView, false);
+            View shortcutView = createShourtcutView(mRecyclerView);
             FullSpanViewAdapter fullSpanViewAdapter = new FullSpanViewAdapter(shortcutView);
             mRootAdapter.addAdapter(fullSpanViewAdapter);
         }
@@ -183,9 +192,11 @@ public class FilterdTaskListActivity extends ViewActivity
         ItemClickHelper itemClickHelper = new ItemClickHelper(new ItemClickHelper.Callback() {
             @Override
             public void onItemClick(RecyclerView.ViewHolder viewHolder) {
-                RecyclerViewMergeAdapter.PosSubAdapterInfo info = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition());
-                int localPosition = info.posInSubAdapter;
-                launchTaskDetailsScreen(mTaskPool.getAt(localPosition));
+                if (isItemClickable(viewHolder)) {
+                    RecyclerViewMergeAdapter.PosSubAdapterInfo info = mRootAdapter.getPosSubAdapterInfoForGlobalPosition(viewHolder.getAdapterPosition());
+                    int localPosition = info.posInSubAdapter;
+                    launchTaskDetailsScreen(mTaskPool.getAt(localPosition));
+                }
             }
 
             @Override
@@ -283,6 +294,89 @@ public class FilterdTaskListActivity extends ViewActivity
 
         dialog.setContentView(sheetView);
         dialog.show();
+    }
+
+    private View createShourtcutView(RecyclerView parent) {
+        // Calculate vertical span count
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        final int gridViewWidth =
+                metrics.widthPixels - (getResources().getDimensionPixelSize(R.dimen.shortcut_card_layout_margin) * 2
+                        + getResources().getDimensionPixelSize(R.dimen.shortcut_card_margin) * 2);
+
+        final int shourtcutItemSize = getResources().getDimensionPixelSize(R.dimen.shortcut_item_size)
+                + getResources().getDimensionPixelSize(R.dimen.shortcut_item_margin) * 2;
+
+        final int spanCount = gridViewWidth / shourtcutItemSize;
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shourtcuts_grid_card, parent, false);
+        RecyclerView grid = view.findViewById(R.id.shourtcuts_grid_view);
+        grid.setLayoutManager(new GridLayoutManager(this, spanCount));
+        grid.setHasFixedSize(true);
+
+        // Shourtcut items
+        final ArrayList<View> items = new ArrayList<>();
+        LayoutInflater inflater = LayoutInflater.from(grid.getContext());
+        View item;
+
+        item = inflater.inflate(R.layout.shourtcut_item, grid, false);
+        items.add(item);
+        ((ImageView) item.findViewById(R.id.shortcut_item_icon)).setImageResource(R.drawable.ic_inbox);
+        ((TextView) item.findViewById(R.id.shourtcut_item_title)).setText("All");
+        item.findViewById(R.id.shourtcut_item_bg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchAnotherFilterdTaskListScreen(DefaultFilterFactory.createAllFilter());
+            }
+        });
+
+        item = inflater.inflate(R.layout.shourtcut_item, grid, false);
+        items.add(item);
+        ((ImageView) item.findViewById(R.id.shortcut_item_icon)).setImageResource(R.drawable.ic_bookmark);
+        ((TextView) item.findViewById(R.id.shourtcut_item_title)).setText("Achieved");
+        item.findViewById(R.id.shourtcut_item_bg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchAnotherFilterdTaskListScreen(DefaultFilterFactory.createAchievedFilter());
+            }
+        });
+
+        item = inflater.inflate(R.layout.shourtcut_item, grid, false);
+        items.add(item);
+        ((ImageView) item.findViewById(R.id.shortcut_item_icon)).setImageResource(R.drawable.ic_bookmark_border);
+        ((TextView) item.findViewById(R.id.shourtcut_item_title)).setText("Unachieved");
+        item.findViewById(R.id.shourtcut_item_bg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchAnotherFilterdTaskListScreen(DefaultFilterFactory.createNotAchievedFilter());
+            }
+        });
+
+        // adapter
+        RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
+
+            @Override
+            public int getItemViewType(int position) {
+                return position;
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new RecyclerView.ViewHolder(items.get(viewType)) {};
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {}
+
+            @Override
+            public int getItemCount() {
+                return items.size();
+            }
+        };
+
+        grid.setAdapter(adapter);
+
+        return view;
     }
 
     @Override
@@ -391,6 +485,10 @@ public class FilterdTaskListActivity extends ViewActivity
     protected void onDestroy() {
         super.onDestroy();
         mTaskPool.disableAutoFilter();
+    }
+
+    private boolean isItemClickable(RecyclerView.ViewHolder viewHolder) {
+        return (viewHolder instanceof TaskAdapter.TaskViewHolder);
     }
 
     /**
